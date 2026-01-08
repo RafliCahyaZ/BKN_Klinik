@@ -1,0 +1,44 @@
+body{
+				font-family: "verdana", Courier, monospace;
+				font-size: 12px;
+				margin:0;
+			}
+
+			.title
+			{
+				font-size: 12px;
+				font-weight: bold;
+				border-bottom: 1px #000 solid;
+			}
+
+			.content
+			{
+				padding: 3px;
+			}
+
+			hr
+			{
+				border:1px solid #000;
+			}
+
+	.table
+	{
+		border:1px solid #000;
+		border-collapse: collapse;
+		width: 80%;
+	}		
+
+	.table tr th
+	{
+		border:1px solid #000;
+		text-align: left;
+		padding: 5px;
+		background: #eee;
+	}
+
+	.table tr td
+	{
+		border:1px solid #000;
+		text-align: left;
+		padding: 5px;
+	}
