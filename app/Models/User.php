@@ -4,8 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
 
 class User extends Authenticatable
 {
@@ -18,16 +20,24 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'namalengkap',
+        'username',
         'email',
         'password',
+        'tgl_login',
+        'modified',
+        'Ip_login',
+        'status'
     ];
+
+
+
 
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
-     */
+ Treatment    */
     protected $hidden = [
         'password',
         'remember_token',
@@ -44,5 +54,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function registrations(): HasMany
+    {
+        return $this->hasMany(Registration::class, 'docter_id');
     }
 }
