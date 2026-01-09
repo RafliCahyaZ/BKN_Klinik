@@ -5,8 +5,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
 
 class User extends Authenticatable
 {
@@ -30,11 +32,14 @@ class User extends Authenticatable
         'role'
     ];
 
+
+
+
     /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
-     */
+ Treatment    */
     protected $hidden = [
         'password',
 
@@ -56,7 +61,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function registration(): HasMany{
+    public function registrations(): HasMany{
         return $this->hasMany(Registration::class, 'doctor_id');
     }
 }
