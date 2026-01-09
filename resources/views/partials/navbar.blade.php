@@ -24,8 +24,8 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dokter <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li> <a href="http://localhost:8000/terapi/index">Antrian Pasien</a></li>
-                <li> <a href="http://localhost:8000/terapi/history">History Pasien</a></li>
+                <li> <a href="{{ url("patient/queue") }}">Antrian Pasien</a></li>
+                <li> <a href="{{ url("patient/history") }}">History Pasien</a></li>
               </ul>
             </li>
             <li class="dropdown">

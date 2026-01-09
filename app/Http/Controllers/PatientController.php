@@ -10,4 +10,14 @@ class PatientController extends Controller
     {
         return view("dashboard/patient.home");
     }
+
+    public function queue()
+    {
+        return view("dashboard/patient.queue");
+    }
+
+    public function history()
+    {
+        return view("dashboard/patient.history");
+    }
 }

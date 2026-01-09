@@ -12,6 +12,8 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::get("/patient", [PatientController::class, 'index']);
+Route::get("/patient/queue", [PatientController::class, 'queue']);
+Route::get("/patient/history", [PatientController::class, 'history']);
 Route::get("/diagnosis", [DiagnosisController::class, 'index']);
 Route::get("/treatment", [TreatmentController::class, 'index']);
 
