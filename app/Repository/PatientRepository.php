@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-
 interface PatientRepository
 {
     /* return harus array of PatientDTO */

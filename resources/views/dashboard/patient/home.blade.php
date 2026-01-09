@@ -12,7 +12,7 @@
                                 <tr>
                                 <th>No</th>
                                 <th>No. Rekam</th>
-                                <th width="10%">Nama Pasien</th>
+                                <th>Nama Pasien</th>
                                 <th>JK</th>
                                 <th>Umur</th>
                                 <th>Riwayat Penyakit</th>
@@ -24,6 +24,26 @@
                                 </tr>
                             </thead>
                             <tbody>
+                            @foreach($patients as $index => $patient)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $patient->medicalRecordNumber }}</td>
+                                <td>{{ $patient->name }}</td>
+                                <td>{{ $patient->gender }}</td>
+                                <td>{{ $patient->age }}</td>
+                                <td>{{ $patient->history }}</td>
+                                <td>{{ $patient->medicalRecordFileUrl }}</td>
+                                <td>{{ $patient->address }}</td>
+                                <td>{{ $patient->telpNumber }}</td>
+                                <td>{{ $patient->createdAt->format('Y-m-d'); }}</td>
+                                <td>
+<a href="http://localhost:8000/pasien/ubah/000046" class="btn btn-sm btn-info" title="Ubah Pasien"><i class="glyphicon glyphicon-pencil"></i></a>
+<a href="http://localhost:8000/pasien/hapus/000046" class="btn btn-sm btn-danger" title="Hapus Pasien" onclick="return confirm('Yakin mau hapus data ini?')"><i class="glyphicon glyphicon-trash"></i></a>
+<a href="http://localhost:8000/registrasi/daftar/000046" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i></a>
+                                </td>
+
+                            </tr>
+                            @endforeach
                             </tbody>
                         </table>
 
