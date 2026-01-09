@@ -19,6 +19,7 @@ Route::get("/patient/history", [PatientController::class, 'history']);
 Route::post("/patient/store", [PatientController::class, 'store'])->name("patient.store");
 Route::get("/patient/edit/{id}", [PatientController::class, 'edit'])->name("patient.edit.view");
 Route::post("/patient/edit/{id}", [PatientController::class, 'editAction'])->name("patient.edit.action");
+Route::delete("/patient/destroy/{id}", [PatientController::class, 'destroy'])->name("patient.destroy");
 
 Route::get("/diagnosis", [DiagnosisController::class, 'index']);
 Route::get("/treatment", [TreatmentController::class, 'index']);

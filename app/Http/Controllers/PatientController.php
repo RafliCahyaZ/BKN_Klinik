@@ -9,6 +9,23 @@ use Illuminate\Support\Facades\Storage;
 
 class PatientController extends Controller
 {
+    public function destroy($id, PatientRepository $patientRepository)
+    {
+        $patient = $patientRepository->getById($id);
+
+        if (!$patient) {
+            abort(404);
+        }
+
+        $deleteResult = $patientRepository->delete($id);
+
+        if (!$deleteResult) {
+            return redirect()->route("patient.index")->with("failed", "Gagal! Gagal hapus data");
+        }
+
+        return redirect()->route("patient.index")->with("success", "Sukses! Berhasil hapus data");
+    }
+
     public function index(PatientRepository $patientRepository)
     {
         return view("dashboard/patient.home", [

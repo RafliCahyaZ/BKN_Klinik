@@ -16,4 +16,6 @@ interface PatientRepository
     public function getById(string $id): ?PatientDTO;
 
     public function getLatestId(): int;
+
+    public function delete(string $id): bool;
 }

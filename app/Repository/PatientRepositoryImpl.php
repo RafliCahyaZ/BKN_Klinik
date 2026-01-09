@@ -26,6 +26,11 @@ class PatientRepositoryImpl implements PatientRepository
         return $patient1;
     }
 
+    public function delete(string $id): bool
+    {
+        return false;
+    }
+
     public function insert(PatientDTO $patientDTO): ?PatientDTO
     {
         return $patientDTO;
