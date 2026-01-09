@@ -50,9 +50,9 @@
                                 <td>{{ $patient->telpNumber }}</td>
                                 <td>{{ $patient->createdAt->format('Y-m-d'); }}</td>
                                 <td>
-<a href="http://localhost:8000/pasien/ubah/000046" class="btn btn-sm btn-info" title="Ubah Pasien"><i class="glyphicon glyphicon-pencil"></i></a>
-<a href="http://localhost:8000/pasien/hapus/000046" class="btn btn-sm btn-danger" title="Hapus Pasien" onclick="return confirm('Yakin mau hapus data ini?')"><i class="glyphicon glyphicon-trash"></i></a>
-<a href="http://localhost:8000/registrasi/daftar/000046" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i></a>
+                                <a href="{{ route("patient.edit.view", $patient->id) }}" class="btn btn-sm btn-info" title="Ubah Pasien"><i class="glyphicon glyphicon-pencil"></i></a>
+                                <a href="http://localhost:8000/pasien/hapus/000046" class="btn btn-sm btn-danger" title="Hapus Pasien" onclick="return confirm('Yakin mau hapus data ini?')"><i class="glyphicon glyphicon-trash"></i></a>
+                                <a href="http://localhost:8000/registrasi/daftar/000046" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i></a>
                                 </td>
 
                             </tr>

@@ -11,5 +11,9 @@ interface PatientRepository
 
     public function insert(PatientDTO $patientDTO): ?PatientDTO;
 
+    public function edit(string $id, PatientDTO $patientDTO): ?PatientDTO;
+
+    public function getById(string $id): ?PatientDTO;
+
     public function getLatestId(): int;
 }

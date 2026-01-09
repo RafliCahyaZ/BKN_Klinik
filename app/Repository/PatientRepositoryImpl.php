@@ -7,7 +7,31 @@ use Carbon\Carbon;
 
 class PatientRepositoryImpl implements PatientRepository
 {
+    public function getById(string $id): ?PatientDTO
+    {
+        $patient1 = new PatientDTO();
+        $patient1->id = '1';
+        $patient1->medicalRecordNumber = 'MR-001';
+        $patient1->medicalRecordFileUrl = 'MR-001';
+        $patient1->dateOfBirth = Carbon::now()->subDays(10);
+        $patient1->name = 'Budi Santoso';
+        $patient1->gender = 'L';
+        $patient1->age = 34;
+        $patient1->history = 'Riwayat hipertensi';
+        $patient1->address = 'Jl. Malioboro No. 10, Yogyakarta';
+        $patient1->telpNumber = '081234567890';
+        $patient1->createdAt = Carbon::now()->subDays(10);
+        $patient1->updatedAt = Carbon::now()->subDays(2);
+
+        return $patient1;
+    }
+
     public function insert(PatientDTO $patientDTO): ?PatientDTO
+    {
+        return $patientDTO;
+    }
+
+    public function edit(string $id, PatientDTO $patientDTO): ?PatientDTO
     {
         return $patientDTO;
     }
