@@ -11,6 +11,11 @@
         @csrf
             <table class="table table-striped">
                 <tbody>
+                    @error('name')
+                        <tr>
+                            <th class="text-danger" colspan="3">{{ $message }}</th>
+                        </tr>
+                    @enderror
                     <tr>
                         <th>Nama Pasien</th>
                         <th>:</th>
@@ -26,6 +31,11 @@
                         </th>
                     </tr>
 
+                    @error('date-of-birth')
+                        <tr>
+                            <th class="text-danger" colspan="3">{{ $message }}</th>
+                        </tr>
+                    @enderror
                     <tr>
                         <th>Tanggal Lahir</th>
                         <th>:</th>
@@ -40,6 +50,11 @@
                         </th>
                     </tr>
 
+                    @error('gender')
+                        <tr>
+                            <th class="text-danger" colspan="3">{{ $message }}</th>
+                        </tr>
+                    @enderror
                     <tr>
                         <th>Jenis Kelamin</th>
                         <th>:</th>
@@ -51,6 +66,11 @@
                         </td>
                     </tr>
 
+                    @error('address')
+                        <tr>
+                            <th class="text-danger" colspan="3">{{ $message }}</th>
+                        </tr>
+                    @enderror
                     <tr>
                         <th>Alamat</th>
                         <th>:</th>
@@ -65,6 +85,11 @@
                         </th>
                     </tr>
 
+                    @error('history')
+                        <tr>
+                            <th class="text-danger" colspan="3">{{ $message }}</th>
+                        </tr>
+                    @enderror
                     <tr>
                         <th>Riwayat Sakit</th>
                         <th>:</th>
@@ -78,6 +103,11 @@
                         </th>
                     </tr>
 
+                    @error('phone-number')
+                        <tr>
+                            <th class="text-danger" colspan="3">{{ $message }}</th>
+                        </tr>
+                    @enderror
                     <tr>
                         <th>Telp</th>
                         <th>:</th>
@@ -92,6 +122,11 @@
                         </th>
                     </tr>
 
+                    @error('medical-record')
+                        <tr>
+                            <th class="text-danger" colspan="3">{{ $message }}</th>
+                        </tr>
+                    @enderror
                     <tr>
                         <th>Upload Rekamedis</th>
                         <th>:</th>
