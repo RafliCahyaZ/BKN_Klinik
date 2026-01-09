@@ -49,9 +49,10 @@
                                 <td>{{ $patient->address }}</td>
                                 <td>{{ $patient->telpNumber }}</td>
                                 <td>{{ $patient->createdAt->format('Y-m-d'); }}</td>
-                                <td>
+                                <td width="12%" class="d-flex">
                                 <a href="{{ route("patient.edit.view", $patient->id) }}" class="btn btn-sm btn-info" title="Ubah Pasien"><i class="glyphicon glyphicon-pencil"></i></a>
                                 <form
+                                    style="display: inline-block;"
                                     action="{{ route('patient.destroy', $patient->id) }}"
                                     method="POST"
                                     onsubmit="return confirm('Yakin ingin menghapus data ini?')"
