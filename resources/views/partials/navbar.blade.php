@@ -29,15 +29,9 @@
               </ul>
             </li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">FO <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li> <a href="http://localhost:8000/registrasi">Antrian</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pengguna <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li> <a href="http://localhost:8000/pengguna">Data Pengguna</a></li>
+                <li> <a href="{{ url("user") }}">Data Pengguna</a></li>
               </ul>
             </li>
             <li class="dropdown">
