@@ -165,7 +165,7 @@
                                 class="btn btn-success"
                             >
                             <a
-                                href="http://localhost:8000/pasien"
+                                href="{{ route("patient.index") }}"
                                 class="btn btn-danger"
                             >
                                 Kembali
