@@ -17,8 +17,8 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Master Data <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li> <a href="{{ url("patient") }}">Data Pasien</a></li>
-                <li> <a href="http://localhost:8000/master_diagnosa">Data Diagnosa</a></li>
-                <li> <a href="http://localhost:8000/master_tindakan">Data Tindakan</a></li>
+                <li> <a href="{{ url("diagnosis") }}">Data Diagnosa</a></li>
+                <li> <a href="{{ url("treatment") }}">Data Tindakan</a></li>
               </ul>
             </li>
             <li class="dropdown">
