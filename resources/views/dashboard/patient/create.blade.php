@@ -1,0 +1,144 @@
+@extends('layouts.dashboard')
+
+@section('content')
+    <x-dashboard-container title="Tambah Pasien">
+        <form
+            action="{{ route('patient.store') }}"
+            method="post"
+            accept-charset="utf-8"
+            enctype="multipart/form-data"
+        >
+        @csrf
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th>Nama Pasien</th>
+                        <th>:</th>
+                        <th>
+                            <input
+                                type="text"
+                                name="name"
+                                class="form-control"
+                                id="name"
+                                autofocus
+                                required
+                            >
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th>Tanggal Lahir</th>
+                        <th>:</th>
+                        <th>
+                            <input
+                                type="date"
+                                name="date-of-birth"
+                                class="form-control"
+                                id="date-of-birth"
+                                required
+                            >
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th>Jenis Kelamin</th>
+                        <th>:</th>
+                        <td>
+                            <select name="gender" class="form-control">
+                                <option value="M">L</option>
+                                <option value="F">P</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Alamat</th>
+                        <th>:</th>
+                        <th>
+                            <textarea
+                                name="address"
+                                rows="5"
+                                class="form-control"
+                                id="address"
+                                required
+                            ></textarea>
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th>Riwayat Sakit</th>
+                        <th>:</th>
+                        <th>
+                            <textarea
+                                name="history"
+                                rows="5"
+                                class="form-control"
+                                id="history"
+                            ></textarea>
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th>Telp</th>
+                        <th>:</th>
+                        <th>
+                            <input
+                                type="number"
+                                name="phone-number"
+                                class="form-control"
+                                id="phone-number"
+                                required
+                            >
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th>Upload Rekamedis</th>
+                        <th>:</th>
+                        <th>
+                            <input
+                                type="file"
+                                class="filestyle"
+                                name="medical-record"
+                                id="filestyle-0"
+                                tabindex="-1"
+                                style="position: absolute; clip: rect(0, 0, 0, 0);"
+                            >
+
+                            <div class="bootstrap-filestyle input-group">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    disabled
+                                >
+                                <span class="group-span-filestyle input-group-btn" tabindex="0">
+                                    <label for="filestyle-0" class="btn btn-default">
+                                        <span class="icon-span-filestyle glyphicon glyphicon-folder-open"></span>
+                                        <span class="buttonText">Pilih file</span>
+                                    </label>
+                                </span>
+                            </div>
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th colspan="3">
+                            <input
+                                type="submit"
+                                name="submit"
+                                value="Simpan Data"
+                                class="btn btn-success"
+                            >
+                            <a
+                                href="http://localhost:8000/pasien"
+                                class="btn btn-danger"
+                            >
+                                Kembali
+                            </a>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </x-dashboard-container>
+@endsection

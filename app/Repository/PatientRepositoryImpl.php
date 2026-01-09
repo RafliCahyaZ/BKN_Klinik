@@ -7,6 +7,16 @@ use Carbon\Carbon;
 
 class PatientRepositoryImpl implements PatientRepository
 {
+    public function insert(PatientDTO $patientDTO): ?PatientDTO
+    {
+        return $patientDTO;
+    }
+
+    public function getLatestId(): int
+    {
+        return 0;
+    }
+
     public function getAll(): array
     {
         // 1

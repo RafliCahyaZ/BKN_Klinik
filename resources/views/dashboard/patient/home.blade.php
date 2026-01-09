@@ -6,6 +6,19 @@
                     <a href="{{ url('patient/print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Data Pasien</a>
                     <hr>
 
+                    @if (session('success'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if (session('failed'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('failed') }}
+                        </div>
+                    @endif
+
+
                     <div class="unseen">
                         <table class="table table-bordered table-hover table-condensed data-table order-table ">
                             <thead>
