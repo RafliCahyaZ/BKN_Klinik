@@ -12,6 +12,8 @@ interface UserRepository
 
     public function getByEmail(string $email): ?UserDTO;
 
+    public function getByRole(string $role): array;
+
     public function insert(UserDTO $userDTO): ?UserDTO;
 
     public function edit(string $id, UserDTO $userDTO): ?UserDTO;

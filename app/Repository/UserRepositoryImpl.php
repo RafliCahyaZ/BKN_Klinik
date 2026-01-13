@@ -78,6 +78,11 @@ class UserRepositoryImpl implements UserRepository
         return null;
     }
 
+    public function getByRole(string $role): array
+    {
+        return [];
+    }
+
     public function getByEmail(string $email): ?UserDTO
     {
         foreach ($this->getAll() as $user) {
@@ -109,4 +114,3 @@ class UserRepositoryImpl implements UserRepository
         return 5;
     }
 }
-

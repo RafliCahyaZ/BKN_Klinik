@@ -2,8 +2,20 @@
 
 @section('content')
 <x-dashboard-container title="Data Pengguna">
-                    <a href="{{ url('patient/create') }}" class="btn btn-warning"><i class="glyphicon glyphicon-plus"></i> Pengguna Baru</a>
+                    <a href="{{ route('user.create') }}" class="btn btn-warning"><i class="glyphicon glyphicon-plus"></i> Pengguna Baru</a>
                     <hr>
+
+                    @if (session('success'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if (session('failed'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('failed') }}
+                        </div>
+                    @endif
 
                     <div class="unseen">
                         <table class="table table-bordered table-hover table-condensed data-table order-table ">
@@ -17,6 +29,19 @@
                                 </tr>
                             </thead>
                             <tbody>
+
+                            @foreach($users as $index => $user)
+                                <tr>
+                                    <td>{{ $index }}</td>
+                                    <td>{{ $user->username }}</td>
+                                    <td>{{ $user->fullname }}</td>
+                                    <td>{{ $user->role }}</td>
+                                    <td style="text-align:center">
+                                        <a href="{{ route("user.edit.view", $user->id) }}" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-pencil"></i></a>&nbsp;
+                                        <a href="http://localhost:8000/pengguna/hapus/23" class="btn btn-sm btn-danger" onclick="return confirm('Apakah yakin ingin menghapus pengguna ini?')"><i class="glyphicon glyphicon-trash"></i></a>
+                                    </td>
+                                    </tr>
+                            @endforeach
                             </tbody>
                         </table>
 
