@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
             $table->text('fullname');
-            $table->enum('gender', ['male, female']);
+            $table->enum('gender', ['male', 'female']);
             $table->text('address');
             $table->dateTime('date_of_birth');
             $table->string('telp_number', 13)->unique();
             $table->string('history', 100);
-            $table->integer('medical_record_number')->unique();
+            $table->string('medical_record_number', 50)->unique();
             $table->string('medical_record_file_url', 100);
             $table->timestamps();
         });

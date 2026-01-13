@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\DTO\DiagnosisDTO;
+
 interface DiagnosisRepository
 {
     /* return harus array of DiagnosisDTO */
