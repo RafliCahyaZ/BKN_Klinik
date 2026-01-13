@@ -62,8 +62,8 @@
                         <th>:</th>
                         <td>
                             <select name="gender" class="form-control" value={{ old('gender', $patient->gender) }}>
-                                <option value="M">L</option>
-                                <option value="F">P</option>
+                                <option value="M">Laki-laki</option>
+                                <option value="F">Perempuan</option>
                             </select>
                         </td>
                     </tr>
