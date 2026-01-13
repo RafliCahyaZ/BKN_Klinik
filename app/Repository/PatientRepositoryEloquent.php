@@ -28,6 +28,7 @@ class PatientRepositoryEloquent implements PatientRepository
             $formated_patient->medicalRecordNumber = $patient->medical_record_number;
             $formated_patient->createdAt = $patient->created_at;
             $formated_patient->updatedAt = $patient->updated_at;
+            return $formated_patient;
         });
 
         $patients = $formated_patients->toArray();
@@ -125,7 +126,6 @@ class PatientRepositoryEloquent implements PatientRepository
         $formatedpatient->updatedAt = $patient->updated_at;
         return $formatedpatient;
     }
-
 
     function getLatestId(): int
     {

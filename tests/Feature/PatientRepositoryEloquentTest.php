@@ -113,7 +113,6 @@ class PatientRepositoryEloquentTest extends TestCase
         }
 
         $patients = $this->patientRepository->getAll();
-        // cek patients adalah array
         $this->assertIsArray($patients);
         $this->assertCount(3, $patients);
     }
