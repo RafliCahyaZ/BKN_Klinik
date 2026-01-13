@@ -16,6 +16,6 @@ interface DiagnosisRepository
     public function edit(string $id, DiagnosisDTO $diagnosisDTO): ?DiagnosisDTO;
 
     public function getLatestId(): int;
-    
+
     public function delete(string $id): bool;
 }

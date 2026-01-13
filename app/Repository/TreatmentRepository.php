@@ -19,4 +19,3 @@ interface TreatmentRepository
 
     public function delete(string $id): bool;
 }
-

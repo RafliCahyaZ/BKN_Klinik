@@ -12,17 +12,36 @@ Route::middleware('guest')->group(function () {
     Route::post('/auth/login', [LoginController::class, 'create'])->name("login.post");
 });
 
-Route::get("/patient", [PatientController::class, 'index'])->name("patient.index");
-Route::get("/patient/create", [PatientController::class, 'create']);
-Route::get("/patient/queue", [PatientController::class, 'queue']);
-Route::get("/patient/history", [PatientController::class, 'history']);
-Route::post("/patient/store", [PatientController::class, 'store'])->name("patient.store");
-Route::get("/patient/edit/{id}", [PatientController::class, 'edit'])->name("patient.edit.view");
-Route::post("/patient/edit/{id}", [PatientController::class, 'editAction'])->name("patient.edit.action");
-Route::delete("/patient/destroy/{id}", [PatientController::class, 'destroy'])->name("patient.destroy");
+Route::prefix("patient")->name("patient.")->group(function () {
+    Route::get("/", [PatientController::class, 'index'])->name("index");
+    Route::get("/create", [PatientController::class, 'create'])->name("create");
+    Route::get("/queue", [PatientController::class, 'queue'])->name("queue");
+    Route::get("/history", [PatientController::class, 'history'])->name("history");
+    Route::post("/store", [PatientController::class, 'store'])->name("store");
+    Route::get("//edit/{id}", [PatientController::class, 'edit'])->name("edit.view");
+    Route::post("/edit/{id}", [PatientController::class, 'editAction'])->name("edit.action");
+    Route::delete("/destroy/{id}", [PatientController::class, 'destroy'])->name("destroy");
+});
 
-Route::get("/diagnosis", [DiagnosisController::class, 'index']);
-Route::get("/treatment", [TreatmentController::class, 'index']);
+Route::prefix("diagnosis")->name("diagnosis.")->group(function () {
+    Route::get("/", [DiagnosisController::class, 'index'])->name("index");
+    Route::get("/create", [DiagnosisController::class, 'create'])->name("create");
+    Route::post("/store", [DiagnosisController::class, 'store'])->name("store");
+    Route::get("//edit/{id}", [DiagnosisController::class, 'edit'])->name("edit.view");
+    Route::post("/edit/{id}", [DiagnosisController::class, 'editAction'])->name("edit.action");
+    Route::delete("/destroy/{id}", [DiagnosisController::class, 'destroy'])->name("destroy");
+});
+
+
+Route::prefix("treatment")->name("treatment.")->group(function () {
+    Route::get("/", [TreatmentController::class, 'index'])->name("index");
+    Route::get("/create", [TreatmentController::class, 'create'])->name("create");
+    Route::post("/store", [TreatmentController::class, 'store'])->name("store");
+    Route::get("//edit/{id}", [TreatmentController::class, 'edit'])->name("edit.view");
+    Route::post("/edit/{id}", [TreatmentController::class, 'editAction'])->name("edit.action");
+    Route::delete("/destroy/{id}", [TreatmentController::class, 'destroy'])->name("destroy");
+});
+
 Route::get("/user", [UserController::class, 'index']);
 
 Route::get('/', function () {
