@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\DTO\DiagnosisDTO;
+
 interface DiagnosisRepository
 {
     /* return harus array of DiagnosisDTO */
@@ -14,6 +16,6 @@ interface DiagnosisRepository
     public function edit(string $id, DiagnosisDTO $diagnosisDTO): ?DiagnosisDTO;
 
     public function getLatestId(): int;
-    
+
     public function delete(string $id): bool;
 }

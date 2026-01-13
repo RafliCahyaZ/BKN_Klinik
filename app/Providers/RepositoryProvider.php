@@ -4,6 +4,12 @@ namespace App\Providers;
 
 use App\Repository\PatientRepository;
 use App\Repository\PatientRepositoryImpl;
+use App\Repository\DiagnosisRepository;
+use App\Repository\DiagnosisRepositoryImpl;
+use App\Repository\TreatmentRepository;
+use App\Repository\TreatmentRepositoryImpl;
+use App\Repository\UserRepository;
+use App\Repository\UserRepositoryImpl;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryProvider extends ServiceProvider

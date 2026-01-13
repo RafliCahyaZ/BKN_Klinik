@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\DTO\UserDTO;
+
 interface UserRepository
 {
     public function getAll(): array;

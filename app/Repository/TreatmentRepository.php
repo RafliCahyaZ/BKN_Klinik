@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\DTO\TreatmentDTO;
+
 interface TreatmentRepository
 
 {
@@ -17,4 +19,3 @@ interface TreatmentRepository
 
     public function delete(string $id): bool;
 }
-
