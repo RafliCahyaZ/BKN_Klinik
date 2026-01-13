@@ -11,7 +11,6 @@ class Registration extends Model
     protected $fillable = [
         'patient_id',
         'doctor_id',
-        'patient_id',
         'complaint',
         'is_finished',
     ];
@@ -33,6 +32,11 @@ class Registration extends Model
 
     public function medications(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(Medication::class);
+    }
+
+    public function medicine(): BelongsToMany
+    {
+        return $this->belongsToMany(Medicine::class);
     }
 }

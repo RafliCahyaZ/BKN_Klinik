@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Patient extends Model
 {
-
     protected $fillable = [
         'fullname',
         'gender',
@@ -15,15 +15,16 @@ class Patient extends Model
         'telp_number',
         'history',
         'medical_record_file_url',
+        'medical_record_number',
     ];
 
-    public function getAgeAttribute() {
+    public function getAgeAttribute()
+    {
         return Carbon::parse($this->date_of_birth)->age;
     }
 
-
-
-    public function registration() {
+    public function registration()
+    {
         return $this->hasMany(Registration::class);
     }
 

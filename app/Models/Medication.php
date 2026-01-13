@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Medication extends Model
 {
     protected $fillable = [
-
         'instructions',
         'medical_record_number',
         'receipt'
