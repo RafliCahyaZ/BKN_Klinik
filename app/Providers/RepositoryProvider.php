@@ -4,9 +4,12 @@ namespace App\Providers;
 
 use App\Repository\PatientRepository;
 use App\Repository\PatientRepositoryImpl;
+use App\Repository\PatientRepositoryEloquent;
 use App\Repository\DiagnosisRepository;
+use App\Repository\DiagnosisRepositoryEloquent;
 use App\Repository\DiagnosisRepositoryImpl;
 use App\Repository\TreatmentRepository;
+use App\Repository\TreatmentRepositoryEloquent;
 use App\Repository\TreatmentRepositoryImpl;
 use App\Repository\UserRepository;
 use App\Repository\UserRepositoryImpl;
@@ -16,9 +19,9 @@ class RepositoryProvider extends ServiceProvider
 {
 
     public $singletons = [
-        PatientRepository::class => PatientRepositoryImpl::class,
-        DiagnosisRepository::class => DiagnosisRepositoryImpl::class,
-        TreatmentRepository::class => TreatmentRepositoryImpl::class,
+        PatientRepository::class => PatientRepositoryEloquent::class,
+        DiagnosisRepository::class => DiagnosisRepositoryEloquent::class,
+        TreatmentRepository::class => TreatmentRepositoryEloquent::class,
         UserRepository::class => UserRepositoryImpl::class
     ];
     /**

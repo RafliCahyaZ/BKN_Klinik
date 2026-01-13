@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DTO\PatientDTO;
 use App\Repository\PatientRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -73,7 +74,12 @@ class PatientController extends Controller
 
         $patientDto = new PatientDTO();
         $patientDto->name = $validated["name"];
-        $patientDto->gender = $validated["gender"];
+
+        if ($validated["gender"] === "M") {
+            $patientDto->gender = "male";
+        } else {
+            $patientDto->gender = "female";
+        }
         $patientDto->address = $validated["address"];
         $patientDto->history = $validated["history"];
         $patientDto->telpNumber = $validated["phone-number"];
@@ -108,7 +114,12 @@ class PatientController extends Controller
         $patientDto = new PatientDTO();
         $patientDto->medicalRecordNumber = $medicalRecordNumber;
         $patientDto->name = $validated["name"];
-        $patientDto->gender = $validated["gender"];
+        if ($validated["gender"] === "M") {
+            $patientDto->gender = "male";
+        } else {
+            $patientDto->gender = "female";
+        }
+        $patientDto->dateOfBirth = Carbon::parse($validated["date-of-birth"]);
         $patientDto->address = $validated["address"];
         $patientDto->history = $validated["history"];
         $patientDto->telpNumber = $validated["phone-number"];

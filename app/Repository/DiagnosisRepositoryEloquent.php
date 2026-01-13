@@ -13,12 +13,14 @@ class DiagnosisRepositoryEloquent implements DiagnosisRepository
         $diagnosis_collections = Diagnosis::all();
 
         $formated_diagnosis = $diagnosis_collections->map(function ($patient) {
-            $formated_patient = new DiagnosisDTO();
-            $formated_patient->id = $patient->id;
-            $formated_patient->icdCode = $patient->icd_code;
-            $formated_patient->diseaseName = $patient->disease_name;
-            $formated_patient->createdAt = $patient->created_at;
-            $formated_patient->updatedAt = $patient->updated_at;
+            $diagnosisDto = new DiagnosisDTO();
+            $diagnosisDto->id = $patient->id;
+            $diagnosisDto->icdCode = $patient->icd_code;
+            $diagnosisDto->diseaseName = $patient->disease_name;
+            $diagnosisDto->createdAt = $patient->created_at;
+            $diagnosisDto->updatedAt = $patient->updated_at;
+
+            return $diagnosisDto;
         });
 
         $diagnoses = $formated_diagnosis->toArray();
@@ -109,7 +111,3 @@ class DiagnosisRepositoryEloquent implements DiagnosisRepository
         return false;
     }
 }
-
-
-
-?>

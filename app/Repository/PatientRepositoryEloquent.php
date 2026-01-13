@@ -13,6 +13,7 @@ class PatientRepositoryEloquent implements PatientRepository
     {
         $patiens_collections = Patient::all();
 
+
         $formated_patients = $patiens_collections->map(function ($patient) {
             $formated_patient = new PatientDTO();
             $formated_patient->id = $patient->id;
@@ -22,7 +23,7 @@ class PatientRepositoryEloquent implements PatientRepository
             $carbonDateOfBirth = Carbon::parse($patient->date_of_birth);
             $formated_patient->dateOfBirth = $carbonDateOfBirth;
             $formated_patient->telpNumber = $patient->telp_number;
-            $formated_patient->gender = $patient->id;
+            $formated_patient->gender = ($patient->gender === "female") ? "F" : "M";
             $formated_patient->history = $patient->history;
             $formated_patient->medicalRecordFileUrl = $patient->medical_record_file_url;
             $formated_patient->medicalRecordNumber = $patient->medical_record_number;
@@ -32,6 +33,7 @@ class PatientRepositoryEloquent implements PatientRepository
         });
 
         $patients = $formated_patients->toArray();
+
         return $patients;
     }
 
@@ -148,5 +150,3 @@ class PatientRepositoryEloquent implements PatientRepository
         return false;
     }
 }
-
-?>

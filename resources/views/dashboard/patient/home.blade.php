@@ -42,7 +42,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $patient->medicalRecordNumber }}</td>
                                 <td>{{ $patient->name }}</td>
-                                <td>{{ $patient->gender }}</td>
+                                <td>{{ ($patient->gender === "F") ? "Perempuan" : "Laki-laki" }}</td>
                                 <td>{{ $patient->age }}</td>
                                 <td>{{ $patient->history }}</td>
                                 <td>{{ $patient->medicalRecordFileUrl }}</td>

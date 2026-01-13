@@ -42,7 +42,13 @@ Route::prefix("treatment")->name("treatment.")->group(function () {
     Route::delete("/destroy/{id}", [TreatmentController::class, 'destroy'])->name("destroy");
 });
 
-Route::get("/user", [UserController::class, 'index']);
+Route::prefix("user")->name("user.")->group(function () {
+    Route::get("/", [UserController::class, 'index'])->name("index");
+    Route::get("/create", [UserController::class, 'create'])->name("create");
+    Route::post("/store", [UserController::class, 'store'])->name("store");
+    Route::get("//edit/{id}", [UserController::class, 'edit'])->name("edit.view");
+    Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
+});
 
 Route::get('/', function () {
     return view('dashboard.home');
