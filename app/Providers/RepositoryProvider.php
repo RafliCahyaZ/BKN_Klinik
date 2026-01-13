@@ -22,7 +22,8 @@ class RepositoryProvider extends ServiceProvider
         PatientRepository::class => PatientRepositoryEloquent::class,
         DiagnosisRepository::class => DiagnosisRepositoryEloquent::class,
         TreatmentRepository::class => TreatmentRepositoryEloquent::class,
-        UserRepository::class => UserRepositoryImpl::class
+        UserRepository::class => UserRepositoryImpl::class,
+        RegistrationRepository::class => RegistrationRepositoryImpl::class
     ];
     /**
      * Register services.
