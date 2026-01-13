@@ -32,7 +32,16 @@ Route::prefix("diagnosis")->name("diagnosis.")->group(function () {
     Route::delete("/destroy/{id}", [DiagnosisController::class, 'destroy'])->name("destroy");
 });
 
-Route::get("/treatment", [TreatmentController::class, 'index']);
+
+Route::prefix("treatment")->name("treatment.")->group(function () {
+    Route::get("/", [TreatmentController::class, 'index'])->name("index");
+    Route::get("/create", [TreatmentController::class, 'create'])->name("create");
+    Route::post("/store", [TreatmentController::class, 'store'])->name("store");
+    Route::get("//edit/{id}", [TreatmentController::class, 'edit'])->name("edit.view");
+    Route::post("/edit/{id}", [TreatmentController::class, 'editAction'])->name("edit.action");
+    Route::delete("/destroy/{id}", [TreatmentController::class, 'destroy'])->name("destroy");
+});
+
 Route::get("/user", [UserController::class, 'index']);
 
 Route::get('/', function () {
