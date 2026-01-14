@@ -299,4 +299,30 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertNotNull($this->patientDTO->createdAt);
         $this->assertNotNull($this->patientDTO->updatedAt);
     }
+
+
+    // test untuk edit data
+    public function testEditRegistration(): void 
+    {
+        // Insert initial registration
+        $registrationDTO = new RegistrationDTO();
+        $registrationDTO->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
+        $registrationDTO->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
+        $registrationDTO->complaint = 'Sakit kepala';
+        $registrationDTO->receipt = 'minum baigon';
+        
+        $insertedRegistrationDTO = $this->registrationRepository->insert($registrationDTO);    
+        $this->assertNotNull($insertedRegistrationDTO);
+        
+        // Edit the registration
+        $insertedRegistrationDTO->receipt = 'Makan tai';
+        $editedRegistrationDTO = $this->registrationRepository->edit($insertedRegistrationDTO);
+        
+        $this->assertNotNull($editedRegistrationDTO);
+        $this->assertEquals('Makan tai', $editedRegistrationDTO->receipt);
+        $this->assertEquals($this->patientDTO->id, $editedRegistrationDTO->patient->id);
+        $this->assertEquals($this->doctorDTO->id, $editedRegistrationDTO->doctor->id);
+        $this->assertInstanceOf(RegistrationDTO::class, $editedRegistrationDTO);
+        $this->assertInstanceOf(PatientDTO::class, $editedRegistrationDTO->patient);
+    }
 }
