@@ -66,6 +66,11 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         return $all[0] ?? null;
     }
 
+    public function edit(RegistrationDTO $registrationDTO): ?RegistrationDTO
+    {
+        return $registrationDTO;
+    }
+
     public function insert(RegistrationDTO $registrationDTO): ?RegistrationDTO
     {
 
@@ -79,15 +84,6 @@ class RegistrationRepositoryImpl implements RegistrationRepository
             $registrationDTO->createdAt = Carbon::now();
         }
 
-        $registrationDTO->updatedAt = Carbon::now();
-
-        return $registrationDTO;
-    }
-
-    public function edit(string $id, RegistrationDTO $registrationDTO): ?RegistrationDTO
-    {
-
-        $registrationDTO->id = $id;
         $registrationDTO->updatedAt = Carbon::now();
 
         return $registrationDTO;
