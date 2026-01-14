@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\DTO\PatientDTO;
+use App\Repository\DiagnosisRepository;
 use App\Repository\PatientRepository;
 use App\Repository\RegistrationRepository;
+use App\Repository\TreatmentRepository;
+use App\Repository\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -12,7 +15,10 @@ use Illuminate\Support\Facades\Storage;
 class PatientController extends Controller
 {
     public function __construct(
-        private RegistrationRepository $registrationRepository
+        private RegistrationRepository $registrationRepository,
+        private UserRepository $userRepository,
+        private DiagnosisRepository $diagnosisRepository,
+        private TreatmentRepository $treatmentRepository
     ) {}
 
     public function destroy($id, PatientRepository $patientRepository)

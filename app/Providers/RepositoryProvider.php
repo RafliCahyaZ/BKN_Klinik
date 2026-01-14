@@ -22,8 +22,8 @@ class RepositoryProvider extends ServiceProvider
 
     public $singletons = [
         PatientRepository::class => PatientRepositoryEloquent::class,
-        DiagnosisRepository::class => DiagnosisRepositoryEloquent::class,
-        TreatmentRepository::class => TreatmentRepositoryEloquent::class,
+        DiagnosisRepository::class => DiagnosisRepositoryImpl::class,
+        TreatmentRepository::class => TreatmentRepositoryImpl::class,
         UserRepository::class => UserRepositoryImpl::class,
         RegistrationRepository::class => RegistrationRepositoryImpl::class
     ];

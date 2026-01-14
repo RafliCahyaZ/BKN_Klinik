@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PatientController;
@@ -22,6 +23,9 @@ Route::prefix("patient")->name("patient.")->group(function () {
     Route::get("//edit/{id}", [PatientController::class, 'edit'])->name("edit.view");
     Route::post("/edit/{id}", [PatientController::class, 'editAction'])->name("edit.action");
     Route::delete("/destroy/{id}", [PatientController::class, 'destroy'])->name("destroy");
+
+    Route::get("/appointment/{id}", [AppointmentController::class, 'create'])->name("appointment.view");
+    Route::post("/appointment/{id", [AppointmentController::class, 'appointmentAction'])->name("appointment.action");
 });
 
 Route::prefix("diagnosis")->name("diagnosis.")->group(function () {

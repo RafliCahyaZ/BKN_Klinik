@@ -20,7 +20,7 @@
                     <td>{{ $registration->patient->address }}</td>
                     <td>{{ $registration->patient->dateOfBirth->age }} Tahun</td>
                     <td>
-                        <a href="http://localhost:8000/terapi/periksa/10/000043" class="btn btn-sm btn-success">
+                        <a href="{{ route("patient.appointment.view", $registration->id) }}" class="btn btn-sm btn-success">
                             <i class="glyphicon glyphicon-search"></i>
                             Mulai Periksa
                         </a>
