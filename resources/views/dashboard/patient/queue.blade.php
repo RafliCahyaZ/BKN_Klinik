@@ -6,7 +6,6 @@
             <thead>
                 <tr>
                 <th>No. Urut</th>
-                <th>No. RM</th>
                 <th>Nama Pasien</th>
                 <th>Alamat</th>
                 <th>Umur</th>
@@ -14,6 +13,20 @@
                 </tr>
             </thead>
             <tbody>
+            @foreach($registrations as $index => $registration)
+                <tr>
+                    <td>{{ $index }}</td>
+                    <td>{{ $registration->patient->name }}</td>
+                    <td>{{ $registration->patient->address }}</td>
+                    <td>{{ $registration->patient->dateOfBirth->age }} Tahun</td>
+                    <td>
+                        <a href="http://localhost:8000/terapi/periksa/10/000043" class="btn btn-sm btn-success">
+                            <i class="glyphicon glyphicon-search"></i>
+                            Mulai Periksa
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
             </tbody>
         </table>
 

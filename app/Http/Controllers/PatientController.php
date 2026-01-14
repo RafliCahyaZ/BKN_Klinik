@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\DTO\PatientDTO;
 use App\Repository\PatientRepository;
+use App\Repository\RegistrationRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class PatientController extends Controller
 {
+    public function __construct(
+        private RegistrationRepository $registrationRepository
+    ) {}
+
     public function destroy($id, PatientRepository $patientRepository)
     {
         $patient = $patientRepository->getById($id);
@@ -36,12 +41,25 @@ class PatientController extends Controller
 
     public function queue()
     {
-        return view("dashboard/patient.queue");
+        $registrations = $this->registrationRepository->getWhereCheckDateIsNull();
+        return view(
+            "dashboard/patient.queue",
+            [
+                "registrations" => $registrations
+            ]
+        );
     }
 
     public function history()
     {
-        return view("dashboard/patient.history");
+        $histories = $this->registrationRepository->getWhereCheckDateIsNotNull();
+
+        return view(
+            "dashboard/patient.history",
+            [
+                "histories" => $histories
+            ]
+        );
     }
 
     public function create()

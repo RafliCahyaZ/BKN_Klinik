@@ -15,4 +15,6 @@ interface RegistrationRepository
     public function insert(RegistrationDTO $registrationDto): ?RegistrationDTO;
 
     public function getWhereCheckDateIsNull(): array;
+
+    public function getWhereCheckDateIsNotNull(): array;
 }

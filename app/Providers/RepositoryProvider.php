@@ -14,6 +14,8 @@ use App\Repository\TreatmentRepositoryImpl;
 use App\Repository\UserRepository;
 use App\Repository\UserRepositoryImpl;
 use Illuminate\Support\ServiceProvider;
+use App\Repository\RegistrationRepository;
+use App\Repository\RegistrationRepositoryImpl;
 
 class RepositoryProvider extends ServiceProvider
 {
