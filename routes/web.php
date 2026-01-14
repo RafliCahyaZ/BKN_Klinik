@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\DiagnosisController;
+use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\UserController;
 
@@ -21,6 +23,9 @@ Route::prefix("patient")->name("patient.")->group(function () {
     Route::get("//edit/{id}", [PatientController::class, 'edit'])->name("edit.view");
     Route::post("/edit/{id}", [PatientController::class, 'editAction'])->name("edit.action");
     Route::delete("/destroy/{id}", [PatientController::class, 'destroy'])->name("destroy");
+
+    Route::get("/appointment/{id}", [AppointmentController::class, 'create'])->name("appointment.view");
+    Route::post("/appointment/{id", [AppointmentController::class, 'appointmentAction'])->name("appointment.action");
 });
 
 Route::prefix("diagnosis")->name("diagnosis.")->group(function () {
@@ -48,6 +53,11 @@ Route::prefix("user")->name("user.")->group(function () {
     Route::post("/store", [UserController::class, 'store'])->name("store");
     Route::get("//edit/{id}", [UserController::class, 'edit'])->name("edit.view");
     Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
+});
+
+Route::prefix("registration")->name("registration.")->group(function () {
+    Route::get("/create/{patientId}", [RegistrationController::class, 'create'])->name("create");
+    Route::post("/create/{patientId}", [RegistrationController::class, 'store'])->name("store");
 });
 
 Route::get('/', function () {

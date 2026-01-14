@@ -14,15 +14,18 @@ use App\Repository\TreatmentRepositoryImpl;
 use App\Repository\UserRepository;
 use App\Repository\UserRepositoryImpl;
 use Illuminate\Support\ServiceProvider;
+use App\Repository\RegistrationRepository;
+use App\Repository\RegistrationRepositoryImpl;
 
 class RepositoryProvider extends ServiceProvider
 {
 
     public $singletons = [
         PatientRepository::class => PatientRepositoryEloquent::class,
-        DiagnosisRepository::class => DiagnosisRepositoryEloquent::class,
-        TreatmentRepository::class => TreatmentRepositoryEloquent::class,
-        UserRepository::class => UserRepositoryImpl::class
+        DiagnosisRepository::class => DiagnosisRepositoryImpl::class,
+        TreatmentRepository::class => TreatmentRepositoryImpl::class,
+        UserRepository::class => UserRepositoryImpl::class,
+        RegistrationRepository::class => RegistrationRepositoryImpl::class
     ];
     /**
      * Register services.

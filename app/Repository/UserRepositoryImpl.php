@@ -80,7 +80,9 @@ class UserRepositoryImpl implements UserRepository
 
     public function getByRole(string $role): array
     {
-        return [];
+        $users = $this->getAll();
+
+        return [$users[0], $users[1]];
     }
 
     public function getByEmail(string $email): ?UserDTO

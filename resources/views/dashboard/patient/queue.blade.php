@@ -6,15 +6,27 @@
             <thead>
                 <tr>
                 <th>No. Urut</th>
-                <th>No. RM</th>
                 <th>Nama Pasien</th>
                 <th>Alamat</th>
                 <th>Umur</th>
-                <th>Diperiksa Oleh</th>
                 <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
+            @foreach($registrations as $index => $registration)
+                <tr>
+                    <td>{{ $index }}</td>
+                    <td>{{ $registration->patient->name }}</td>
+                    <td>{{ $registration->patient->address }}</td>
+                    <td>{{ $registration->patient->dateOfBirth->age }} Tahun</td>
+                    <td>
+                        <a href="{{ route("patient.appointment.view", $registration->id) }}" class="btn btn-sm btn-success">
+                            <i class="glyphicon glyphicon-search"></i>
+                            Mulai Periksa
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
             </tbody>
         </table>
 

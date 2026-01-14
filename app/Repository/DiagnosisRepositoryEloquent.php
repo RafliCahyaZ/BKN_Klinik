@@ -111,4 +111,3 @@ class DiagnosisRepositoryEloquent implements DiagnosisRepository
         return false;
     }
 }
-
