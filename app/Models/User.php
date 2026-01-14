@@ -23,7 +23,7 @@ class User extends Authenticatable
         'password',
         'fullname',
         'email',
-
+        'last_login_at',
     ];
 
     protected $guarded = [
@@ -56,5 +56,10 @@ class User extends Authenticatable
     public function registrations(): HasMany
     {
         return $this->hasMany(Registration::class, 'doctor_id');
+    }
+
+    public function medicineStockTransactions(): HasMany
+    {
+        return $this->hasMany(MedicineStockTransaction::class, 'inventory_officer_id');
     }
 }

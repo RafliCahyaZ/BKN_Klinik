@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Registration extends Model
 {
@@ -15,14 +16,19 @@ class Registration extends Model
         'is_finished',
     ];
 
-    public function patients(): BelongsTo
+    public function diagnoses(): BelongsToMany
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsToMany(Diagnosis::class);
     }
 
-    public function treatments(): BelongsToMany
+    public function medicineStockTransactions(): HasMany
     {
-        return $this->belongsToMany(Treatment::class);
+        return $this->hasMany(MedicineStockTransaction::class);
+    }
+
+    public function patient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class);
     }
 
     public function doctor(): BelongsTo
@@ -30,13 +36,11 @@ class Registration extends Model
         return $this->belongsTo(User::class, 'doctor_id');
     }
 
-    public function medications(): BelongsToMany
+    public function treatments(): BelongsToMany
     {
-        return $this->belongsToMany(Medication::class);
+        return $this->belongsToMany(Treatment::class);
     }
 
-    public function medicine(): BelongsToMany
-    {
-        return $this->belongsToMany(Medicine::class);
-    }
+
+
 }
