@@ -63,7 +63,7 @@
                                         <i class="glyphicon glyphicon-trash"></i>
                                     </button>
                                 </form>
-                                <a href="http://localhost:8000/registrasi/daftar/000046" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i></a>
+                                <a href="{{ route("registration.create", $patient->id) }}" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i></a>
                                 </td>
 
                             </tr>
