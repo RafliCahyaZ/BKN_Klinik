@@ -10,7 +10,6 @@
                 <th>Nama Pasien</th>
                 <th>Alamat</th>
                 <th>Umur</th>
-                <th>Diperiksa Oleh</th>
                 <th>Aksi</th>
                 </tr>
             </thead>
