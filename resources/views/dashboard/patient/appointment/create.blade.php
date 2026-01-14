@@ -75,25 +75,19 @@
 
                         <tr>
                             <th>
-                                <select name="diagnosa" id="formdiagnosa" class="form-control select2">
+                                <select name="diagnosa" id="selectDiagnosisElement" class="form-control select2">
                                     @foreach($diagnoses as $index => $diagnosis)
-                                        <option value="{{ $diagnosis->id }}">{{ $diagnosis->diseaseName }}</option>
+                                        <option data-icd="{{ $diagnosis->icdCode }}" value="{{ $diagnosis->id }}">{{ $diagnosis->diseaseName }}</option>
                                     @endforeach
                                 </select>
                             </th>
                             <th>
-                                <input type="button" name="" value="Tambah" id="simpandiagnosa" class="btn btn-info">
+                                <input type="button" name="" value="Tambah" id="submitDiagnosisButton" class="btn btn-info">
                             </th>
                         </tr>
                     </table>
                     <table class="table table-striped">
-                        <tbody>
-                        <tr>
-                            <td>Z99.3 - Ketergantungan pada kursi roda</td>
-                            <td>
-                                <a href="#" onclick="hapus('11','000044','10467','2026-01-14')" title="Hapus Data Diagnosa" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
-                            </td>
-                        </tr>
+                        <tbody id="diagnosisTable">
                         </tbody>
                     </table>
                 </div>
@@ -106,25 +100,19 @@
 
                         <tr>
                             <th>
-                                <select name="diagnosa" id="formdiagnosa" class="form-control select2">
+                                <select name="diagnosa" id="selectTreatmentElement" class="form-control select2">
                                     @foreach($treatments as $index => $treatment)
-                                        <option value="{{ $treatment->id }}">{{ $treatment->treatmentName }}</option>
+                                        <option data-icd="{{ $treatment->treatmentCode }}" value="{{ $treatment->id }}">{{ $treatment->treatmentName }}</option>
                                     @endforeach
                                 </select>
                             </th>
                             <th>
-                                <input type="button" name="" value="Tambah" id="simpandiagnosa" class="btn btn-info">
+                                <input type="button" name="" value="Tambah" id="submitTreatmentButton" class="btn btn-info">
                             </th>
                         </tr>
                     </table>
                     <table class="table table-striped">
-                        <tbody>
-                        <tr>
-                            <td>Z99.3 - Ketergantungan pada kursi roda</td>
-                            <td>
-                                <a href="#" onclick="hapus('11','000044','10467','2026-01-14')" title="Hapus Data Diagnosa" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
-                            </td>
-                        </tr>
+                        <tbody id="treatmentTable">
                         </tbody>
                     </table>
                 </div>
@@ -151,3 +139,59 @@
             </form>
     </x-dashboard-container>
 @endsection
+
+@push("scripts")
+<script>
+    class AttachManager {
+        constructor(
+            submitButton,
+            tableElement,
+            selectElement
+        ) {
+            this.submitButton = submitButton
+            this.tableElement = tableElement
+            this.selectElement = selectElement
+
+            this.submitButton.addEventListener("click", () => {
+                const selected = this.getSelected();
+                this.appendData(selected);
+            })
+        }
+
+        getSelected()
+        {
+            const selected = {
+                value: this.selectElement.value,
+                text: this.selectElement.options[this.selectElement.selectedIndex].text,
+                icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd
+            };
+
+            return selected
+        }
+
+        appendData(selected) {
+            const appendedElement = `
+                <tr>
+                    <td>${selected.icd} - ${selected.text}</td>
+                    <td>
+                        <a href="#" onclick="hapus('11','000044','10467','2026-01-14')" title="Hapus Data Diagnosa" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
+                </tr>
+            `
+            this.tableElement.insertAdjacentHTML("beforeend", appendedElement);
+        }
+    }
+
+    const diagnosisTable = document.getElementById("diagnosisTable");
+    const submitDiagnosisButton = document.getElementById('submitDiagnosisButton');
+    const selectDiagnosisElement = document.getElementById("selectDiagnosisElement");
+
+    const diagnosisAttachManager = new AttachManager(submitDiagnosisButton, diagnosisTable, selectDiagnosisElement);
+
+    const treatmentTable = document.getElementById("treatmentTable");
+    const submitTreatmentButton = document.getElementById('submitTreatmentButton');
+    const selectTreatmentElement = document.getElementById("selectTreatmentElement");
+
+    const treatmentAttachManager = new AttachManager(submitTreatmentButton, treatmentTable, selectTreatmentElement);
+</script>
+@endpush
