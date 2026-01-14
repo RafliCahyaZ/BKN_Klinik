@@ -10,6 +10,8 @@ class RegistrationDTO
     public PatientDTO $patient;
     public UserDTO $doctor;
     public string $complaint;
+    public array $diagnoses = [];
+    public array $treatments = [];
     public ?string $receipt = null;
     public ?CarbonInterface $checkDate = null;
     public CarbonInterface $updatedAt;
