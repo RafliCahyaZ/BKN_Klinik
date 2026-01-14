@@ -98,8 +98,52 @@
                     </table>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="tindakan">
-                    hello
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th colspan="2">Input Tindakan</th>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <select name="diagnosa" id="formdiagnosa" class="form-control select2">
+                                    @foreach($treatments as $index => $treatment)
+                                        <option value="{{ $treatment->id }}">{{ $treatment->treatmentName }}</option>
+                                    @endforeach
+                                </select>
+                            </th>
+                            <th>
+                                <input type="button" name="" value="Tambah" id="simpandiagnosa" class="btn btn-info">
+                            </th>
+                        </tr>
+                    </table>
+                    <table class="table table-striped">
+                        <tbody>
+                        <tr>
+                            <td>Z99.3 - Ketergantungan pada kursi roda</td>
+                            <td>
+                                <a href="#" onclick="hapus('11','000044','10467','2026-01-14')" title="Hapus Data Diagnosa" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
+
+                <div role="tabpanel" class="tab-pane" id="terapi">
+                <table class="table">
+                    <tr>
+                        <th>
+                            Resep Dokter
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            <textarea name="receipt" style="min-height: 100px; width: 100%" rows="" cols=""></textarea>
+                        </th>
+                    </tr>
+                </table>
+                </div>
+
             </div>
 
             <div class="well">
