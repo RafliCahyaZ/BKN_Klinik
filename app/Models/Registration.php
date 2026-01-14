@@ -12,8 +12,9 @@ class Registration extends Model
     protected $fillable = [
         'patient_id',
         'doctor_id',
+        'check_date',
         'complaint',
-        'is_finished',
+        'receipt',
     ];
 
     public function diagnoses(): BelongsToMany
