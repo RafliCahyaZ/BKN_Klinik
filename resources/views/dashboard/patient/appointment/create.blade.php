@@ -6,6 +6,7 @@
             method="post"
             action="{{ route('patient.appointment.action', $registration->id) }}"
         >
+        @csrf
             <table class="table table-striped">
                 <tbody>
                     <tr>
@@ -38,7 +39,7 @@
                         <th>:</th>
                         <th>
                             <div class="form-group">
-                                <select name="tampil" class="form-control">
+                                <select name="doctor" class="form-control">
                                 @foreach($doctors as $index => $doctor)
                                     <option value="{{ $doctor->id }}">{{ $doctor->fullname }}</option>
                                 @endforeach
@@ -134,8 +135,13 @@
 
             </div>
 
+            <div id="dynamic-data">
+            </div>
+
             <div class="well">
-                <input type="submit" name="submit" value="Selesai Pemeriksaan" id="submit" class="btn btn-success">            </div>
+                <input type="submit" name="submit" value="Selesai Pemeriksaan" id="submit" class="btn btn-success">
+                <a class="btn btn-info" href="{{ route('patient.queue') }}">Kembali</a>
+                </div>
             </form>
     </x-dashboard-container>
 @endsection
@@ -146,11 +152,14 @@
         constructor(
             submitButton,
             tableElement,
-            selectElement
+            selectElement,
+            inputName
         ) {
             this.submitButton = submitButton
             this.tableElement = tableElement
             this.selectElement = selectElement
+            this.inputName = inputName
+            this.dynamicDataContainer = document.getElementById("dynamic-data");
 
             this.submitButton.addEventListener("click", () => {
                 const selected = this.getSelected();
@@ -169,6 +178,16 @@
             return selected
         }
 
+        createInputElement(selected)
+        {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = `${this.inputName}[]`;
+            input.value = selected.value;
+
+            this.dynamicDataContainer.appendChild(input);
+        }
+
         appendData(selected) {
             const appendedElement = `
                 <tr>
@@ -179,6 +198,7 @@
                 </tr>
             `
             this.tableElement.insertAdjacentHTML("beforeend", appendedElement);
+            this.createInputElement(selected);
         }
     }
 
@@ -186,12 +206,12 @@
     const submitDiagnosisButton = document.getElementById('submitDiagnosisButton');
     const selectDiagnosisElement = document.getElementById("selectDiagnosisElement");
 
-    const diagnosisAttachManager = new AttachManager(submitDiagnosisButton, diagnosisTable, selectDiagnosisElement);
+    const diagnosisAttachManager = new AttachManager(submitDiagnosisButton, diagnosisTable, selectDiagnosisElement, 'diagnosis_ids');
 
     const treatmentTable = document.getElementById("treatmentTable");
     const submitTreatmentButton = document.getElementById('submitTreatmentButton');
     const selectTreatmentElement = document.getElementById("selectTreatmentElement");
 
-    const treatmentAttachManager = new AttachManager(submitTreatmentButton, treatmentTable, selectTreatmentElement);
+    const treatmentAttachManager = new AttachManager(submitTreatmentButton, treatmentTable, selectTreatmentElement, 'treatment_ids');
 </script>
 @endpush

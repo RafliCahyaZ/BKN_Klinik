@@ -33,17 +33,6 @@
 							<th><input type="text" disabled name="username" value="{{ old("username", $user->username) }}" class="form-control" id="nama" autofocus="autofocus" required="required">							</th>
 						</tr>
 
-                    @error('password')
-                        <tr>
-                            <th class="text-danger" colspan="3">{{ $message }}</th>
-                        </tr>
-                    @enderror
-                    <tr>
-                        <th>Password</th>
-                        <th>:</th>
-                        <th><input type="password" name="password" value="{{ old("password", $user->password) }}" class="form-control" id="password" required="required">							</th>
-                    </tr>
-
                     @error('fullname')
                         <tr>
                             <th class="text-danger" colspan="3">{{ $message }}</th>
@@ -66,16 +55,18 @@
                         <td>
                             <select name="role" class="form-control">
                                 <option
-                                    value="administrator">
+                                    {{ ($user->role == \App\Type\UserRole::ADMIN) ? 'selected' : '' }}
+                                    value="{{ \App\Type\UserRole::ADMIN }}">
                                     Administrator
                                 </option>
                                 <option
-                                    value="operator">
+                                    {{ ($user->role == \App\Type\UserRole::OFFICER) ? 'selected' : '' }}
+                                    value="{{ \App\Type\UserRole::OFFICER }}">
                                     Petugas
                                 </option>
                                 <option
-                                    {{ (strtolower($user->role) == "doctor") ? 'selected' : '' }}
-                                    value="doctor">
+                                    {{ ($user->role == \App\Type\UserRole::DOCTOR) ? 'selected' : '' }}
+                                    value="{{ \App\Type\UserRole::DOCTOR }}">
                                     Dokter
                                 </option>
                             </select>

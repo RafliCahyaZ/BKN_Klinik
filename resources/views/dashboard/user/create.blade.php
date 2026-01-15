@@ -76,9 +76,9 @@
                         <th>:</th>
                         <td>
                             <select name="role" class="form-control" value="{{ old("role") }}">
-                                <option value="administrator">Administrator</option>
-                                <option value="operator">Petugas</option>
-                                <option value="docktor">Dokter</option>
+                                <option value="{{ \App\Type\UserRole::ADMIN->value }}">Administrator</option>
+                                <option value="{{ \App\Type\UserRole::OFFICER->value }}">Petugas</option>
+                                <option value="{{ \App\Type\UserRole::DOCTOR->value }}">Dokter</option>
                             </select>
                         </td>
                     </tr>

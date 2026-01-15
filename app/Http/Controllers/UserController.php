@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\DTO\UserDTO;
+use App\Helper\UserRoleHelper;
 use App\Repository\UserRepository;
+use App\Type\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -57,7 +59,7 @@ class UserController extends Controller
             ],
             'role' => [
                 'required',
-                Rule::in(['administrator', 'operator', 'doctor']),
+                Rule::in([UserRole::ADMIN->value, UserRole::OFFICER->value, UserRole::DOCTOR->value]),
             ],
         ], [
             'email.required' => 'Email wajib diisi',
@@ -74,7 +76,7 @@ class UserController extends Controller
         $userCreateDto->password = $validated["password"];
         $userCreateDto->fullname = $validated["fullname"];
         $userCreateDto->email = $validated["email"];
-        $userCreateDto->role = $validated["role"];
+        $userCreateDto->role = UserRoleHelper::stringToUserRole($validated["role"]);
 
         if (!$this->userRepository->insert($userCreateDto)) {
             return redirect()->route("user.index")->with("failed", "Gagal! User gagal ditambah");
@@ -99,11 +101,6 @@ class UserController extends Controller
     public function editAction($id, Request $request)
     {
         $validated = $request->validate([
-            'password' => [
-                'required',
-                'string',
-                'min:8',
-            ],
             'fullname' => [
                 'required',
                 'string',
@@ -111,11 +108,21 @@ class UserController extends Controller
             ],
             'role' => [
                 'required',
-                Rule::in(['administrator', 'operator', 'doctor']),
+                Rule::in([UserRole::ADMIN->value, UserRole::OFFICER->value, UserRole::DOCTOR->value]),
             ],
         ], [
-            'password.min' => 'Password minimal 8 karakter',
             'role.in' => 'Role tidak valid',
         ]);
+
+        $userDto = new UserDTO();
+        $userDto->id = $id;
+        $userDto->role = UserRoleHelper::stringToUserRole($validated["role"]);
+        $userDto->fullname = $validated["fullname"];
+
+        if (!$this->userRepository->edit($id, $userDto)) {
+            return back()->withInput();
+        }
+
+        return redirect()->route("user.index")->with("success", "Sukses! Berhasil edit user");
     }
 }

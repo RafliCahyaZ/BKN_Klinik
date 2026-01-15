@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\DTO\UserDTO;
+use App\Helper\UserRoleHelper;
 use App\Models\User;
+use App\Type\UserRole;
 
 class UserRepositoryEloquent implements UserRepository
 {
@@ -12,16 +14,7 @@ class UserRepositoryEloquent implements UserRepository
         $usersCollections = User::all();
 
         $formatedUsers = $usersCollections->map(function ($user) {
-            $formatedUser = new UserDTO();
-            $formatedUser->id = $user->id;
-            $formatedUser->username = $user->username;
-            $formatedUser->fullname = $user->fullname;
-            $formatedUser->email = $user->email;
-            $formatedUser->password = $user->password;
-            $formatedUser->role = $user->role;
-            $formatedUser->createdAt = $user->created_at;
-            $formatedUser->updatedAt = $user->updated_at;
-            return $formatedUser;
+            return $this->mapUserModelToUserDto($user);
         });
 
         $users = $formatedUsers->toArray();
@@ -33,16 +26,7 @@ class UserRepositoryEloquent implements UserRepository
         $usersCollections = User::where('role', $role)->get();
 
         $formatedUsers = $usersCollections->map(function ($user) {
-            $formatedUser = new UserDTO();
-            $formatedUser->id = $user->id;
-            $formatedUser->username = $user->username;
-            $formatedUser->fullname = $user->fullname;
-            $formatedUser->email = $user->email;
-            $formatedUser->password = $user->password;
-            $formatedUser->role = $user->role;
-            $formatedUser->createdAt = $user->created_at;
-            $formatedUser->updatedAt = $user->updated_at;
-            return $formatedUser;
+            return $this->mapUserModelToUserDto($user);
         });
 
         $users = $formatedUsers->toArray();
@@ -57,16 +41,7 @@ class UserRepositoryEloquent implements UserRepository
             return null;
         }
 
-        $formatedUser = new UserDTO();
-        $formatedUser->id = $user->id;
-        $formatedUser->username = $user->username;
-        $formatedUser->fullname = $user->fullname;
-        $formatedUser->email = $user->email;
-        $formatedUser->password = $user->password;
-        $formatedUser->role = $user->role;
-        $formatedUser->createdAt = $user->created_at;
-        $formatedUser->updatedAt = $user->updated_at;
-        return $formatedUser;
+        return $this->mapUserModelToUserDto($user);
     }
 
     function insert(UserDTO $userDTO): ?UserDTO
@@ -79,7 +54,7 @@ class UserRepositoryEloquent implements UserRepository
                 'fullname' => $userDTO->fullname,
                 'email' => $userDTO->email,
             ]
-            );
+        );
         $user->role = $userDTO->role;;
         $user->save();
         $userDTO->id = $user->id;
@@ -106,17 +81,7 @@ class UserRepositoryEloquent implements UserRepository
             if ($edit > 0) {
                 $updatedData = User::find($id);
 
-                $formatedUpdatedData = new UserDTO();
-                $formatedUpdatedData->id = $updatedData->id;
-                $formatedUpdatedData->username = $updatedData->username;
-                $formatedUpdatedData->fullname = $updatedData->fullname;
-                $formatedUpdatedData->email = $updatedData->email;
-                $formatedUpdatedData->password = $updatedData->password;
-                $formatedUpdatedData->role = $updatedData->role;
-                $formatedUpdatedData->createdAt = $updatedData->created_at;
-                $formatedUpdatedData->updatedAt = $updatedData->updated_at;
-
-                return $formatedUpdatedData;
+                return $this->mapUserModelToUserDto($updatedData);
             } else {
                 return null;
             }
@@ -133,16 +98,7 @@ class UserRepositoryEloquent implements UserRepository
             return null;
         }
 
-        $formatedUser = new UserDTO();
-        $formatedUser->id = $user->id;
-        $formatedUser->fullname = $user->fullname;
-        $formatedUser->username = $user->username;
-        $formatedUser->password = $user->password;
-        $formatedUser->email = $user->email;
-        $formatedUser->role = $user->role;
-        $formatedUser->createdAt = $user->created_at;
-        $formatedUser->updatedAt = $user->updated_at;
-        return $formatedUser;
+        return $this->mapUserModelToUserDto($user);
     }
 
     function getLatestId(): int
@@ -165,5 +121,19 @@ class UserRepositoryEloquent implements UserRepository
 
         return false;
     }
+
+    public static function mapUserModelToUserDto(User $user): UserDTO
+    {
+        $formatedUser = new UserDTO();
+        $formatedUser->id = $user->id;
+        $formatedUser->username = $user->username;
+        $formatedUser->fullname = $user->fullname;
+        $formatedUser->email = $user->email;
+        $formatedUser->password = $user->password;
+        $formatedUser->role = UserRoleHelper::stringToUserRole($user->role);
+        $formatedUser->createdAt = $user->created_at;
+        $formatedUser->updatedAt = $user->updated_at;
+
+        return $formatedUser;
+    }
 }
-?>
