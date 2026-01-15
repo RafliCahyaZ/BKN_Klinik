@@ -25,6 +25,7 @@
                                 name="name"
                                 class="form-control"
                                 id="name"
+                                value="{{ old("name") }}"
                                 autofocus
                                 required
                             >
@@ -44,6 +45,7 @@
                                 type="date"
                                 name="date-of-birth"
                                 class="form-control"
+                                value="{{ old("date-of-birth") }}"
                                 id="date-of-birth"
                                 required
                             >
@@ -81,7 +83,7 @@
                                 class="form-control"
                                 id="address"
                                 required
-                            ></textarea>
+                            >{{ old("address") }}</textarea>
                         </th>
                     </tr>
 
@@ -99,7 +101,7 @@
                                 rows="5"
                                 class="form-control"
                                 id="history"
-                            ></textarea>
+                            >{{ old("history") }}</textarea>
                         </th>
                     </tr>
 
@@ -117,6 +119,7 @@
                                 name="phone-number"
                                 class="form-control"
                                 id="phone-number"
+                                value="{{ old("phone-number") }}"
                                 required
                             >
                         </th>
