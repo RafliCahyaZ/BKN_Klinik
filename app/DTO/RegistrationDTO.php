@@ -8,7 +8,7 @@ class RegistrationDTO
 {
     public string $id;
     public PatientDTO $patient;
-    public UserDTO $doctor;
+    public ?UserDTO $doctor = null;
     public string $complaint;
     public array $diagnoses = [];
     public array $treatments = [];
