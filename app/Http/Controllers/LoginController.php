@@ -19,7 +19,7 @@ class LoginController extends Controller
     public function create(Request $request, AuthService $authService)
     {
         $validated = $request->validate([
-            'username' => ['required', 'string', 'min:5', 'max:20'],
+            'username' => ['required', 'string', 'min:3', 'max:20'],
             'password' => ['required', 'string', 'min:5', 'max:20'],
         ]);
 

@@ -17,6 +17,17 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware("auth")->group(function () {
     Route::post("/auth/logout", [LoginController::class, 'logout'])->name("auth.logout");
+
+    Route::middleware("can:is-admin")->group(function () {
+        Route::prefix("user")->name("user.")->group(function () {
+            Route::get("/", [UserController::class, 'index'])->name("index");
+            Route::get("/create", [UserController::class, 'create'])->name("create");
+            Route::post("/store", [UserController::class, 'store'])->name("store");
+            Route::get("//edit/{id}", [UserController::class, 'edit'])->name("edit.view");
+            Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
+        });
+    });
+
     Route::prefix("patient")->name("patient.")->group(function () {
         Route::get("/", [PatientController::class, 'index'])->name("index");
         Route::get("/create", [PatientController::class, 'create'])->name("create");
@@ -51,14 +62,6 @@ Route::middleware("auth")->group(function () {
         Route::get("//edit/{id}", [TreatmentController::class, 'edit'])->name("edit.view");
         Route::post("/edit/{id}", [TreatmentController::class, 'editAction'])->name("edit.action");
         Route::delete("/destroy/{id}", [TreatmentController::class, 'destroy'])->name("destroy");
-    });
-
-    Route::prefix("user")->name("user.")->group(function () {
-        Route::get("/", [UserController::class, 'index'])->name("index");
-        Route::get("/create", [UserController::class, 'create'])->name("create");
-        Route::post("/store", [UserController::class, 'store'])->name("store");
-        Route::get("//edit/{id}", [UserController::class, 'edit'])->name("edit.view");
-        Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
     });
 
     Route::prefix("registration")->name("registration.")->group(function () {
