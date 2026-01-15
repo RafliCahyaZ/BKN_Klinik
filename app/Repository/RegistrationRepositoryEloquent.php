@@ -23,7 +23,9 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             $patient->id = $registration->patient->id;
             
             $doctor = new UserDTO();
-            $doctor->id = $registration->doctor->id;
+            if ($registration->doctor) {
+                $doctor->id = $registration->doctor->id;
+            }
 
             $formatedRegistration->patient = $patient;
             $formatedRegistration->doctor = $doctor;
@@ -56,7 +58,9 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
         $patient->id = $registration->patient->id;
 
         $doctor = new UserDTO();
-        $doctor->id = $registration->doctor->id;
+        if ($registration->doctor) {
+            $doctor->id = $registration->doctor->id;
+        }
         
         $formated_registration->patient = $patient;
         $formated_registration->doctor = $doctor;
@@ -76,7 +80,6 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
         try {
             $registration->fill([
                 'patient_id' => $registrationDTO->patient->id,
-                'doctor_id' => $registrationDTO->doctor->id,
                 'receipt' => $registrationDTO->receipt,
                 'complaint' => $registrationDTO->complaint,
                 'check_date' => $registrationDTO->checkDate,
@@ -100,6 +103,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
     function edit(RegistrationDTO $registrationDTO): ?RegistrationDTO
     {
         $updateData = [
+            'doctor_id' => $registrationDTO->doctor->id ?? null,
             'receipt' => $registrationDTO->receipt ?? null,
             'check_date' => $registrationDTO->checkDate ?? null,
         ];
