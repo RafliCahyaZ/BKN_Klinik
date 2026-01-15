@@ -1,25 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Cetak Data Pasien</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
-    <style>
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #000; padding: 4px; font-size: 12px; }
-    </style>
-</head>
-
-<style>
-@media print { .no-print { display:none !important; } }
-</style>
+@extends('layouts.print')
+@section("content")
 
 <div class="no-print">
     <a href="{{ route('patient.index') }}" class="btn btn-danger" style="margin-bottom:12px;">← Back</a>
 </div>
 
-<body onload="window.print()">
-    <h3 align="center">Data Pasien</h3>
-    <table class="table table-bordered table-hover table-condensed">
+<table class="table table-bordered table-hover table-condensed">
         <thead>
             <tr>
                 <th>No</th>
@@ -50,6 +36,5 @@
             </tr>
         @endforeach
         </tbody>
-    </table>
-</body>
-</html>
+</table>
+@endsection
