@@ -16,6 +16,8 @@ use App\Repository\UserRepositoryImpl;
 use Illuminate\Support\ServiceProvider;
 use App\Repository\RegistrationRepository;
 use App\Repository\RegistrationRepositoryImpl;
+use App\Repository\AppointmentRepository;
+use App\Repository\AppointmentRepositoryImplement;
 
 class RepositoryProvider extends ServiceProvider
 {
@@ -25,7 +27,8 @@ class RepositoryProvider extends ServiceProvider
         DiagnosisRepository::class => DiagnosisRepositoryImpl::class,
         TreatmentRepository::class => TreatmentRepositoryImpl::class,
         UserRepository::class => UserRepositoryImpl::class,
-        RegistrationRepository::class => RegistrationRepositoryImpl::class
+        RegistrationRepository::class => RegistrationRepositoryImpl::class,
+        AppointmentRepository::class => AppointmentRepositoryImplement::class
     ];
     /**
      * Register services.
