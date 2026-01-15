@@ -59,7 +59,7 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         return [$registration1, $registration2];
     }
 
-    public function getById(): ?RegistrationDTO
+    public function getById(string $id): ?RegistrationDTO
     {
         $all = $this->getAll();
 
