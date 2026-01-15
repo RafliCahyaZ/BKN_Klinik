@@ -139,7 +139,9 @@
             </div>
 
             <div class="well">
-                <input type="submit" name="submit" value="Selesai Pemeriksaan" id="submit" class="btn btn-success">            </div>
+                <input type="submit" name="submit" value="Selesai Pemeriksaan" id="submit" class="btn btn-success">
+                <a class="btn btn-info" href="{{ route('patient.queue') }}">Kembali</a>
+                </div>
             </form>
     </x-dashboard-container>
 @endsection

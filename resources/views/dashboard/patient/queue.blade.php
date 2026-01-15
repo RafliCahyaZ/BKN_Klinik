@@ -15,7 +15,7 @@
             <tbody>
             @foreach($registrations as $index => $registration)
                 <tr>
-                    <td>{{ $index }}</td>
+                    <td>{{ $index + 1 }}</td>
                     <td>{{ $registration->patient->name }}</td>
                     <td>{{ $registration->patient->address }}</td>
                     <td>{{ $registration->patient->dateOfBirth->age }} Tahun</td>

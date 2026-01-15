@@ -2,6 +2,7 @@
 
 namespace App\DTO;
 
+use App\Type\UserRole;
 use Carbon\CarbonInterface;
 
 class UserDTO
@@ -11,7 +12,7 @@ class UserDTO
     public string $password;
     public string $fullname;
     public string $email;
-    public string $role;
+    public UserRole $role;
     public CarbonInterface $createdAt;
     public CarbonInterface $updatedAt;
 }

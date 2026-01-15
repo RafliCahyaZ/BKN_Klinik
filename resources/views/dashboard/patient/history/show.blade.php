@@ -2,6 +2,19 @@
 
 @section('content')
     <x-dashboard-container title="Detail History Pasien">
+
+            @if (session('success'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('failed'))
+                <div class="alert alert-danger" role="alert">
+                    {{ session('failed') }}
+                </div>
+            @endif
+
             <table class="table table-striped">
                 <tbody>
                     <tr>
@@ -40,7 +53,7 @@
             <div role="tabpanel">
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="periksa" class="active">
-                        <a href="#keluhan" aria-controls="terapi" role="tab" data-toggle="tab">Keluhan</a>
+                        <a href="#keluhan" aria-controls="keluhan" role="tab" data-toggle="tab">Keluhan</a>
                     </li>
                     <li role="periksa">
                         <a href="#diagnosa" aria-controls="diagnosa" role="tab" data-toggle="tab">Diagnosa</a>
