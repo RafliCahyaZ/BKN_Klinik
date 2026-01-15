@@ -12,6 +12,7 @@ use App\Repository\PatientRepository;
 use App\Repository\RegistrationRepository;
 use App\Repository\TreatmentRepository;
 use App\Repository\UserRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -55,6 +56,7 @@ class AppointmentController extends Controller
         $doctor = new UserDTO();
         $doctor->id = $id;
 
+        $registration->checkDate = Carbon::now();
         $registration->doctor = $doctor;
         $registration->receipt = $request["receipt"];
 
