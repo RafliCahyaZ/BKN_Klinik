@@ -7,90 +7,163 @@ use App\Models\User;
 
 class UserRepositoryEloquent implements UserRepository
 {
-    private function toDto(User $user): UserDTO
+    function getAll(): array
     {
-        $dto = new UserDTO();
-        $dto->id = (string) $user->id;
-        $dto->username = $user->username;
-        $dto->password = $user->password;
-        $dto->fullname = $user->fullname;
-        $dto->email = $user->email;
-        $dto->role = $user->role;
-        $dto->createdAt = $user->created_at;
-        $dto->updatedAt = $user->updated_at;
+        $usersCollections = User::all();
 
-        return $dto;
+        $formatedUsers = $usersCollections->map(function ($user) {
+            $formatedUser = new UserDTO();
+            $formatedUser->id = $user->id;
+            $formatedUser->username = $user->username;
+            $formatedUser->fullname = $user->fullname;
+            $formatedUser->email = $user->email;
+            $formatedUser->password = $user->password;
+            $formatedUser->role = $user->role;
+            $formatedUser->createdAt = $user->created_at;
+            $formatedUser->updatedAt = $user->updated_at;
+            return $formatedUser;
+        });
+
+        $users = $formatedUsers->toArray();
+        return $users;
     }
 
-    public function getAll(): array
+    function getByRole(string $role): array
     {
-        return User::all()->map(fn (User $user) => $this->toDto($user))->toArray();
+        $usersCollections = User::where('role', $role)->get();
+
+        $formatedUsers = $usersCollections->map(function ($user) {
+            $formatedUser = new UserDTO();
+            $formatedUser->id = $user->id;
+            $formatedUser->username = $user->username;
+            $formatedUser->fullname = $user->fullname;
+            $formatedUser->email = $user->email;
+            $formatedUser->password = $user->password;
+            $formatedUser->role = $user->role;
+            $formatedUser->createdAt = $user->created_at;
+            $formatedUser->updatedAt = $user->updated_at;
+            return $formatedUser;
+        });
+
+        $users = $formatedUsers->toArray();
+        return $users;
     }
 
-    public function getById(string $id): ?UserDTO
-    {
-        $user = User::find($id);
-
-        return $user ? $this->toDto($user) : null;
-    }
-
-    public function getByEmail(string $email): ?UserDTO
+    function getByEmail(string $email): ?UserDTO
     {
         $user = User::where('email', $email)->first();
 
-        return $user ? $this->toDto($user) : null;
-    }
-
-    public function insert(UserDTO $userDTO): ?UserDTO
-    {
-        $user = User::create([
-            'username' => $userDTO->username,
-            'password' => $userDTO->password,
-            'fullname' => $userDTO->fullname,
-            'email'    => $userDTO->email,
-        ]);
-
-        $user->role = $userDTO->role;
-        $user->save();
-
-        return $this->toDto($user);
-    }
-
-    public function edit(string $id, UserDTO $userDTO): ?UserDTO
-    {
-        $user = User::find($id);
         if (!$user) {
             return null;
         }
 
-        $updateData = array_filter([
-            'username' => $userDTO->username ?? null,
-            'password' => $userDTO->password ?? null,
-            'fullname' => $userDTO->fullname ?? null,
-            'email'    => $userDTO->email ?? null,
-        ], fn ($value) => !is_null($value));
-
-        if (!empty($updateData)) {
-            $user->fill($updateData);
-        }
-        if (!is_null($userDTO->role ?? null)) {
-            $user->role = $userDTO->role;
-        }
-
-        $user->save();
-
-        return $this->toDto($user);
+        $formatedUser = new UserDTO();
+        $formatedUser->id = $user->id;
+        $formatedUser->username = $user->username;
+        $formatedUser->fullname = $user->fullname;
+        $formatedUser->email = $user->email;
+        $formatedUser->password = $user->password;
+        $formatedUser->role = $user->role;
+        $formatedUser->createdAt = $user->created_at;
+        $formatedUser->updatedAt = $user->updated_at;
+        return $formatedUser;
     }
 
-    public function delete(string $id): bool
+    function insert(UserDTO $userDTO): ?UserDTO
+    {
+        $user = new User();
+        $user->fill(
+            [
+                'username' => $userDTO->username,
+                'password' => $userDTO->password,
+                'fullname' => $userDTO->fullname,
+                'email' => $userDTO->email,
+            ]
+            );
+        $user->role = $userDTO->role;;
+        $user->save();
+        $userDTO->id = $user->id;
+        $userDTO->createdAt = $user->created_at;
+        $userDTO->updatedAt = $user->updated_at;
+
+        return $userDTO;
+    }
+
+    function edit(string $id, UserDTO $userDTO): ?UserDTO
+    {
+        $updateData = [
+            'fullname' => $userDTO->fullname ?? null,
+            'password' => $userDTO->password ?? null,
+            'role' => $userDTO->role ?? null,
+        ];
+        $filteredUpdateData = array_filter($updateData);
+        $userId = $id;
+
+        if (!empty($filteredUpdateData)) {
+            $edit = User::where('id', $userId)
+                ->update($filteredUpdateData);
+
+            if ($edit > 0) {
+                $updatedData = User::find($id);
+
+                $formatedUpdatedData = new UserDTO();
+                $formatedUpdatedData->id = $updatedData->id;
+                $formatedUpdatedData->username = $updatedData->username;
+                $formatedUpdatedData->fullname = $updatedData->fullname;
+                $formatedUpdatedData->email = $updatedData->email;
+                $formatedUpdatedData->password = $updatedData->password;
+                $formatedUpdatedData->role = $updatedData->role;
+                $formatedUpdatedData->createdAt = $updatedData->created_at;
+                $formatedUpdatedData->updatedAt = $updatedData->updated_at;
+
+                return $formatedUpdatedData;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    function getById(string $id): ?UserDTO
     {
         $user = User::find($id);
 
-        return $user ? (bool) $user->delete() : false;
+        if (!$user) {
+            return null;
+        }
+
+        $formatedUser = new UserDTO();
+        $formatedUser->id = $user->id;
+        $formatedUser->fullname = $user->fullname;
+        $formatedUser->username = $user->username;
+        $formatedUser->password = $user->password;
+        $formatedUser->email = $user->email;
+        $formatedUser->role = $user->role;
+        $formatedUser->createdAt = $user->created_at;
+        $formatedUser->updatedAt = $user->updated_at;
+        return $formatedUser;
     }
 
-    public function getLatestId(): int
+    function getLatestId(): int
     {
-        return User::max('id') ?? 0;
+        $latestId = User::max('id');
+        if (!$latestId) {
+            return 0;
+        }
+        return $latestId;
+    }
+
+    function delete(string $id): bool
+    {
+        $user = User::find($id);
+
+        if ($user) {
+            $result = $user->delete();
+            return $result;
+        }
+
+        return false;
     }
 }
+?>

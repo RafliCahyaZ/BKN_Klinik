@@ -3,16 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Medicine extends Model
 {
     protected $fillable = [
         'name',
+        'stok',
+        'unit_id',
     ];
 
-    public function registrations(): BelongsToMany
+    public function unit(): BelongsTo
     {
-        return $this->belongsToMany(Registration::class);
+        return $this->belongsTo(Unit::class);
+    }
+
+    public function medicineStockTransactions(): HasMany
+    {
+        return $this->hasMany(MedicineStockTransaction::class);
     }
 }
