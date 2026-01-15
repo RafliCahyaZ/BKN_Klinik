@@ -148,9 +148,7 @@ class PatientController extends Controller
         $patientDto->history = $validated["history"];
         $patientDto->telpNumber = $validated["phone-number"];
 
-        if ($rmUrl) {
-            $patientDto->medicalRecordFileUrl = $rmUrl;
-        }
+        $patientDto->medicalRecordFileUrl = ($rmUrl) ?? "";
 
         $insertResult = $patientRepository->insert($patientDto);
 
