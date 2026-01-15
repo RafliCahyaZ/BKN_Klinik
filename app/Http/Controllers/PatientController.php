@@ -121,6 +121,15 @@ class PatientController extends Controller
         return redirect()->route("patient.index")->with("success", "Sukses! Data berhasil diedit");
     }
 
+    public function print(PatientRepository $patientRepository)
+    {
+        $patients = $patientRepository->getAll();
+
+        return view("dashboard.patient.print", [
+            "patients" => $patients
+        ]);
+    }
+
     public function store(Request $request, PatientRepository $patientRepository)
     {
         $validated = $this->getPatientInputValidation($request);

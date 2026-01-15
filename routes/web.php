@@ -23,6 +23,8 @@ Route::prefix("patient")->name("patient.")->group(function () {
     Route::get("/history", [PatientController::class, 'history'])->name("history");
     Route::get("/history/{id}", [HistoryController::class, 'show'])->name("history.show");
 
+    Route::get("/print", [PatientController::class, 'print'])->name("print");
+
     Route::post("/store", [PatientController::class, 'store'])->name("store");
     Route::get("//edit/{id}", [PatientController::class, 'edit'])->name("edit.view");
     Route::post("/edit/{id}", [PatientController::class, 'editAction'])->name("edit.action");
@@ -36,6 +38,7 @@ Route::prefix("diagnosis")->name("diagnosis.")->group(function () {
     Route::get("/", [DiagnosisController::class, 'index'])->name("index");
     Route::get("/create", [DiagnosisController::class, 'create'])->name("create");
     Route::post("/store", [DiagnosisController::class, 'store'])->name("store");
+    Route::get("/print", [DiagnosisController::class, 'print'])->name("print");
     Route::get("//edit/{id}", [DiagnosisController::class, 'edit'])->name("edit.view");
     Route::post("/edit/{id}", [DiagnosisController::class, 'editAction'])->name("edit.action");
     Route::delete("/destroy/{id}", [DiagnosisController::class, 'destroy'])->name("destroy");
@@ -46,6 +49,7 @@ Route::prefix("treatment")->name("treatment.")->group(function () {
     Route::get("/", [TreatmentController::class, 'index'])->name("index");
     Route::get("/create", [TreatmentController::class, 'create'])->name("create");
     Route::post("/store", [TreatmentController::class, 'store'])->name("store");
+    Route::get("/print", [TreatmentController::class, 'print'])->name("print");
     Route::get("//edit/{id}", [TreatmentController::class, 'edit'])->name("edit.view");
     Route::post("/edit/{id}", [TreatmentController::class, 'editAction'])->name("edit.action");
     Route::delete("/destroy/{id}", [TreatmentController::class, 'destroy'])->name("destroy");

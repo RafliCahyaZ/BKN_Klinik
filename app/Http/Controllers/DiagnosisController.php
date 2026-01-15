@@ -69,6 +69,15 @@ class DiagnosisController extends Controller
         return redirect()->route("diagnosis.index")->with("success", "Sukses! Data berhasil disimpan");
     }
 
+    public function print()
+    {
+        $diagnoses = $this->diagnosisRepository->getAll();
+
+        return view("dashboard.diagnosis.print", [
+            "diagnoses" => $diagnoses
+        ]);
+    }
+
     public function destroy($id)
     {
         $diagnosis = $this->diagnosisRepository->getById($id);

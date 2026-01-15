@@ -83,6 +83,15 @@ class TreatmentController extends Controller
         return redirect()->route("treatment.index")->with("success", "Sukses! Data berhasil disimpan");
     }
 
+    public function print()
+    {
+        $treatments = $this->treatmentRepository->getAll();
+
+        return view("dashboard.treatment.print", [
+            "treatments" => $treatments
+        ]);
+    }
+
     private function getTreatmentInputValidation(Request $request)
     {
         $validated = $request->validate([
