@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\DiagnosisDTO;
+use App\DTO\TreatmentDTO;
 use App\Models\User;
 use App\Repository\DiagnosisRepository;
 use App\Repository\PatientRepository;
@@ -37,5 +39,30 @@ class AppointmentController extends Controller
             "treatments" => $treatments,
             "registration" => $registrationDto
         ]);
+    }
+
+    public function createAction($id, Request $request)
+    {
+        $registration = $this->registrationRepository->getById($id);
+
+        if (!$registration) {
+            abort(404);
+        }
+
+        $diagnoses = collect($request["diagnosis_ids"])->map(function ($item) {
+            $diagnosisDto = new DiagnosisDTO();
+            $diagnosisDto->id = $item;
+
+            return $diagnosisDto;
+        });
+
+        $treatments = collect($request["treatment_ids"])->map(function ($item) {
+            $treatmentDto = new TreatmentDTO();
+            $treatmentDto->id = $item;
+
+            return $treatmentDto;
+        });
+
+        dd($request["receipt"]);
     }
 }

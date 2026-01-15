@@ -6,6 +6,7 @@
             method="post"
             action="{{ route('patient.appointment.action', $registration->id) }}"
         >
+        @csrf
             <table class="table table-striped">
                 <tbody>
                     <tr>
@@ -134,6 +135,9 @@
 
             </div>
 
+            <div id="dynamic-data">
+            </div>
+
             <div class="well">
                 <input type="submit" name="submit" value="Selesai Pemeriksaan" id="submit" class="btn btn-success">            </div>
             </form>
@@ -146,11 +150,14 @@
         constructor(
             submitButton,
             tableElement,
-            selectElement
+            selectElement,
+            inputName
         ) {
             this.submitButton = submitButton
             this.tableElement = tableElement
             this.selectElement = selectElement
+            this.inputName = inputName
+            this.dynamicDataContainer = document.getElementById("dynamic-data");
 
             this.submitButton.addEventListener("click", () => {
                 const selected = this.getSelected();
@@ -169,6 +176,16 @@
             return selected
         }
 
+        createInputElement(selected)
+        {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = `${this.inputName}[]`;
+            input.value = selected.value;
+
+            this.dynamicDataContainer.appendChild(input);
+        }
+
         appendData(selected) {
             const appendedElement = `
                 <tr>
@@ -179,6 +196,7 @@
                 </tr>
             `
             this.tableElement.insertAdjacentHTML("beforeend", appendedElement);
+            this.createInputElement(selected);
         }
     }
 
@@ -186,12 +204,12 @@
     const submitDiagnosisButton = document.getElementById('submitDiagnosisButton');
     const selectDiagnosisElement = document.getElementById("selectDiagnosisElement");
 
-    const diagnosisAttachManager = new AttachManager(submitDiagnosisButton, diagnosisTable, selectDiagnosisElement);
+    const diagnosisAttachManager = new AttachManager(submitDiagnosisButton, diagnosisTable, selectDiagnosisElement, 'diagnosis_ids');
 
     const treatmentTable = document.getElementById("treatmentTable");
     const submitTreatmentButton = document.getElementById('submitTreatmentButton');
     const selectTreatmentElement = document.getElementById("selectTreatmentElement");
 
-    const treatmentAttachManager = new AttachManager(submitTreatmentButton, treatmentTable, selectTreatmentElement);
+    const treatmentAttachManager = new AttachManager(submitTreatmentButton, treatmentTable, selectTreatmentElement, 'treatment_ids');
 </script>
 @endpush

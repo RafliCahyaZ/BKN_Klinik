@@ -25,7 +25,7 @@ Route::prefix("patient")->name("patient.")->group(function () {
     Route::delete("/destroy/{id}", [PatientController::class, 'destroy'])->name("destroy");
 
     Route::get("/appointment/{id}", [AppointmentController::class, 'create'])->name("appointment.view");
-    Route::post("/appointment/{id", [AppointmentController::class, 'appointmentAction'])->name("appointment.action");
+    Route::post("/appointment/{id}", [AppointmentController::class, 'createAction'])->name("appointment.action");
 });
 
 Route::prefix("diagnosis")->name("diagnosis.")->group(function () {
