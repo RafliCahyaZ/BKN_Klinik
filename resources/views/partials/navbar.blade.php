@@ -57,7 +57,7 @@
                 <ul class="dropdown-menu">
                     <li><a href="/">Profil</a></li>
                     <li>
-                        <form action="/" method="POST">
+                        <form action="{{ route("auth.logout") }}" method="POST">
                             @csrf
                             <button class="btn btn-link">Keluar</button>
                         </form>
