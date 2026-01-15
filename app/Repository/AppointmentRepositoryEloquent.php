@@ -36,5 +36,35 @@ class AppointmentRepositoryEloquent implements AppointmentRepository
         }
         return false;
     }
+    
+    public function attachManyDiagnosesToRegistration(RegistrationDTO $registrationDTO, array $diagnoses): bool
+    {
+        if (!count($diagnoses)) {
+            return false;
+        }
+        try {
+            $registration = Registration::find($registrationDTO->id);
+            $diagnosisIds = array_map(fn($diagnosis) => $diagnosis->id, $diagnoses);
+            $registration->diagnoses()->syncWithoutDetaching($diagnosisIds);
+            return true;
+        } catch (QueryException $e) {
+            return false;
+        }
+    } 
+
+    public function attachManyTreatmentsToRegistration(RegistrationDTO $registrationDTO, array $treatments): bool
+    {
+        if (!count($treatments)) {
+            return false;
+        }
+        try {
+            $registration = Registration::find($registrationDTO->id);
+            $treatmentIds = array_map(fn($treatment) => $treatment->id, $treatments);
+            $registration->treatments()->syncWithoutDetaching($treatmentIds);
+            return true;
+        } catch (QueryException $e) {
+            return false;
+        }
+    }
 }
 ?>
