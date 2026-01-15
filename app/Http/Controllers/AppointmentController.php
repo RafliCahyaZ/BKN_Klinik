@@ -85,9 +85,8 @@ class AppointmentController extends Controller
         }
 
         if (!$editResult) {
-            return redirect()->route("patient.history.show", $id);
+            return back()->withInput();
         }
-
-        return back()->withInput();
+        return redirect()->route("patient.history.show", $id);
     }
 }
