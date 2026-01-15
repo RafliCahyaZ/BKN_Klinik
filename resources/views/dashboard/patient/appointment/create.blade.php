@@ -39,7 +39,7 @@
                         <th>:</th>
                         <th>
                             <div class="form-group">
-                                <select name="tampil" class="form-control">
+                                <select name="doctor" class="form-control">
                                 @foreach($doctors as $index => $doctor)
                                     <option value="{{ $doctor->id }}">{{ $doctor->fullname }}</option>
                                 @endforeach

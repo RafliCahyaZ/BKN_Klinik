@@ -8,6 +8,7 @@ use App\Http\Controllers\DiagnosisController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HistoryController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/auth/login', [LoginController::class, 'index']);
@@ -18,7 +19,10 @@ Route::prefix("patient")->name("patient.")->group(function () {
     Route::get("/", [PatientController::class, 'index'])->name("index");
     Route::get("/create", [PatientController::class, 'create'])->name("create");
     Route::get("/queue", [PatientController::class, 'queue'])->name("queue");
+
     Route::get("/history", [PatientController::class, 'history'])->name("history");
+    Route::get("/history/{id}", [HistoryController::class, 'show'])->name("history.show");
+
     Route::post("/store", [PatientController::class, 'store'])->name("store");
     Route::get("//edit/{id}", [PatientController::class, 'edit'])->name("edit.view");
     Route::post("/edit/{id}", [PatientController::class, 'editAction'])->name("edit.action");
