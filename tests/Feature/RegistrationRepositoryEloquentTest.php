@@ -63,7 +63,6 @@ class RegistrationRepositoryEloquentTest extends TestCase
     {
         $registrationDTO = new RegistrationDTO();
         $registrationDTO->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
-        $registrationDTO->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO->complaint = 'Sakit kepala dan demam';
 
         $insertedRegistrationDTO = $this->registrationRepository->insert($registrationDTO);
@@ -71,7 +70,6 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertNotNull($insertedRegistrationDTO);
         $this->assertEquals('Sakit kepala dan demam', $insertedRegistrationDTO->complaint);
         $this->assertEquals($this->patientDTO->id, $insertedRegistrationDTO->patient->id);
-        $this->assertEquals($this->doctorDTO->createdAt, $insertedRegistrationDTO->doctor->createdAt);
         $this->assertInstanceOf(RegistrationDTO::class, $insertedRegistrationDTO);
         $this->assertInstanceOf(PatientDTO::class, $insertedRegistrationDTO->patient);
     }
@@ -109,37 +107,6 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertNull($insertedRegistrationDTO);
     }
 
-    // test insert registration gagal karena doctor tidak ada
-    public function testInsertRegistrationWithNonExistentDoctor(): void 
-    {
-        $patientDTO = new PatientDTO();
-        $patientDTO->id = $this->patientDTO->id;
-        $patientDTO->name = $this->patientDTO->name;
-        $patientDTO->medicalRecordNumber = $this->patientDTO->medicalRecordNumber;
-        $patientDTO->medicalRecordFileUrl = $this->patientDTO->medicalRecordFileUrl;
-        $patientDTO->address = $this->patientDTO->address;
-        $patientDTO->telpNumber = $this->patientDTO->telpNumber;
-        $patientDTO->dateOfBirth = $this->patientDTO->dateOfBirth;
-        $patientDTO->gender = $this->patientDTO->gender;
-        $patientDTO->history = $this->patientDTO->history;
-
-        $doctorDTO = new UserDTO();
-        $doctorDTO->id = '9999'; // Non-existent doctor ID
-        $doctorDTO->username = 'nonexistent_doctor';
-        $doctorDTO->fullname = 'Dr. Non Existent';
-        $doctorDTO->email = 'nonexistent@example.com';
-        $doctorDTO->password = bcrypt('password');
-        $doctorDTO->role = 'doctor';
-
-        $registrationDTO = new RegistrationDTO();
-        $registrationDTO->patient = $patientDTO;
-        $registrationDTO->complaint = 'Sakit kepala dan demam';
-        $registrationDTO->checkDate = Carbon::now();
-        $registrationDTO->doctor = $doctorDTO;
-
-        $insertedRegistrationDTO = $this->registrationRepository->insert($registrationDTO);
-        $this->assertNull($insertedRegistrationDTO);
-    }
     // test untuk get all registrations
     public function testGetAllRegistrations(): void 
     {
@@ -147,7 +114,6 @@ class RegistrationRepositoryEloquentTest extends TestCase
         for ($i = 1; $i <= 3; $i++) {
             $registrationDTO = new RegistrationDTO();
             $registrationDTO->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
-            $registrationDTO->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
             $registrationDTO->complaint = "Complaint $i";
 
             $this->registrationRepository->insert($registrationDTO); 
@@ -162,7 +128,6 @@ class RegistrationRepositoryEloquentTest extends TestCase
         //
         for ($i=0; $i <= 2; $i++) { 
             $this->assertNotNull($registrations[$i]->patient->id);
-            $this->assertNotNull($registrations[$i]->doctor->id);
         }
 
     }
@@ -193,7 +158,6 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertNotNull($fetchedRegistrationDTO);
         $this->assertEquals($insertedRegistrationDTO->complaint, $fetchedRegistrationDTO->complaint);
         $this->assertEquals($this->patientDTO->id, $fetchedRegistrationDTO->patient->id);
-        $this->assertEquals($this->doctorDTO->id, $fetchedRegistrationDTO->doctor->id);
         $this->assertInstanceOf(RegistrationDTO::class, $fetchedRegistrationDTO);
         $this->assertInstanceOf(PatientDTO::class, $fetchedRegistrationDTO->patient);
     }
