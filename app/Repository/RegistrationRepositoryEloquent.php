@@ -22,10 +22,27 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 
                 $patient = new PatientDTO();
                 $patient->id = $registration->patient->id;
+                $patient->name = $registration->patient->fullname;
+                $patient->age = $registration->patient->getAgeAttribute();
+                $patient->telpNumber = $registration->patient->telp_number;
+                $patient->address = $registration->patient->address;
+                $patient->dateOfBirth = Carbon::parse($registration->patient->date_of_birth);
+                $patient->gender = $registration->patient->gender;
+                $patient->medicalRecordNumber = $registration->patient->medical_record_number;
+                $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
+                $patient->history = $registration->patient->history;
+                $patient->createdAt = $registration->patient->created_at;
+                $patient->updatedAt = $registration->patient->updated_at;
                 
                 $doctor = new UserDTO();
                 if ($registration->doctor) {
                     $doctor->id = $registration->doctor->id;
+                    $doctor->username = $registration->doctor->fullname;
+                    $doctor->email = $registration->doctor->email;
+                    $doctor->fullname = $registration->doctor->fullname;
+                    $doctor->role = $registration->doctor->role;
+                    $doctor->createdAt = $registration->doctor->created_at;
+                    $doctor->updatedAt = $registration->doctor->updated_at;
                 }
 
                 $formatedRegistration->patient = $patient;
@@ -60,10 +77,27 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             
             $patient = new PatientDTO();
             $patient->id = $registration->patient->id;
+            $patient->name = $registration->patient->fullname;
+            $patient->age = $registration->patient->getAgeAttribute();
+            $patient->telpNumber = $registration->patient->telp_number;
+            $patient->address = $registration->patient->address;
+            $patient->dateOfBirth = Carbon::parse($registration->patient->date_of_birth);
+            $patient->gender = $registration->patient->gender;
+            $patient->medicalRecordNumber = $registration->patient->medical_record_number;
+            $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
+            $patient->history = $registration->patient->history;
+            $patient->createdAt = $registration->patient->created_at;
+            $patient->updatedAt = $registration->patient->updated_at;
 
             $doctor = new UserDTO();
             if ($registration->doctor) {
                 $doctor->id = $registration->doctor->id;
+                $doctor->username = $registration->doctor->fullname;
+                $doctor->email = $registration->doctor->email;
+                $doctor->fullname = $registration->doctor->fullname;
+                $doctor->role = $registration->doctor->role;
+                $doctor->createdAt = $registration->doctor->created_at;
+                $doctor->updatedAt = $registration->doctor->updated_at;
             }
             
             $formated_registration->patient = $patient;
@@ -166,10 +200,27 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 
                 $patient = new PatientDTO();
                 $patient->id = $registration->patient->id;
-                
+                $patient->name = $registration->patient->fullname;
+                $patient->age = $registration->patient->getAgeAttribute();
+                $patient->telpNumber = $registration->patient->telp_number;
+                $patient->address = $registration->patient->address;
+                $patient->dateOfBirth = Carbon::parse($registration->patient->date_of_birth);
+                $patient->gender = $registration->patient->gender;
+                $patient->medicalRecordNumber = $registration->patient->medical_record_number;
+                $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
+                $patient->history = $registration->patient->history;
+                $patient->createdAt = $registration->patient->created_at;
+                $patient->updatedAt = $registration->patient->updated_at;
+
                 $doctor = new UserDTO();
                 if ($registration->doctor) {
                     $doctor->id = $registration->doctor->id;
+                    $doctor->username = $registration->doctor->fullname;
+                    $doctor->email = $registration->doctor->email;
+                    $doctor->fullname = $registration->doctor->fullname;
+                    $doctor->role = $registration->doctor->role;
+                    $doctor->createdAt = $registration->doctor->created_at;
+                    $doctor->updatedAt = $registration->doctor->updated_at;
                 }
 
                 $formatedRegistration->patient = $patient;
@@ -203,10 +254,27 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 
                 $patient = new PatientDTO();
                 $patient->id = $registration->patient->id;
-                
+                $patient->name = $registration->patient->fullname;
+                $patient->age = $registration->patient->getAgeAttribute();
+                $patient->telpNumber = $registration->patient->telp_number;
+                $patient->address = $registration->patient->address;
+                $patient->dateOfBirth = Carbon::parse($registration->patient->date_of_birth);
+                $patient->gender = $registration->patient->gender;
+                $patient->medicalRecordNumber = $registration->patient->medical_record_number;
+                $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
+                $patient->history = $registration->patient->history;
+                $patient->createdAt = $registration->patient->created_at;
+                $patient->updatedAt = $registration->patient->updated_at;
+
                 $doctor = new UserDTO();
                 if ($registration->doctor) {
                     $doctor->id = $registration->doctor->id;
+                    $doctor->username = $registration->doctor->fullname;
+                    $doctor->email = $registration->doctor->email;
+                    $doctor->fullname = $registration->doctor->fullname;
+                    $doctor->role = $registration->doctor->role;
+                    $doctor->createdAt = $registration->doctor->created_at;
+                    $doctor->updatedAt = $registration->doctor->updated_at;
                 }
 
                 $formatedRegistration->patient = $patient;
