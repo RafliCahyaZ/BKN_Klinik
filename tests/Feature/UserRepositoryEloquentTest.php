@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Repository\UserRepositoryEloquent;
 use App\DTO\UserDTO;
+use App\Type\UserRole;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Facades\Hash;
@@ -30,7 +31,7 @@ class UserRepositoryEloquentTest extends TestCase
             'password' => 'password123',
             'fullname' => 'John Doe',
             'email' => 'john.doe@example.com',
-            'role' => 'doctor',
+            'role' => UserRole::DOCTOR,
         ];
     }
 
@@ -80,7 +81,7 @@ class UserRepositoryEloquentTest extends TestCase
         $duplicateUserDTO->password = Hash::make('password456');
         $duplicateUserDTO->fullname = 'Jane Doe';
         $duplicateUserDTO->email = $this->userData['email']; // Same email
-        $duplicateUserDTO->role = 'admin';
+        $duplicateUserDTO->role = UserRole::ADMIN;
         
         $this->expectException(\Illuminate\Database\QueryException::class);
         $secondInsert = $this->userRepository->insert($duplicateUserDTO);
@@ -115,7 +116,7 @@ class UserRepositoryEloquentTest extends TestCase
         $duplicateUserDTO->password = Hash::make('password456');
         $duplicateUserDTO->fullname = 'Jane Doe';
         $duplicateUserDTO->email = 'anjing@gmail.com'; 
-        $duplicateUserDTO->role = 'admin';
+        $duplicateUserDTO->role = UserRole::ADMIN;
         
         $this->expectException(\Illuminate\Database\QueryException::class);
         $secondInsert = $this->userRepository->insert($duplicateUserDTO);
@@ -132,7 +133,7 @@ class UserRepositoryEloquentTest extends TestCase
             $userDTO->password = Hash::make("password$i");
             $userDTO->fullname = "User $i";
             $userDTO->email = "user$i@example.com";
-            $userDTO->role = ($i % 2 == 0) ? 'admin' : 'doctor';
+            $userDTO->role = ($i % 2 == 0) ? UserRole::ADMIN : UserRole::DOCTOR;
 
             $this->userRepository->insert($userDTO); 
         }
@@ -148,7 +149,7 @@ class UserRepositoryEloquentTest extends TestCase
             $this->assertIsString($user->fullname);
             $this->assertIsString($user->password);
             $this->assertIsString($user->email);
-            $this->assertIsString($user->role);
+            $this->assertInstanceOf(UserRole::class, $user->role);
             $this->assertInstanceOf(CarbonInterface::class, $user->createdAt);
             $this->assertInstanceOf(CarbonInterface::class, $user->updatedAt);
         }
@@ -179,12 +180,12 @@ class UserRepositoryEloquentTest extends TestCase
         $insertedUserId = $insertedUserDTO->id;
         $updatedUserDTO = new UserDTO();
         $updatedUserDTO->fullname = "Updated Name";
-        $updatedUserDTO->role = "admin";
+        $updatedUserDTO->role = UserRole::ADMIN;
         
         $editedUserDTO = $this->userRepository->edit($insertedUserId, $updatedUserDTO);
         $this->assertNotNull($editedUserDTO);
         $this->assertEquals("Updated Name", $editedUserDTO->fullname);
-        $this->assertEquals("admin", $editedUserDTO->role);
+        $this->assertEquals(UserRole::ADMIN, $editedUserDTO->role);
         $this->assertInstanceOf(UserDTO::class, $editedUserDTO);
     }   
 
@@ -274,7 +275,7 @@ class UserRepositoryEloquentTest extends TestCase
         $this->assertIsString($fetchedUserDTO->fullname);
         $this->assertIsString($fetchedUserDTO->password);
         $this->assertIsString($fetchedUserDTO->email);
-        $this->assertIsString($fetchedUserDTO->role);
+        $this->assertInstanceOf(UserRole::class, $fetchedUserDTO->role);
         $this->assertInstanceOf(CarbonInterface::class, $fetchedUserDTO->createdAt);
         $this->assertInstanceOf(CarbonInterface::class, $fetchedUserDTO->updatedAt);
 
@@ -314,7 +315,7 @@ class UserRepositoryEloquentTest extends TestCase
         $this->assertIsString($fetchedUserDTO->fullname);
         $this->assertIsString($fetchedUserDTO->password);
         $this->assertIsString($fetchedUserDTO->email);
-        $this->assertIsString($fetchedUserDTO->role);
+        $this->assertInstanceOf(UserRole::class, $fetchedUserDTO->role);
         $this->assertInstanceOf(CarbonInterface::class, $fetchedUserDTO->createdAt);
         $this->assertInstanceOf(CarbonInterface::class, $fetchedUserDTO->updatedAt);
     }
@@ -338,7 +339,7 @@ class UserRepositoryEloquentTest extends TestCase
             $userDTO->password = Hash::make("password$i");
             $userDTO->fullname = "User $i";
             $userDTO->email = "user$i@example.com";
-            $userDTO->role = "doctor";
+            $userDTO->role = UserRole::DOCTOR;
             
             $insertedUserDTO = $this->userRepository->insert($userDTO);
             $latestInsertedId = $insertedUserDTO->id;

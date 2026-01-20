@@ -81,6 +81,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $this->assertInstanceOf(MedicineStockTransactionDTO::class, $insertedTransactionDTO);
     }
 
+
     // test untuk insert medicine stock transaction (keluar)
     public function testInsertMedicineStockTransactionOutSuccess(): void
     {
@@ -420,5 +421,90 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $this->assertEquals('Paracetamol', $this->medicineDTO->name);
         $this->assertEquals('inventory_officer', $this->inventoryOfficerDTO->username);
         $this->assertEquals('Tablet', $this->unitDTO->name);
+    }
+
+    // test untuk insertMany transactions sukses
+    public function testInsertManyTransactionsSuccess(): void
+    {
+        $transactions = [];
+
+        // Buat 3 transaksi untuk di-insert sekaligus
+        for ($i = 1; $i <= 3; $i++) {
+            $transactionDTO = new MedicineStockTransactionDTO();
+            $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+            $transactionDTO->medicineId = $this->medicineDTO->id;
+            $transactionDTO->registrationId = null;
+            $transactionDTO->type = 'in';
+            $transactionDTO->quantity = 20 * $i;
+            $transactionDTO->beginningStock = 100;
+            $transactionDTO->lastStock = 100 + (20 * $i);
+            $transactionDTO->expiredDate = Carbon::parse('2027-12-31');
+            $transactionDTO->notes = "Batch transaction $i";
+
+            $transactions[] = $transactionDTO;
+        }
+
+        $insertedTransactions = $this->transactionRepository->insertMany($transactions);
+
+        $this->assertNotNull($insertedTransactions);
+        $this->assertIsBool(true, $insertedTransactions);
+        
+        // Verify total data di database
+        $allTransactions = $this->transactionRepository->getAll();
+        $this->assertCount(3, $allTransactions);
+    }
+
+    // test untuk insertMany transactions gagal ketika salah satu data tidak valid
+    public function testInsertManyTransactionsFailedWhenInvalidData(): void
+    {
+        $transactions = [];
+
+        // Transaksi pertama: valid
+        $transaction1 = new MedicineStockTransactionDTO();
+        $transaction1->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+        $transaction1->medicineId = $this->medicineDTO->id;
+        $transaction1->registrationId = null;
+        $transaction1->type = 'in';
+        $transaction1->quantity = 20;
+        $transaction1->beginningStock = 100;
+        $transaction1->lastStock = 120;
+        $transaction1->expiredDate = null;
+        $transaction1->notes = "Valid transaction";
+        $transactions[] = $transaction1;
+
+        // Transaksi kedua: tidak valid (medicine tidak ada)
+        $transaction2 = new MedicineStockTransactionDTO();
+        $transaction2->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+        $transaction2->medicineId = '9999'; // Non-existent medicine
+        $transaction2->registrationId = null;
+        $transaction2->type = 'in';
+        $transaction2->quantity = 30;
+        $transaction2->beginningStock = 100;
+        $transaction2->lastStock = 130;
+        $transaction2->expiredDate = null;
+        $transaction2->notes = "Invalid transaction";
+        $transactions[] = $transaction2;
+
+        // Transaksi ketiga: valid
+        $transaction3 = new MedicineStockTransactionDTO();
+        $transaction3->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+        $transaction3->medicineId = $this->medicineDTO->id;
+        $transaction3->registrationId = null;
+        $transaction3->type = 'out';
+        $transaction3->quantity = 10;
+        $transaction3->beginningStock = 100;
+        $transaction3->lastStock = 90;
+        $transaction3->expiredDate = null;
+        $transaction3->notes = "Valid transaction 2";
+        $transactions[] = $transaction3;
+
+        $insertedTransactions = $this->transactionRepository->insertMany($transactions);
+
+        // Karena ada data yang tidak valid, insertMany harus gagal/return null atau array kosong
+        $this->assertFalse($insertedTransactions);
+
+        // Verify tidak ada transaksi yang ter-insert (rollback semua)
+        $allTransactions = $this->transactionRepository->getAll();
+        $this->assertCount(0, $allTransactions);
     }
 }

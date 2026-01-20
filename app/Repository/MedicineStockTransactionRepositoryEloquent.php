@@ -9,6 +9,14 @@ use Carbon\Carbon;
 
 class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransactionRepository
 {
+    protected $medicineRepository;
+
+    public function __construct()
+    {
+        $this->medicineRepository = new MedicineRepositoryEloquent();
+
+    }
+
     function getAll(): array
     {
         try {
@@ -26,8 +34,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 $formated_transaction->lastStock = $transaction->last_stock;
                 $formated_transaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
                 $formated_transaction->notes = $transaction->notes;
-                $formated_transaction->createdAt = $transaction->created_at;
-                $formated_transaction->updatedAt = $transaction->updated_at;
+                $formated_transaction->createdAt = Carbon::parse($transaction->created_at);
+                $formated_transaction->updatedAt = Carbon::parse($transaction->updated_at);
                 return $formated_transaction;
             });
 
@@ -62,6 +70,30 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             return $medicineStockTransactionDTO;
         } catch (\Exception $e) {
             return null;
+        }
+    }
+
+    function insertMany(array $medicineStockTransactionDTOs): bool
+    {
+        try {
+            $newData = collect($medicineStockTransactionDTOs)->map(function ($dto) {
+                return [
+                    'inventory_officer_id' => $dto->inventoryOfficerId,
+                    'medicine_id' => $dto->medicineId,
+                    'registration_id' => $dto->registrationId,
+                    'type' => $dto->type,
+                    'quantity' => $dto->quantity,
+                    'beginning_stock' => $dto->beginningStock,
+                    'last_stock' => $dto->lastStock,
+                    'expired_date' => $dto->expiredDate ? $dto->expiredDate->toDateString() : null,
+                    'notes' => $dto->notes,
+                ];
+            });
+            $newDataArray = $newData->toArray();
+            MedicineStockTransaction::insert($newDataArray);
+            return true;
+        } catch (\Exception $e) {
+            return false;
         }
     }
 
