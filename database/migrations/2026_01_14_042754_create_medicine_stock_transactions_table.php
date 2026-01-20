@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('inventory_officer_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('medicine_id')->constrained()->onDelete('cascade');
-            $table->foreignId('registration_id')->constrained()->onDelete('cascade');
+            $table->foreignId('registration_id')->nullable()->constrained()->onDelete('cascade');
             $table->enum('type', ['in', 'out', 'adjustment', 'return', 'expired']);
             $table->integer('quantity');
             $table->integer('beginning_stock');

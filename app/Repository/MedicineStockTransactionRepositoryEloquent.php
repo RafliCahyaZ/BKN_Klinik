@@ -1,0 +1,233 @@
+<?php
+
+namespace App\Repository;
+
+use App\DTO\MedicineStockTransactionDTO;
+use App\Models\MedicineStockTransaction;
+use App\Repository\MedicineStockTransactionRepository;
+use Carbon\Carbon;
+
+class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransactionRepository
+{
+    function getAll(): array
+    {
+        try {
+            $transactions_collections = MedicineStockTransaction::all();
+
+            $formated_transactions = $transactions_collections->map(function ($transaction) {
+                $formated_transaction = new MedicineStockTransactionDTO();
+                $formated_transaction->id = $transaction->id;
+                $formated_transaction->inventoryOfficerId = $transaction->inventory_officer_id;
+                $formated_transaction->medicineId = $transaction->medicine_id;
+                $formated_transaction->registrationId = $transaction->registration_id;
+                $formated_transaction->type = $transaction->type;
+                $formated_transaction->quantity = $transaction->quantity;
+                $formated_transaction->beginningStock = $transaction->beginning_stock;
+                $formated_transaction->lastStock = $transaction->last_stock;
+                $formated_transaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
+                $formated_transaction->notes = $transaction->notes;
+                $formated_transaction->createdAt = $transaction->created_at;
+                $formated_transaction->updatedAt = $transaction->updated_at;
+                return $formated_transaction;
+            });
+
+            $transactions = $formated_transactions->toArray();
+
+            return $transactions;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+
+    function insert(MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO
+    {
+        try {
+            $transaction = MedicineStockTransaction::create([
+                'inventory_officer_id' => $medicineStockTransactionDTO->inventoryOfficerId,
+                'medicine_id' => $medicineStockTransactionDTO->medicineId,
+                'registration_id' => $medicineStockTransactionDTO->registrationId,
+                'type' => $medicineStockTransactionDTO->type,
+                'quantity' => $medicineStockTransactionDTO->quantity,
+                'beginning_stock' => $medicineStockTransactionDTO->beginningStock,
+                'last_stock' => $medicineStockTransactionDTO->lastStock,
+                'expired_date' => $medicineStockTransactionDTO->expiredDate ? $medicineStockTransactionDTO->expiredDate->toDateString() : null,
+                'notes' => $medicineStockTransactionDTO->notes,
+            ]);
+
+            $medicineStockTransactionDTO->id = $transaction->id;
+            $medicineStockTransactionDTO->createdAt = $transaction->created_at;
+            $medicineStockTransactionDTO->updatedAt = $transaction->updated_at;
+
+            return $medicineStockTransactionDTO;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    function edit(string $id, MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO
+    {
+        try {
+            $updateData = [
+                'inventory_officer_id' => $medicineStockTransactionDTO->inventoryOfficerId ?? null,
+                'medicine_id' => $medicineStockTransactionDTO->medicineId ?? null,
+                'registration_id' => $medicineStockTransactionDTO->registrationId ?? null,
+                'type' => $medicineStockTransactionDTO->type ?? null,
+                'quantity' => $medicineStockTransactionDTO->quantity ?? null,
+                'beginning_stock' => $medicineStockTransactionDTO->beginningStock ?? null,
+                'last_stock' => $medicineStockTransactionDTO->lastStock ?? null,
+                'expired_date' => $medicineStockTransactionDTO->expiredDate ?? null,
+                'notes' => $medicineStockTransactionDTO->notes ?? null,
+            ];
+            $filteredUpdateData = array_filter($updateData, function ($value) {
+                return $value !== null;
+            });
+            $transactionId = $id;
+
+            if (!empty($filteredUpdateData)) {
+
+                $edit = MedicineStockTransaction::where('id', $transactionId)
+                    ->update($filteredUpdateData);
+
+                if ($edit > 0) {
+                    $updatedData = MedicineStockTransaction::find($id);
+
+                    $formatedUpdatedData = new MedicineStockTransactionDTO();
+                    $formatedUpdatedData->id = $updatedData->id;
+                    $formatedUpdatedData->inventoryOfficerId = $updatedData->inventory_officer_id;
+                    $formatedUpdatedData->medicineId = $updatedData->medicine_id;
+                    $formatedUpdatedData->registrationId = $updatedData->registration_id;
+                    $formatedUpdatedData->type = $updatedData->type;
+                    $formatedUpdatedData->quantity = $updatedData->quantity;
+                    $formatedUpdatedData->beginningStock = $updatedData->beginning_stock;
+                    $formatedUpdatedData->lastStock = $updatedData->last_stock;
+                    $formatedUpdatedData->expiredDate = $updatedData->expired_date ? Carbon::parse($updatedData->expired_date) : null;
+                    $formatedUpdatedData->notes = $updatedData->notes;
+                    $formatedUpdatedData->createdAt = $updatedData->created_at;
+                    $formatedUpdatedData->updatedAt = $updatedData->updated_at;
+
+                    return $formatedUpdatedData;
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    function getById(string $id): ?MedicineStockTransactionDTO
+    {
+        try {
+            $transaction = MedicineStockTransaction::find($id);
+
+            if (!$transaction) {
+                return null;
+            }
+
+            $formatedTransaction = new MedicineStockTransactionDTO();
+            $formatedTransaction->id = $transaction->id;
+            $formatedTransaction->inventoryOfficerId = $transaction->inventory_officer_id;
+            $formatedTransaction->medicineId = $transaction->medicine_id;
+            $formatedTransaction->registrationId = $transaction->registration_id;
+            $formatedTransaction->type = $transaction->type;
+            $formatedTransaction->quantity = $transaction->quantity;
+            $formatedTransaction->beginningStock = $transaction->beginning_stock;
+            $formatedTransaction->lastStock = $transaction->last_stock;
+            $formatedTransaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
+            $formatedTransaction->notes = $transaction->notes;
+            $formatedTransaction->createdAt = $transaction->created_at;
+            $formatedTransaction->updatedAt = $transaction->updated_at;
+            return $formatedTransaction;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    function getLatestId(): int
+    {
+        try {
+            $latestId = MedicineStockTransaction::max('id');
+            if (!$latestId) {
+                return 0;
+            }
+            return $latestId;
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
+
+    function delete(string $id): bool
+    {
+        try {
+            $transaction = MedicineStockTransaction::find($id);
+
+            if ($transaction) {
+                $result = $transaction->delete();
+                return $result;
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    function getByMedicineId(string $medicineId): array
+    {
+        try {
+            $transactions_collections = MedicineStockTransaction::where('medicine_id', $medicineId)->get();
+
+            $formated_transactions = $transactions_collections->map(function ($transaction) {
+                $formated_transaction = new MedicineStockTransactionDTO();
+                $formated_transaction->id = $transaction->id;
+                $formated_transaction->inventoryOfficerId = $transaction->inventory_officer_id;
+                $formated_transaction->medicineId = $transaction->medicine_id;
+                $formated_transaction->registrationId = $transaction->registration_id;
+                $formated_transaction->type = $transaction->type;
+                $formated_transaction->quantity = $transaction->quantity;
+                $formated_transaction->beginningStock = $transaction->beginning_stock;
+                $formated_transaction->lastStock = $transaction->last_stock;
+                $formated_transaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
+                $formated_transaction->notes = $transaction->notes;
+                $formated_transaction->createdAt = $transaction->created_at;
+                $formated_transaction->updatedAt = $transaction->updated_at;
+                return $formated_transaction;
+            });
+
+            return $formated_transactions->toArray();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    function getByType(string $type): array
+    {
+        try {
+            $transactions_collections = MedicineStockTransaction::where('type', $type)->get();
+
+            $formated_transactions = $transactions_collections->map(function ($transaction) {
+                $formated_transaction = new MedicineStockTransactionDTO();
+                $formated_transaction->id = $transaction->id;
+                $formated_transaction->inventoryOfficerId = $transaction->inventory_officer_id;
+                $formated_transaction->medicineId = $transaction->medicine_id;
+                $formated_transaction->registrationId = $transaction->registration_id;
+                $formated_transaction->type = $transaction->type;
+                $formated_transaction->quantity = $transaction->quantity;
+                $formated_transaction->beginningStock = $transaction->beginning_stock;
+                $formated_transaction->lastStock = $transaction->last_stock;
+                $formated_transaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
+                $formated_transaction->notes = $transaction->notes;
+                $formated_transaction->createdAt = $transaction->created_at;
+                $formated_transaction->updatedAt = $transaction->updated_at;
+                return $formated_transaction;
+            });
+
+            return $formated_transactions->toArray();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+}
