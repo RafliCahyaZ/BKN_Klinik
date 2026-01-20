@@ -9,6 +9,7 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\ReportController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/auth/login', [LoginController::class, 'index'])->name("login");
@@ -27,6 +28,9 @@ Route::middleware("auth")->group(function () {
             Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
         });
     });
+
+    Route::get("/report", [ReportController::class, 'index'])->name("report.index");
+    Route::post("/report", [ReportController::class, 'create'])->name("report.create");
 
     Route::prefix("patient")->name("patient.")->group(function () {
         Route::get("/", [PatientController::class, 'index'])->name("index");
