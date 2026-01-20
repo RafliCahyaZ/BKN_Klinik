@@ -20,9 +20,84 @@
         th, td { border: 1px solid #000; padding: 4px; font-size: 12px; }
     </style>
 
-    <style>
-        @media print { .no-print { display:none !important; } }
-    </style>
+<style>
+    @media print {
+
+        .container{
+            width: 100%;
+            max-width: 100%;
+
+        }
+
+        body {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th, td {
+            border: 1px dashed #000;
+            padding: 6px;
+            font-size: 11px;
+            vertical-align: top;
+
+            white-space: normal;
+            word-break: break-word;
+        }
+
+
+        td:nth-child(7),
+        th:nth-child(7) {
+            width: 18%;
+            font-size: 10px;
+            word-break: break-all;
+        }
+
+
+        td:nth-child(9),
+        th:nth-child(9) {
+            width: 12%;
+            word-break: break-all;
+            text-align: center;
+        }
+
+        td:nth-child(5),
+        th:nth-child(5) {
+            width: 6%;
+            word-break: break-all;
+            text-align: center;
+        }
+
+        h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            font-family: "Courier New", Courier, monospace;
+        }
+
+
+        .no-print,
+        nav,
+        .navbar,
+        .btn {
+            display: none !important;
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 15mm;
+        }
+
+    }
+</style>
+
 
     <style>
         body { padding: 70px 0; }

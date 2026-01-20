@@ -1,11 +1,19 @@
 @extends('layouts.print')
 @section("content")
 
-<div class="no-print">
-    <a href="{{ route('patient.index') }}" class="btn btn-danger" style="margin-bottom:12px;">← Back</a>
+<div class="no-print" style="display:flex; justify-content:space-between; margin-bottom:12px;">
+    <a href="{{ route('patient.index') }}" class="btn btn-danger btn-md">
+        <i class="glyphicon glyphicon-arrow-left"></i> Kembali
+    </a>
+
+    <button class="btn btn-primary btn-md" onclick="window.print()">
+        <i class="glyphicon glyphicon-print"></i> Cetak
+    </button>
 </div>
 
-<table class="table table-bordered table-hover table-condensed">
+<x-dashboard-container title="Data Master Pasien">
+
+    <table class="table table-bordered table-hover table-condensed">
         <thead>
             <tr>
                 <th>No</th>
@@ -36,5 +44,9 @@
             </tr>
         @endforeach
         </tbody>
-</table>
+    </table>
+
+</x-dashboard-container>
+
+
 @endsection
