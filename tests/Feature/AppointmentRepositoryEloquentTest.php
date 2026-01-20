@@ -13,6 +13,7 @@ use App\Repository\PatientRepositoryEloquent;
 use App\Repository\RegistrationRepositoryEloquent;
 use App\Repository\TreatmentRepositoryEloquent;
 use App\Repository\UserRepositoryEloquent;
+use App\Type\UserRole;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -79,7 +80,7 @@ class AppointmentRepositoryEloquentTest extends TestCase
         $doctorDTO->fullname = 'Dr. Jane Smith';
         $doctorDTO->email = 'doctor@example.com';
         $doctorDTO->password = bcrypt('password');
-        $doctorDTO->role = 'doctor';
+        $doctorDTO->role = UserRole::DOCTOR;
 
         // Insert akan return UserDTO lengkap dengan id, createdAt, updatedAt
         $this->doctorDTO = $this->userRepository->insert($doctorDTO);

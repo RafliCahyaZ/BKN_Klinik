@@ -11,7 +11,10 @@ use App\Repository\PatientRepositoryEloquent;
 use App\DTO\RegistrationDTO;
 use App\DTO\PatientDTO;
 use App\DTO\UserDTO;
-use Carbon\Carbon;
+use App\Type\UserRole;
+use Illuminate\Support\Carbon;
+
+use function Symfony\Component\Clock\now;
 
 class RegistrationRepositoryEloquentTest extends TestCase
 {
@@ -52,21 +55,21 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $doctorDTO->fullname = 'Dr. Jane Smith';
         $doctorDTO->email = 'doctor@example.com';
         $doctorDTO->password = bcrypt('password');
-        $doctorDTO->role = 'doctor';
+        $doctorDTO->role = UserRole::DOCTOR;
 
         // Insert akan return UserDTO lengkap dengan id, createdAt, updatedAt
         $this->doctorDTO = $this->userRepository->insert($doctorDTO);
     }
 
     // test untuk insert registration
-    public function testInsertRegistrationSuccess(): void 
+    public function testInsertRegistrationSuccess(): void
     {
         $registrationDTO = new RegistrationDTO();
         $registrationDTO->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO->complaint = 'Sakit kepala dan demam';
 
         $insertedRegistrationDTO = $this->registrationRepository->insert($registrationDTO);
-        
+
         $this->assertNotNull($insertedRegistrationDTO);
         $this->assertEquals('Sakit kepala dan demam', $insertedRegistrationDTO->complaint);
         $this->assertEquals($this->patientDTO->id, $insertedRegistrationDTO->patient->id);
@@ -75,7 +78,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test insert registration gagal karena patient tidak ada
-    public function testInsertRegistrationWithNonExistentPatient(): void 
+    public function testInsertRegistrationWithNonExistentPatient(): void
     {
         $patientDTO = new PatientDTO();
         $patientDTO->id = '9999'; // Non-existent patient ID\
@@ -108,7 +111,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test untuk get all registrations
-    public function testGetAllRegistrations(): void 
+    public function testGetAllRegistrations(): void
     {
         // Insert some registrations first
         for ($i = 1; $i <= 3; $i++) {
@@ -116,7 +119,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
             $registrationDTO->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
             $registrationDTO->complaint = "Complaint $i";
 
-            $this->registrationRepository->insert($registrationDTO); 
+            $this->registrationRepository->insert($registrationDTO);
         }
 
         $registrations = $this->registrationRepository->getAll();
@@ -126,14 +129,13 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertInstanceOf(PatientDTO::class, $registrations[0]->patient);
         // test untuk jika data ada maka data patient id sama doctor id harus ada
         //
-        for ($i=0; $i <= 2; $i++) { 
+        for ($i = 0; $i <= 2; $i++) {
             $this->assertNotNull($registrations[$i]->patient->id);
         }
-
     }
 
     // test untuk getall registrations ketika tidak ada data
-    public function testGetAllRegistrationsWhenNoData(): void 
+    public function testGetAllRegistrationsWhenNoData(): void
     {
         $registrations = $this->registrationRepository->getAll();
         $this->assertIsArray($registrations);
@@ -141,20 +143,20 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test getById registration
-    public function testGetByIdRegistration(): void 
+    public function testGetByIdRegistration(): void
     {
         $registrationDTO = new RegistrationDTO();
         $registrationDTO->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO->complaint = 'Batuk dan pilek';
         $registrationDTO->receipt = 'Batuk dan pilek';
-        
-        $insertedRegistrationDTO = $this->registrationRepository->insert($registrationDTO);    
+
+        $insertedRegistrationDTO = $this->registrationRepository->insert($registrationDTO);
         $this->assertNotNull($insertedRegistrationDTO);
-        
+
         $insertedRegistrationId = $insertedRegistrationDTO->id;
         $fetchedRegistrationDTO = $this->registrationRepository->getById($insertedRegistrationId);
-        
+
         $this->assertNotNull($fetchedRegistrationDTO);
         $this->assertEquals($insertedRegistrationDTO->complaint, $fetchedRegistrationDTO->complaint);
         $this->assertEquals($this->patientDTO->id, $fetchedRegistrationDTO->patient->id);
@@ -163,7 +165,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test getById registration yang tidak ada
-    public function testGetByIdNonExistentRegistration(): void 
+    public function testGetByIdNonExistentRegistration(): void
     {
         $nonExistentRegistrationId = '9999';
         $fetchedRegistrationDTO = $this->registrationRepository->getById($nonExistentRegistrationId);
@@ -171,14 +173,14 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test insert registration dengan multiple patients
-    public function testInsertMultipleRegistrationsForSamePatient(): void 
+    public function testInsertMultipleRegistrationsForSamePatient(): void
     {
         // First registration
         $registrationDTO1 = new RegistrationDTO();
         $registrationDTO1->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO1->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO1->complaint = 'First visit - Demam';
-        
+
         $insertedRegistration1 = $this->registrationRepository->insert($registrationDTO1);
         $this->assertNotNull($insertedRegistration1);
 
@@ -187,7 +189,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $registrationDTO2->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO2->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO2->complaint = 'Second visit - Kontrol';
-        
+
         $insertedRegistration2 = $this->registrationRepository->insert($registrationDTO2);
         $this->assertNotNull($insertedRegistration2);
 
@@ -199,7 +201,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test untuk insert registration dengan berbagai patient
-    public function testInsertRegistrationWithDifferentPatients(): void 
+    public function testInsertRegistrationWithDifferentPatients(): void
     {
         // Create second patient using PatientRepository
         $patientDTO2 = new PatientDTO();
@@ -220,7 +222,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $registrationDTO1->patient = $this->patientDTO; // Gunakan DTO dari setUp
         $registrationDTO1->doctor = $this->doctorDTO; // Gunakan DTO dari setUp
         $registrationDTO1->complaint = 'Patient 1 - Demam';
-        
+
         $insertedRegistration1 = $this->registrationRepository->insert($registrationDTO1);
         $this->assertNotNull($insertedRegistration1);
 
@@ -229,7 +231,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $registrationDTO2->patient = $insertedPatient2; // Gunakan DTO hasil insert
         $registrationDTO2->doctor = $this->doctorDTO; // Gunakan DTO hasil insert
         $registrationDTO2->complaint = 'Patient 2 - Sakit perut';
-        
+
         $insertedRegistration2 = $this->registrationRepository->insert($registrationDTO2);
         $this->assertNotNull($insertedRegistration2);
 
@@ -242,19 +244,19 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test untuk verifikasi doctor tersedia
-    public function testDoctorIsAvailable(): void 
+    public function testDoctorIsAvailable(): void
     {
         $this->assertNotNull($this->doctorDTO);
         $this->assertNotNull($this->doctorDTO->id);
         $this->assertEquals('doctor1', $this->doctorDTO->username);
         $this->assertEquals('Dr. Jane Smith', $this->doctorDTO->fullname);
-        $this->assertEquals('doctor', $this->doctorDTO->role);
+        $this->assertEquals(UserRole::DOCTOR, $this->doctorDTO->role);
         $this->assertNotNull($this->doctorDTO->createdAt);
         $this->assertNotNull($this->doctorDTO->updatedAt);
     }
 
     // test untuk verifikasi patient tersedia
-    public function testPatientIsAvailable(): void 
+    public function testPatientIsAvailable(): void
     {
         $this->assertNotNull($this->patientDTO);
         $this->assertNotNull($this->patientDTO->id);
@@ -265,8 +267,58 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
 
+    // test getByRangeDate
+    public function testGetByRangeDate(): void
+    {
+        // 1. Insert 19 data (H-20 sampai H-2)
+        for ($i = 20; $i > 1; $i--) {
+            // Tentukan waktu palsu
+            $fakeDate = \Illuminate\Support\Carbon::now()->subDays($i);
+            \Illuminate\Support\Carbon::setTestNow($fakeDate); // INI YANG PENTING
+            $registrationDTO = new RegistrationDTO();
+            $registrationDTO->patient = $this->patientDTO;
+            $registrationDTO->doctor = $this->doctorDTO;
+            $registrationDTO->complaint = 'Patient ' . $i . ' - Demam';
+
+            $inserted = $this->registrationRepository->insert($registrationDTO);
+            \Illuminate\Support\Carbon::setTestNow(); // Kembali ke sekarang
+            // dump([
+            //     'loop_ke' => $i,
+            //     'waktu_palsu_carbon' => \Illuminate\Support\Carbon::now()->toDateTimeString(),
+            //     'waktu_di_database' => $inserted->createdAt->toDateTimeString(), // Pastikan properti ini ada di DTO/Model kamu
+            // ]);;
+        }
+
+        // 2. Data H-0 (Hari ini)
+        \Illuminate\Support\Carbon::setTestNow(); // Kembali ke sekarang
+
+        $registrationDTO = new RegistrationDTO();
+        $registrationDTO->patient = $this->patientDTO;
+        $registrationDTO->doctor = $this->doctorDTO;
+        $registrationDTO->complaint = 'Patient Hari Ini - Demam';
+        $this->registrationRepository->insert($registrationDTO);
+
+        // 3. Jalankan test filter (H-20 sampai H-1)
+        $startDate = \Illuminate\Support\Carbon::now()->subDays(20)->startOfDay();
+        $endDate = \Illuminate\Support\Carbon::now()->subDays(1)->endOfDay();
+
+        // Ambil data dari Repository
+        $results = $this->registrationRepository->getByRangeDate($startDate, $endDate);
+        // dd([
+        //     'startDate' => $startDate->toDateTimeString(),
+        //     'endDate' => $endDate->toDateTimeString(),
+        //     'sample_data_in_db' => \App\Models\Registration::first()->created_at->toDateTimeString()
+        // ]);
+        // Assert-nya 19 karena data H-0 tidak masuk dalam range (karena endDate adalah H-1)
+        $this->assertCount(19, $results);
+
+        // SANGAT PENTING: Selalu bersihkan waktu palsu
+        \Illuminate\Support\Carbon::setTestNow();
+    }
+
+
     // test untuk edit data
-    public function testEditRegistration(): void 
+    public function testEditRegistration(): void
     {
         // Insert initial registration
         $registrationDTO = new RegistrationDTO();
@@ -274,14 +326,14 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $registrationDTO->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO->complaint = 'Sakit kepala';
         $registrationDTO->receipt = 'minum baigon';
-        
-        $insertedRegistrationDTO = $this->registrationRepository->insert($registrationDTO);    
+
+        $insertedRegistrationDTO = $this->registrationRepository->insert($registrationDTO);
         $this->assertNotNull($insertedRegistrationDTO);
-        
+
         // Edit the registration
         $insertedRegistrationDTO->receipt = 'Makan tai';
         $editedRegistrationDTO = $this->registrationRepository->edit($insertedRegistrationDTO);
-        
+
         $this->assertNotNull($editedRegistrationDTO);
         $this->assertEquals('Makan tai', $editedRegistrationDTO->receipt);
         $this->assertEquals($this->patientDTO->id, $editedRegistrationDTO->patient->id);
