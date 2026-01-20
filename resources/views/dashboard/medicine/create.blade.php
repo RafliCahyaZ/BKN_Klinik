@@ -33,6 +33,23 @@
                         <th><input type="number" name="stock" value="0" class="form-control" id="nama" required="required"></th>
                     </tr>
 
+                    @error('unit')
+                        <tr>
+                            <th class="text-danger" colspan="3">{{ $message }}</th>
+                        </tr>
+                    @enderror
+                    <tr>
+                        <th>Unit</th>
+                        <th>:</th>
+                        <th>
+                        <select name="unit">
+                            @foreach($units as $index => $unit)
+                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                            @endforeach
+                        </select>
+                        </th>
+                    </tr>
+
                     <tr>
                         <th colspan="3">
                             <input

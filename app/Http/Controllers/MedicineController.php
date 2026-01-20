@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\MedicineDTO;
+use App\DTO\UnitDTO;
 use App\Repository\MedicineRepository;
+use App\Repository\UnitRepository;
 use Illuminate\Http\Request;
 
 class MedicineController extends Controller
 {
     public function __construct(
-        private MedicineRepository $medicineRepository
+        private MedicineRepository $medicineRepository,
+        private UnitRepository $unitRepository
     ) {}
 
     public function index()
@@ -24,65 +28,108 @@ class MedicineController extends Controller
 
     public function edit($id)
     {
-        /* $treatment = $this->treatmentRepository->getById($id); */
-        /**/
-        /* return view("dashboard.treatment.edit", [ */
-        /*     "treatment" => $treatment */
-        /* ]); */
+        $medicine = $this->medicineRepository->getById($id);
+
+        if (!$medicine) {
+            abort(404);
+        }
+
+        $units = $this->unitRepository->getAll();
+
+        return view("dashboard.medicine.edit", [
+            "medicine" => $medicine,
+            "units" => $units
+        ]);
     }
 
     public function editAction($id, Request $request)
     {
-        /* $validated = $this->getTreatmentInputValidation($request); */
-        /**/
-        /* $treatment = $this->treatmentRepository->getById($id); */
-        /**/
-        /* if (!$treatment) { */
-        /*     abort(404); */
-        /* } */
-        /**/
-        /* $treatment->treatmentCode = $validated["icd_code"]; */
-        /* $treatment->treatmentName = $validated["treatment_name"]; */
-        /**/
-        /* if (!$this->treatmentRepository->edit($id, $treatment)) { */
-        /*     return redirect()->route("treatment.index")->with("failed", "Failed! Data gagal diedit"); */
-        /* } */
-        /* return redirect()->route("treatment.index")->with("success", "Sukses! Data berhasil diedit"); */
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'min:2',
+                'max:100'
+            ],
+            'unit' => [
+                'required'
+            ]
+        ]);
+        $medicine = $this->medicineRepository->getById($id);
+
+        if (!$medicine) {
+            abort(404);
+        }
+
+        $medicine->name = $validated["name"];
+        $medicine->unit->id = $validated["unit"];
+
+        if (!$this->medicineRepository->edit($id, $medicine)) {
+            return redirect()->route("medicine.index")->with("failed", "Failed! Data gagal diedit");
+        }
+
+        return redirect()->route("medicine.index")->with("success", "Sukses! Data berhasil diedit");
     }
 
     public function create()
     {
-        return view("dashboard.medicine.create");
+        $units = $this->unitRepository->getAll();
+        return view("dashboard.medicine.create", [
+            "units" => $units
+        ]);
     }
 
     public function destroy($id)
     {
-        /* $treatment = $this->treatmentRepository->getById($id); */
-        /**/
-        /* if (!$treatment) { */
-        /*     abort(404); */
-        /* } */
-        /**/
-        /* if (!$this->treatmentRepository->delete($id)) { */
-        /*     return redirect()->route("treatment.index")->with("failed", "Failed! Data gagal dihapus"); */
-        /* } */
-        /**/
-        /* return redirect()->route("treatment.index")->with("success", "Sukses! Data berhasil dihapus"); */
+        $medicine = $this->medicineRepository->getById($id);
+        if (!$medicine) {
+            abort(404);
+        }
+
+        if (!$this->medicineRepository->delete($id)) {
+            return redirect()->route("medicine.index")->with("failed", "Failed! Data gagal dihapus");
+        }
+
+        return redirect()->route("medicine.index")->with("success", "Sukses! Data berhasil dihapus");
     }
 
 
     public function store(Request $request)
     {
-        /* $validated = $this->getTreatmentInputValidation($request); */
-        /**/
-        /* $treatmentDto = new TreatmentDTO(); */
-        /* $treatmentDto->treatmentCode = $validated["icd_code"]; */
-        /* $treatmentDto->treatmentName = $validated["treatment_name"]; */
-        /**/
-        /* if (!$this->treatmentRepository->insert($treatmentDto)) { */
-        /*     return redirect()->route("treatment.index")->with("failed", "Failed! Data gagal disimpan"); */
-        /* } */
-        /**/
-        /* return redirect()->route("treatment.index")->with("success", "Sukses! Data berhasil disimpan"); */
+        $validated = $this->getMedicineInputValidation($request);
+
+        $medicineDto = new MedicineDTO();
+        $medicineDto->name = $validated["name"];
+        $medicineDto->stock = $validated["stock"];
+        $medicineDto->unit = new UnitDTO();
+        $medicineDto->unit->id = $validated["unit"];
+
+        if (!$this->medicineRepository->insert($medicineDto)) {
+            return redirect()->route("medicine.index")->with("failed", "Failed! Data gagal disimpan");
+        }
+
+        return redirect()->route("medicine.index")->with("success", "Sukses! Data berhasil disimpan");
+    }
+
+    public function getMedicineInputValidation(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'min:2',
+                'max:100'
+            ],
+            'stock' => [
+                'required',
+                'integer',
+                'min:0'
+            ],
+            'unit' => [
+                'required'
+            ]
+        ]);
+
+        return $validated;
     }
 }

@@ -25,6 +25,7 @@
                                 <tr>
                                 <th>Kode ICD</th>
                                 <th>Nama Penyakit</th>
+                                <th>Stok</th>
                                 <th>Kelola</th>
                                 </tr>
                             </thead>
@@ -34,8 +35,9 @@
                                 <tr>
                                     <td>{{ $medicine->id }}</td>
                                     <td>{{ $medicine->name }}</td>
+                                    <td>{{ $medicine->stock }}</td>
                                     <td>
-                                        <a href="{{ route("diagnosis.edit.view", $medicine->id) }}" class="btn btn-sm btn-info" title="Ubah Data"><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <a href="{{ route("medicine.edit.view", $medicine->id) }}" class="btn btn-sm btn-info" title="Ubah Data"><i class="glyphicon glyphicon-pencil"></i></a>
                                     <form
                                         style="display: inline-block;"
                                         action="{{ route('medicine.destroy', $medicine->id) }}"
