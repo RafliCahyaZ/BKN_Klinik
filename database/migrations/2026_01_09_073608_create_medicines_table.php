@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('medicines', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->integer('stoct');
+            $table->integer('stock');
             $table->foreignId('unit_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
