@@ -11,7 +11,7 @@ class Medicine extends Model
 {
     protected $fillable = [
         'name',
-        'stok',
+        'stock',
         'unit_id',
     ];
 

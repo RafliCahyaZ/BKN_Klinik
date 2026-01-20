@@ -45,7 +45,7 @@
                                 <td>{{ ($patient->gender === "F") ? "Perempuan" : "Laki-laki" }}</td>
                                 <td>{{ $patient->age }}</td>
                                 <td>{{ $patient->history }}</td>
-                                <td>{{ $patient->medicalRecordFileUrl }}</td>
+                                <td><img style="max-width: 80px; max-height: 80px;" src="{{ $patient->medicalRecordFileUrl }}" alt="RM File" /></td>
                                 <td>{{ $patient->address }}</td>
                                 <td>{{ $patient->telpNumber }}</td>
                                 <td>{{ $patient->createdAt->format('Y-m-d'); }}</td>

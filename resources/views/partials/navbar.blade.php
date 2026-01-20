@@ -12,34 +12,41 @@
         </div>
 
         <ul class="nav navbar-nav">
-                      <li class="active"> <a href="{{ url("/") }}">Home</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Master Data <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li> <a href="{{ url("patient") }}">Data Pasien</a></li>
-                <li> <a href="{{ url("diagnosis") }}">Data Diagnosa</a></li>
-                <li> <a href="{{ url("treatment") }}">Data Tindakan</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dokter <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li> <a href="{{ url("patient/queue") }}">Antrian Pasien</a></li>
-                <li> <a href="{{ url("patient/history") }}">History Pasien</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pengguna <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li> <a href="{{ url("user") }}">Data Pengguna</a></li>
-              </ul>
-            </li>
+            <li class="active"> <a href="{{ url("/") }}">Home</a></li>
+            @can('is-officer-or-admin')
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Master Data <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li> <a href="{{ url("patient") }}">Data Pasien</a></li>
+                    <li> <a href="{{ url("diagnosis") }}">Data Diagnosa</a></li>
+                    <li> <a href="{{ url("treatment") }}">Data Tindakan</a></li>
+                    <li> <a href="{{ route("medicine.index") }}">Data Obat</a></li>
+                </ul>
+                </li>
+            @endcan
+            @can('is-doctor-or-admin')
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dokter <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li> <a href="{{ url("patient/queue") }}">Antrian Pasien</a></li>
+                    <li> <a href="{{ url("patient/history") }}">History Pasien</a></li>
+                </ul>
+                </li>
+            @endcan
+            @can('is-admin')
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pengguna <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li> <a href="{{ url("user") }}">Data Pengguna</a></li>
+                </ul>
+                </li>
+            @endcan
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Laporan <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li> <a href="http://localhost:8000/laporan">Laporan Pasien Per Periode</a></li>
+                <li> <a href="{{ route("report.index") }}">Laporan Pasien Per Periode</a></li>
                 <li> <a href="http://localhost:8000/pasien/cetak" target="_blank">Laporan Pasien Keseluruhan</a></li>
-                <li> <a href="http://localhost:8000/terapi/history">Laporan History Pemeriksaan Pasien</a></li>
+                <li> <a href="{{ route("patient.history") }}">Laporan History Pemeriksaan Pasien</a></li>
 
               </ul>
             </li>
@@ -48,7 +55,7 @@
         <ul class="nav navbar-nav navbar-right">
             <li>
                 <a href="#">
-                    Hai, Farhannivta (Admin)
+                    Hai, {{ auth()->user()->fullname }} ({{ auth()->user()->role }})
                 </a>
             </li>
 
@@ -57,7 +64,7 @@
                 <ul class="dropdown-menu">
                     <li><a href="/">Profil</a></li>
                     <li>
-                        <form action="/" method="POST">
+                        <form action="{{ route("auth.logout") }}" method="POST">
                             @csrf
                             <button class="btn btn-link">Keluar</button>
                         </form>

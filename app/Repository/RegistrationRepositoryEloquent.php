@@ -7,7 +7,7 @@ use App\DTO\RegistrationDTO;
 use App\DTO\UserDTO;
 use App\Models\Registration;
 use Carbon\Carbon;
-use Illuminate\Database\QueryException;
+use Carbon\CarbonInterface;
 
 class RegistrationRepositoryEloquent implements RegistrationRepository
 {
@@ -262,7 +262,56 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
 
                 $doctor = new UserDTO();
                 if ($registration->doctor) {
-                    $doctor = UserRepositoryEloquent::mapUserModelToUserDto($registration->doctor);
+                    $doctor = userrepositoryeloquent::mapUserModelToUserDto($registration->doctor);
+                }
+
+                $formatedRegistration->patient = $patient;
+                $formatedRegistration->doctor = $doctor;
+                $formatedRegistration->complaint = $registration->complaint;
+                $formatedRegistration->receipt = $registration->receipt;
+                $formatedRegistration->checkDate = Carbon::parse($registration->check_date);
+                $formatedRegistration->createdAt = $registration->created_at;
+                $formatedRegistration->updatedAt = $registration->updated_at;
+
+                return $formatedRegistration;
+            });
+
+            $registrations = $formatedRegistrations->toArray();
+            return $registrations;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+
+    function getByRangeDate(CarbonInterface $startDate, CarbonInterface $endDate): array
+    {
+        try {
+            $registrationsCollections = Registration::with(['patient', 'doctor'])
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->get();
+
+            $formatedRegistrations = $registrationsCollections->map(function ($registration) {
+                $formatedRegistration = new RegistrationDTO();
+                $formatedRegistration->id = $registration->id;
+
+                $patient = new PatientDTO();
+                $patient->id = $registration->patient->id;
+                $patient->name = $registration->patient->fullname;
+                $patient->age = $registration->patient->getAgeAttribute();
+                $patient->telpNumber = $registration->patient->telp_number;
+                $patient->address = $registration->patient->address;
+                $patient->dateOfBirth = Carbon::parse($registration->patient->date_of_birth);
+                $patient->gender = $registration->patient->gender;
+                $patient->medicalRecordNumber = $registration->patient->medical_record_number;
+                $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
+                $patient->history = $registration->patient->history;
+                $patient->createdAt = $registration->patient->created_at;
+                $patient->updatedAt = $registration->patient->updated_at;
+
+                $doctor = new UserDTO();
+                if ($registration->doctor) {
+                    $doctor = userrepositoryeloquent::mapUserModelToUserDto($registration->doctor);
                 }
 
                 $formatedRegistration->patient = $patient;

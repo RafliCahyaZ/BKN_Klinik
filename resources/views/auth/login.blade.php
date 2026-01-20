@@ -26,6 +26,17 @@
 	      </div>
 	    </nav>
 	    <div class="container">
+                    @if (session('success'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if (session('failed'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('failed') }}
+                        </div>
+                    @endif
 	    	<div class="row">
 		    	<div class="col-lg-4 col-sm-4 col-xs-4 col-md-offset-4">
                 <form method="POST" action={{ route('login.post') }}>
