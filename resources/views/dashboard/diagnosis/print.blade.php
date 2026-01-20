@@ -2,7 +2,7 @@
 @section("content")
 
 <div class="no-print" style="display:flex; justify-content:space-between; margin-bottom:12px;">
-    <a href="{{ route('patient.index') }}" class="btn btn-danger btn-md">
+    <a href="{{ route('diagnosis.index') }}" class="btn btn-danger btn-md">
         <i class="glyphicon glyphicon-arrow-left"></i> Kembali
     </a>
 
