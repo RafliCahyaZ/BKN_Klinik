@@ -88,7 +88,8 @@ class TreatmentController extends Controller
         $treatments = $this->treatmentRepository->getAll();
 
         return view("dashboard.treatment.print", [
-            "treatments" => $treatments
+            "treatments" => $treatments,
+            "printTitle" => "Sistem Informasi Praktik Dokter - Master Data Tindakan"
         ]);
     }
 

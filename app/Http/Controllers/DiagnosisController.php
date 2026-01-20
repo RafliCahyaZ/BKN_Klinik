@@ -74,7 +74,8 @@ class DiagnosisController extends Controller
         $diagnoses = $this->diagnosisRepository->getAll();
 
         return view("dashboard.diagnosis.print", [
-            "diagnoses" => $diagnoses
+            "diagnoses" => $diagnoses,
+            "printTitle" => "Sistem Informasi Praktik Dokter - Master Data Diagnosa"
         ]);
     }
 

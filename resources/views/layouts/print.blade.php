@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <title>Sistem Informasi Praktik Dokter</title>
+    <title>{{ $printTitle ?? 'Sistem Informasi Praktik Dokter' }}</title>
+
 
     <link rel="shortcut icon" href="{{ asset('assets/img/web.png') }}">
 

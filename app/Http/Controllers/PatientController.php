@@ -126,7 +126,8 @@ class PatientController extends Controller
         $patients = $patientRepository->getAll();
 
         return view("dashboard.patient.print", [
-            "patients" => $patients
+            "patients" => $patients,
+            "printTitle" => "Sistem Informasi Praktik Dokter - Master Data Pasien"
         ]);
     }
 
