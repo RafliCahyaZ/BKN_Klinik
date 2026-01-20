@@ -20,6 +20,7 @@
                     <li> <a href="{{ url("patient") }}">Data Pasien</a></li>
                     <li> <a href="{{ url("diagnosis") }}">Data Diagnosa</a></li>
                     <li> <a href="{{ url("treatment") }}">Data Tindakan</a></li>
+                    <li> <a href="{{ route("medicine.index") }}">Data Obat</a></li>
                 </ul>
                 </li>
             @endcan

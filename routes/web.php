@@ -9,6 +9,7 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\ReportController;
 
 Route::middleware('guest')->group(function () {
@@ -71,6 +72,16 @@ Route::middleware("auth")->group(function () {
     Route::prefix("registration")->name("registration.")->group(function () {
         Route::get("/create/{patientId}", [RegistrationController::class, 'create'])->name("create");
         Route::post("/create/{patientId}", [RegistrationController::class, 'store'])->name("store");
+    });
+
+    Route::prefix("medicine")->name("medicine.")->group(function () {
+        Route::get("/", [MedicineController::class, 'index'])->name("index");
+        Route::get("/print", [MedicineController::class, 'edit'])->name("print");
+        Route::get("/create", [MedicineController::class, 'create'])->name("create");
+        Route::post("/store", [MedicineController::class, 'store'])->name("store");
+        Route::get("/edit/{id}", [MedicineController::class, 'edit'])->name("edit.view");
+        Route::post("/edit/{id}", [MedicineController::class, 'editAction'])->name("edit.action");
+        Route::delete("/destroy/{id}", [MedicineController::class, 'destroy'])->name("destroy");
     });
 
     Route::get('/', function () {
