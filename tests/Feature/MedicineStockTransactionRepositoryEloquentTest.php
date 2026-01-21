@@ -14,6 +14,7 @@ use App\DTO\MedicineDTO;
 use App\DTO\UserDTO;
 use App\DTO\UnitDTO;
 use App\Type\UserRole;
+use App\Type\TransactionType;
 use Carbon\Carbon;
 
 class MedicineStockTransactionRepositoryEloquentTest extends TestCase
@@ -64,7 +65,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
         $transactionDTO->medicineId = $this->medicineDTO->id;
         $transactionDTO->registrationId = null;
-        $transactionDTO->type = 'in';
+        $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->beginningStock = 100;
         $transactionDTO->lastStock = 150;
@@ -74,7 +75,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $insertedTransactionDTO = $this->transactionRepository->insert($transactionDTO);
 
         $this->assertNotNull($insertedTransactionDTO);
-        $this->assertEquals('in', $insertedTransactionDTO->type);
+        $this->assertEquals(TransactionType::IN, $insertedTransactionDTO->type);
         $this->assertEquals(50, $insertedTransactionDTO->quantity);
         $this->assertEquals(100, $insertedTransactionDTO->beginningStock);
         $this->assertEquals(150, $insertedTransactionDTO->lastStock);
@@ -89,7 +90,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
         $transactionDTO->medicineId = $this->medicineDTO->id;
         $transactionDTO->registrationId = null;
-        $transactionDTO->type = 'out';
+        $transactionDTO->type = TransactionType::OUT;
         $transactionDTO->quantity = 30;
         $transactionDTO->beginningStock = 100;
         $transactionDTO->lastStock = 70;
@@ -99,7 +100,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $insertedTransactionDTO = $this->transactionRepository->insert($transactionDTO);
 
         $this->assertNotNull($insertedTransactionDTO);
-        $this->assertEquals('out', $insertedTransactionDTO->type);
+        $this->assertEquals(TransactionType::OUT, $insertedTransactionDTO->type);
         $this->assertEquals(30, $insertedTransactionDTO->quantity);
         $this->assertEquals(70, $insertedTransactionDTO->lastStock);
         $this->assertInstanceOf(MedicineStockTransactionDTO::class, $insertedTransactionDTO);
@@ -112,7 +113,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
         $transactionDTO->medicineId = '9999'; // Non-existent medicine
         $transactionDTO->registrationId = null;
-        $transactionDTO->type = 'in';
+        $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->beginningStock = 0;
         $transactionDTO->lastStock = 50;
@@ -133,7 +134,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
             $transactionDTO->medicineId = $this->medicineDTO->id;
             $transactionDTO->registrationId = null;
-            $transactionDTO->type = 'in';
+            $transactionDTO->type = TransactionType::IN;
             $transactionDTO->quantity = 10 * $i;
             $transactionDTO->beginningStock = 100;
             $transactionDTO->lastStock = 100 + (10 * $i);
@@ -164,7 +165,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
         $transactionDTO->medicineId = $this->medicineDTO->id;
         $transactionDTO->registrationId = null;
-        $transactionDTO->type = 'in';
+        $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->beginningStock = 100;
         $transactionDTO->lastStock = 150;
@@ -204,7 +205,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
         $transactionDTO->medicineId = $this->medicineDTO->id;
         $transactionDTO->registrationId = null;
-        $transactionDTO->type = 'in';
+        $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->beginningStock = 100;
         $transactionDTO->lastStock = 150;
@@ -228,7 +229,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
         $transactionDTO->medicineId = $this->medicineDTO->id;
         $transactionDTO->registrationId = null;
-        $transactionDTO->type = 'in';
+        $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->beginningStock = 100;
         $transactionDTO->lastStock = 150;
@@ -265,7 +266,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
             $transactionDTO->medicineId = $this->medicineDTO->id;
             $transactionDTO->registrationId = null;
-            $transactionDTO->type = 'in';
+            $transactionDTO->type = TransactionType::IN;
             $transactionDTO->quantity = 10 * $i;
             $transactionDTO->beginningStock = 100;
             $transactionDTO->lastStock = 100 + (10 * $i);
@@ -294,7 +295,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
         $transactionDTO->medicineId = $this->medicineDTO->id;
         $transactionDTO->registrationId = null;
-        $transactionDTO->type = 'in';
+        $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->beginningStock = 100;
         $transactionDTO->lastStock = 150;
@@ -330,7 +331,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
             $transactionDTO->medicineId = $this->medicineDTO->id;
             $transactionDTO->registrationId = null;
-            $transactionDTO->type = 'in';
+            $transactionDTO->type = TransactionType::IN;
             $transactionDTO->quantity = 10 * $i;
             $transactionDTO->beginningStock = 100;
             $transactionDTO->lastStock = 100 + (10 * $i);
@@ -355,7 +356,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
             $transactionDTO->medicineId = $this->medicineDTO->id;
             $transactionDTO->registrationId = null;
-            $transactionDTO->type = 'in';
+            $transactionDTO->type = TransactionType::IN;
             $transactionDTO->quantity = 10 * $i;
             $transactionDTO->beginningStock = 100;
             $transactionDTO->lastStock = 100 + (10 * $i);
@@ -371,7 +372,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
             $transactionDTO->medicineId = $this->medicineDTO->id;
             $transactionDTO->registrationId = null;
-            $transactionDTO->type = 'out';
+            $transactionDTO->type = TransactionType::OUT;
             $transactionDTO->quantity = 10;
             $transactionDTO->beginningStock = 100;
             $transactionDTO->lastStock = 90;
@@ -381,10 +382,10 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $this->transactionRepository->insert($transactionDTO);
         }
 
-        $inTransactions = $this->transactionRepository->getByType('in');
+        $inTransactions = $this->transactionRepository->getByType(TransactionType::IN);
         $this->assertIsArray($inTransactions);
         $this->assertCount(2, $inTransactions);
-        $this->assertEquals('in', $inTransactions[0]->type);
+        $this->assertEquals(TransactionType::IN, $inTransactions[0]->type);
     }
 
     // test getByType untuk transaksi keluar
@@ -396,7 +397,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
             $transactionDTO->medicineId = $this->medicineDTO->id;
             $transactionDTO->registrationId = null;
-            $transactionDTO->type = 'out';
+            $transactionDTO->type = TransactionType::OUT;
             $transactionDTO->quantity = 10 * $i;
             $transactionDTO->beginningStock = 100;
             $transactionDTO->lastStock = 100 - (10 * $i);
@@ -406,10 +407,10 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $this->transactionRepository->insert($transactionDTO);
         }
 
-        $outTransactions = $this->transactionRepository->getByType('out');
+        $outTransactions = $this->transactionRepository->getByType(TransactionType::OUT);
         $this->assertIsArray($outTransactions);
         $this->assertCount(3, $outTransactions);
-        $this->assertEquals('out', $outTransactions[0]->type);
+        $this->assertEquals(TransactionType::OUT, $outTransactions[0]->type);
     }
 
     // test untuk verify medicine, officer dan unit tersedia
@@ -434,7 +435,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
             $transactionDTO->medicineId = $this->medicineDTO->id;
             $transactionDTO->registrationId = null;
-            $transactionDTO->type = 'in';
+            $transactionDTO->type = TransactionType::IN;
             $transactionDTO->quantity = 20 * $i;
             $transactionDTO->beginningStock = 100;
             $transactionDTO->lastStock = 100 + (20 * $i);
@@ -444,10 +445,10 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactions[] = $transactionDTO;
         }
 
-        $insertedTransactions = $this->transactionRepository->insertMany($transactions);
+        $result = $this->transactionRepository->insertMany($transactions);
 
-        $this->assertNotNull($insertedTransactions);
-        $this->assertIsBool(true, $insertedTransactions);
+        // insertMany return boolean
+        $this->assertTrue($result);
         
         // Verify total data di database
         $allTransactions = $this->transactionRepository->getAll();
@@ -464,7 +465,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction1->inventoryOfficerId = $this->inventoryOfficerDTO->id;
         $transaction1->medicineId = $this->medicineDTO->id;
         $transaction1->registrationId = null;
-        $transaction1->type = 'in';
+        $transaction1->type = TransactionType::IN;
         $transaction1->quantity = 20;
         $transaction1->beginningStock = 100;
         $transaction1->lastStock = 120;
@@ -477,7 +478,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction2->inventoryOfficerId = $this->inventoryOfficerDTO->id;
         $transaction2->medicineId = '9999'; // Non-existent medicine
         $transaction2->registrationId = null;
-        $transaction2->type = 'in';
+        $transaction2->type = TransactionType::IN;
         $transaction2->quantity = 30;
         $transaction2->beginningStock = 100;
         $transaction2->lastStock = 130;
@@ -490,7 +491,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction3->inventoryOfficerId = $this->inventoryOfficerDTO->id;
         $transaction3->medicineId = $this->medicineDTO->id;
         $transaction3->registrationId = null;
-        $transaction3->type = 'out';
+        $transaction3->type = TransactionType::OUT;
         $transaction3->quantity = 10;
         $transaction3->beginningStock = 100;
         $transaction3->lastStock = 90;
@@ -498,13 +499,175 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction3->notes = "Valid transaction 2";
         $transactions[] = $transaction3;
 
-        $insertedTransactions = $this->transactionRepository->insertMany($transactions);
+        $result = $this->transactionRepository->insertMany($transactions);
 
-        // Karena ada data yang tidak valid, insertMany harus gagal/return null atau array kosong
-        $this->assertFalse($insertedTransactions);
+        // insertMany return false karena ada data tidak valid
+        $this->assertFalse($result);
 
         // Verify tidak ada transaksi yang ter-insert (rollback semua)
         $allTransactions = $this->transactionRepository->getAll();
         $this->assertCount(0, $allTransactions);
+    }
+
+    // test untuk insert dengan auto calculate beginning stock dan last stock (type in)
+    public function testInsertTransactionWithAutoCalculateStockIn(): void
+    {
+        // Stok awal medicine adalah 100 (dari setUp)
+        $transactionDTO = new MedicineStockTransactionDTO();
+        $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+        $transactionDTO->medicineId = $this->medicineDTO->id;
+        $transactionDTO->registrationId = null;
+        $transactionDTO->type = TransactionType::IN;
+        $transactionDTO->quantity = 50;
+        $transactionDTO->expiredDate = Carbon::parse('2027-12-31');
+        $transactionDTO->notes = 'Pembelian stok baru';
+
+        $insertedTransactionDTO = $this->transactionRepository->insert($transactionDTO);
+
+        $this->assertNotNull($insertedTransactionDTO);
+        $this->assertEquals(TransactionType::IN, $insertedTransactionDTO->type);
+        $this->assertEquals(50, $insertedTransactionDTO->quantity);
+        
+        // Verify beginning stock adalah stok awal medicine (100)
+        $this->assertEquals(100, $insertedTransactionDTO->beginningStock);
+        
+        // Verify last stock = beginning stock + quantity (100 + 50 = 150)
+        $this->assertEquals(150, $insertedTransactionDTO->lastStock);
+        
+        $this->assertInstanceOf(MedicineStockTransactionDTO::class, $insertedTransactionDTO);
+    }
+
+    // test untuk insert dengan auto calculate beginning stock dan last stock (type out)
+    public function testInsertTransactionWithAutoCalculateStockOut(): void
+    {
+        // Stok awal medicine adalah 100 (dari setUp)
+        $transactionDTO = new MedicineStockTransactionDTO();
+        $transactionDTO->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+        $transactionDTO->medicineId = $this->medicineDTO->id;
+        $transactionDTO->registrationId = null;
+        $transactionDTO->type = TransactionType::OUT;
+        $transactionDTO->quantity = 30;
+        $transactionDTO->expiredDate = null;
+        $transactionDTO->notes = 'Penggunaan obat';
+
+        $insertedTransactionDTO = $this->transactionRepository->insert($transactionDTO);
+
+        $this->assertNotNull($insertedTransactionDTO);
+        $this->assertEquals(TransactionType::OUT, $insertedTransactionDTO->type);
+        $this->assertEquals(30, $insertedTransactionDTO->quantity);
+        
+        // Verify beginning stock adalah stok awal medicine (100)
+        $this->assertEquals(100, $insertedTransactionDTO->beginningStock);
+        
+        // Verify last stock = beginning stock - quantity (100 - 30 = 70)
+        $this->assertEquals(70, $insertedTransactionDTO->lastStock);
+        
+        $this->assertInstanceOf(MedicineStockTransactionDTO::class, $insertedTransactionDTO);
+    }
+
+    // test untuk insertMany dengan auto calculate beginning stock dan last stock
+    public function testInsertManyTransactionsWithAutoCalculateStock(): void
+    {
+        $transactions = [];
+
+        // Transaksi 1: type in
+        $transaction1 = new MedicineStockTransactionDTO();
+        $transaction1->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+        $transaction1->medicineId = $this->medicineDTO->id;
+        $transaction1->registrationId = null;
+        $transaction1->type = TransactionType::IN;
+        $transaction1->quantity = 25;
+        $transaction1->expiredDate = Carbon::parse('2027-12-31');
+        $transaction1->notes = "Batch transaction 1";
+        $transactions[] = $transaction1;
+
+        // Transaksi 2: type out
+        $transaction2 = new MedicineStockTransactionDTO();
+        $transaction2->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+        $transaction2->medicineId = $this->medicineDTO->id;
+        $transaction2->registrationId = null;
+        $transaction2->type = TransactionType::OUT;
+        $transaction2->quantity = 15;
+        $transaction2->expiredDate = null;
+        $transaction2->notes = "Batch transaction 2";
+        $transactions[] = $transaction2;
+
+        // Transaksi 3: type in
+        $transaction3 = new MedicineStockTransactionDTO();
+        $transaction3->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+        $transaction3->medicineId = $this->medicineDTO->id;
+        $transaction3->registrationId = null;
+        $transaction3->type = TransactionType::IN;
+        $transaction3->quantity = 40;
+        $transaction3->expiredDate = Carbon::parse('2028-06-30');
+        $transaction3->notes = "Batch transaction 3";
+        $transactions[] = $transaction3;
+
+        $result = $this->transactionRepository->insertMany($transactions);
+
+        // Verify insert many berhasil
+        $this->assertTrue($result);
+
+        // Verify total data di database
+        $allTransactions = $this->transactionRepository->getAll();
+        $this->assertCount(3, $allTransactions);
+
+        // Verify perhitungan stok untuk setiap transaksi
+        // Semua transaksi menggunakan beginning stock yang sama (100) karena insertMany
+        
+        // Transaction 1: in, beginning = 100, quantity = 25, last = 125
+        $this->assertEquals(100, $allTransactions[0]->beginningStock);
+        $this->assertEquals(125, $allTransactions[0]->lastStock);
+        
+        // Transaction 2: out, beginning = 100, quantity = 15, last = 85
+        $this->assertEquals(100, $allTransactions[1]->beginningStock);
+        $this->assertEquals(85, $allTransactions[1]->lastStock);
+        
+        // Transaction 3: in, beginning = 100, quantity = 40, last = 140
+        $this->assertEquals(100, $allTransactions[2]->beginningStock);
+        $this->assertEquals(140, $allTransactions[2]->lastStock);
+    }
+
+    // test untuk verify perhitungan stok dengan multiple medicine berbeda
+    public function testInsertTransactionWithDifferentMedicines(): void
+    {
+        // Buat medicine kedua dengan stok berbeda
+        $medicineDTO2 = new MedicineDTO();
+        $medicineDTO2->name = 'Amoxicillin';
+        $medicineDTO2->stock = 50; // Stok berbeda
+        $medicineDTO2->unit = $this->unitDTO;
+        $insertedMedicine2 = $this->medicineRepository->insert($medicineDTO2);
+
+        // Insert transaksi untuk medicine pertama (stok 100)
+        $transaction1 = new MedicineStockTransactionDTO();
+        $transaction1->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+        $transaction1->medicineId = $this->medicineDTO->id;
+        $transaction1->registrationId = null;
+        $transaction1->type = TransactionType::IN;
+        $transaction1->quantity = 20;
+        $transaction1->expiredDate = null;
+        $transaction1->notes = "Transaction for Paracetamol";
+
+        $insertedTransaction1 = $this->transactionRepository->insert($transaction1);
+
+        // Verify stok medicine pertama
+        $this->assertEquals(100, $insertedTransaction1->beginningStock);
+        $this->assertEquals(120, $insertedTransaction1->lastStock);
+
+        // Insert transaksi untuk medicine kedua (stok 50)
+        $transaction2 = new MedicineStockTransactionDTO();
+        $transaction2->inventoryOfficerId = $this->inventoryOfficerDTO->id;
+        $transaction2->medicineId = $insertedMedicine2->id;
+        $transaction2->registrationId = null;
+        $transaction2->type = TransactionType::OUT;
+        $transaction2->quantity = 10;
+        $transaction2->expiredDate = null;
+        $transaction2->notes = "Transaction for Amoxicillin";
+
+        $insertedTransaction2 = $this->transactionRepository->insert($transaction2);
+
+        // Verify stok medicine kedua
+        $this->assertEquals(50, $insertedTransaction2->beginningStock);
+        $this->assertEquals(40, $insertedTransaction2->lastStock);
     }
 }
