@@ -2,6 +2,7 @@
 
 namespace App\DTO;
 
+use App\Type\TransactionType;
 use Carbon\CarbonInterface;
 
 class MedicineStockTransactionDTO
@@ -10,7 +11,7 @@ class MedicineStockTransactionDTO
     public string $inventoryOfficerId;
     public string $medicineId;
     public ?string $registrationId;
-    public string $type;
+    public TransactionType $type;
     public int $quantity;
     public int $beginningStock;
     public int $lastStock;
