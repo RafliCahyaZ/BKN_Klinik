@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\DTO\DiagnosisDTO;
+use App\DTO\MedicineDTO;
 use App\DTO\MedicineStockTransactionDTO;
+use App\DTO\RegistrationDTO;
 use App\DTO\TreatmentDTO;
 use App\DTO\UserDTO;
 use App\Repository\AppointmentRepository;
@@ -110,9 +112,12 @@ class AppointmentController extends Controller
 
         foreach ($medicineInputs as $medicineInput) {
             $medicineStockTransactionDto = new MedicineStockTransactionDTO();
-            $medicineStockTransactionDto->inventoryOfficerId = Auth::id();
-            $medicineStockTransactionDto->medicineId = $medicineInput["'id'"];
-            $medicineStockTransactionDto->registrationId = $registrationId;
+            $medicineStockTransactionDto->inventoryOfficer = new UserDTO();
+            $medicineStockTransactionDto->inventoryOfficer->id = Auth::id();
+            $medicineStockTransactionDto->medicine = new MedicineDTO();
+            $medicineStockTransactionDto->medicine->id = $medicineInput["'id'"];
+            $medicineStockTransactionDto->registration = new RegistrationDTO();
+            $medicineStockTransactionDto->registration->id = $registrationId;
             $medicineStockTransactionDto->type = TransactionType::OUT;
             $medicineStockTransactionDto->quantity = $medicineInput["'stock'"];
             $medicineStockTransactionDto->createdAt = Carbon::now();

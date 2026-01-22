@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
                 UnitSeeder::class,
             ]
         );
-        User::factory(30)->create();
-        Patient::factory(100)->create();
+        User::factory(1)->create();
+        /* Patient::factory(100)->create(); */
     }
 }

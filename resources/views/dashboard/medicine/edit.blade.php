@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    <x-dashboard-container title="Tambah Data Master Diagnosa">
+    <x-dashboard-container title="Edit Data Master Obat">
         <form
             action="{{ route('medicine.edit.action', $medicine->id) }}"
             method="post"
