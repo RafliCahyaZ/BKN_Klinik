@@ -10,7 +10,7 @@ class MedicineStockTransactionDTO
     public string $id;
     public UserDTO $inventoryOfficer;
     public MedicineDTO $medicine;
-    public ?string $registrationId = null;
+    public ?RegistrationDTO $registrationId = null;
     public TransactionType $type;
     public int $quantity;
     public int $beginningStock;
