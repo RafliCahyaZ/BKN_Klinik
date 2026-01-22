@@ -154,6 +154,8 @@
                             <input
                                 type="number"
                                 name="stock"
+                                value="1"
+                                min="1"
                                 class="form-control"
                                 id="inputStockElement"
                             >
