@@ -64,6 +64,9 @@
                     <li role="periksa">
                         <a href="#terapi" aria-controls="terapi" role="tab" data-toggle="tab">Terapi</a>
                     </li>
+                    <li role="periksa">
+                        <a href="#medicine" aria-controls="medicine" role="tab" data-toggle="tab">Obat</a>
+                    </li>
                 </ul>
             </div>
 
@@ -99,6 +102,18 @@
                     <textarea disabled style="min-height: 100px; width: 100%">
                         {{$registration->receipt}}
                     </textarea>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="medicine">
+                <table class="table table-striped">
+                    <tbody id="diagnosisTable">
+                        @foreach($registration->treatments as $key => $treatment)
+                            <tr>
+                                <td colspan="2">{{ $treatment->treatmentCode }} - {{ $treatment->treatmentName }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
                 </div>
 
             </div>
