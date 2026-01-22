@@ -3,7 +3,7 @@
 @section('content')
 <x-dashboard-container title="Data Master Diagnosa">
                     <a href="{{ route('diagnosis.create') }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Tambah Data Master Diagnosa</a>
-                    <a href="{{ url('patient/print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Master Data Diagnosa</a>
+                    <a href="{{ route('diagnosis.print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Master Data Diagnosa</a>
                     <hr>
 
                     @if (session('success'))

@@ -3,7 +3,7 @@
 @section('content')
 <x-dashboard-container title="Data Master Tindakan">
                     <a href="{{ route('treatment.create') }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Tambah Data Master Tindakan</a>
-                    <a href="{{ url('patient/print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Master Data Tindakan</a>
+                    <a href="{{ route('treatment.print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Master Data Tindakan</a>
                     <hr>
 
                     @if (session('success'))

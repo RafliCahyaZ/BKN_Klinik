@@ -50,25 +50,6 @@ Route::middleware("auth")->group(function () {
         Route::post("/appointment/{id}", [AppointmentController::class, 'createAction'])->name("appointment.action");
     });
 
-    Route::prefix("diagnosis")->name("diagnosis.")->group(function () {
-        Route::get("/", [DiagnosisController::class, 'index'])->name("index");
-        Route::get("/create", [DiagnosisController::class, 'create'])->name("create");
-        Route::post("/store", [DiagnosisController::class, 'store'])->name("store");
-        Route::get("//edit/{id}", [DiagnosisController::class, 'edit'])->name("edit.view");
-        Route::post("/edit/{id}", [DiagnosisController::class, 'editAction'])->name("edit.action");
-        Route::delete("/destroy/{id}", [DiagnosisController::class, 'destroy'])->name("destroy");
-    });
-
-
-    Route::prefix("treatment")->name("treatment.")->group(function () {
-        Route::get("/", [TreatmentController::class, 'index'])->name("index");
-        Route::get("/create", [TreatmentController::class, 'create'])->name("create");
-        Route::post("/store", [TreatmentController::class, 'store'])->name("store");
-        Route::get("//edit/{id}", [TreatmentController::class, 'edit'])->name("edit.view");
-        Route::post("/edit/{id}", [TreatmentController::class, 'editAction'])->name("edit.action");
-        Route::delete("/destroy/{id}", [TreatmentController::class, 'destroy'])->name("destroy");
-    });
-
     Route::prefix("registration")->name("registration.")->group(function () {
         Route::get("/create/{patientId}", [RegistrationController::class, 'create'])->name("create");
         Route::post("/create/{patientId}", [RegistrationController::class, 'store'])->name("store");
@@ -87,4 +68,43 @@ Route::middleware("auth")->group(function () {
     Route::get('/', function () {
         return view('dashboard.home');
     });
+
+    Route::get("/print", [PatientController::class, 'print'])->name("print");
+
+    Route::post("/store", [PatientController::class, 'store'])->name("store");
+    Route::get("//edit/{id}", [PatientController::class, 'edit'])->name("edit.view");
+    Route::post("/edit/{id}", [PatientController::class, 'editAction'])->name("edit.action");
+    Route::delete("/destroy/{id}", [PatientController::class, 'destroy'])->name("destroy");
+
+    Route::get("/appointment/{id}", [AppointmentController::class, 'create'])->name("appointment.view");
+    Route::post("/appointment/{id}", [AppointmentController::class, 'createAction'])->name("appointment.action");
+});
+
+Route::prefix("diagnosis")->name("diagnosis.")->group(function () {
+    Route::get("/", [DiagnosisController::class, 'index'])->name("index");
+    Route::get("/create", [DiagnosisController::class, 'create'])->name("create");
+    Route::post("/store", [DiagnosisController::class, 'store'])->name("store");
+    Route::get("/print", [DiagnosisController::class, 'print'])->name("print");
+    Route::get("//edit/{id}", [DiagnosisController::class, 'edit'])->name("edit.view");
+    Route::post("/edit/{id}", [DiagnosisController::class, 'editAction'])->name("edit.action");
+    Route::delete("/destroy/{id}", [DiagnosisController::class, 'destroy'])->name("destroy");
+});
+
+
+Route::prefix("treatment")->name("treatment.")->group(function () {
+    Route::get("/", [TreatmentController::class, 'index'])->name("index");
+    Route::get("/create", [TreatmentController::class, 'create'])->name("create");
+    Route::post("/store", [TreatmentController::class, 'store'])->name("store");
+    Route::get("/print", [TreatmentController::class, 'print'])->name("print");
+    Route::get("//edit/{id}", [TreatmentController::class, 'edit'])->name("edit.view");
+    Route::post("/edit/{id}", [TreatmentController::class, 'editAction'])->name("edit.action");
+    Route::delete("/destroy/{id}", [TreatmentController::class, 'destroy'])->name("destroy");
+});
+
+Route::prefix("user")->name("user.")->group(function () {
+    Route::get("/", [UserController::class, 'index'])->name("index");
+    Route::get("/create", [UserController::class, 'create'])->name("create");
+    Route::post("/store", [UserController::class, 'store'])->name("store");
+    Route::get("//edit/{id}", [UserController::class, 'edit'])->name("edit.view");
+    Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
 });
