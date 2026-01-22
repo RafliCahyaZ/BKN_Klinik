@@ -64,7 +64,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO = new MedicineStockTransactionDTO();
         $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
         $transactionDTO->medicine = $this->medicineDTO;
-        $transactionDTO->registrationId = null;
+        $transactionDTO->registration = null;
         $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->expiredDate = Carbon::parse('2027-12-31');
@@ -86,7 +86,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO = new MedicineStockTransactionDTO();
         $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
         $transactionDTO->medicine = $this->medicineDTO;
-        $transactionDTO->registrationId = null;
+        $transactionDTO->registration = null;
         $transactionDTO->type = TransactionType::OUT;
         $transactionDTO->quantity = 30;
         $transactionDTO->expiredDate = null;
@@ -115,7 +115,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO = new MedicineStockTransactionDTO();
         $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
         $transactionDTO->medicine = $fakeMedicineDTO;
-        $transactionDTO->registrationId = null;
+        $transactionDTO->registration = null;
         $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->expiredDate = null;
@@ -134,7 +134,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO = new MedicineStockTransactionDTO();
             $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
             $transactionDTO->medicine = $this->medicineDTO;
-            $transactionDTO->registrationId = null;
+            $transactionDTO->registration = null;
             $transactionDTO->type = TransactionType::IN;
             $transactionDTO->quantity = 10 * $i;
             $transactionDTO->expiredDate = null;
@@ -165,7 +165,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO = new MedicineStockTransactionDTO();
         $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
         $transactionDTO->medicine = $this->medicineDTO;
-        $transactionDTO->registrationId = null;
+        $transactionDTO->registration = null;
         $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->expiredDate = null;
@@ -203,7 +203,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO = new MedicineStockTransactionDTO();
         $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
         $transactionDTO->medicine = $this->medicineDTO;
-        $transactionDTO->registrationId = null;
+        $transactionDTO->registration = null;
         $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->expiredDate = null;
@@ -225,7 +225,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO = new MedicineStockTransactionDTO();
         $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
         $transactionDTO->medicine = $this->medicineDTO;
-        $transactionDTO->registrationId = null;
+        $transactionDTO->registration = null;
         $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->expiredDate = null;
@@ -262,7 +262,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO = new MedicineStockTransactionDTO();
             $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
             $transactionDTO->medicine = $this->medicineDTO;
-            $transactionDTO->registrationId = null;
+            $transactionDTO->registration = null;
             $transactionDTO->type = TransactionType::IN;
             $transactionDTO->quantity = 10 * $i;
             $transactionDTO->expiredDate = null;
@@ -289,7 +289,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO = new MedicineStockTransactionDTO();
         $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
         $transactionDTO->medicine = $this->medicineDTO;
-        $transactionDTO->registrationId = null;
+        $transactionDTO->registration = null;
         $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->expiredDate = null;
@@ -323,7 +323,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO = new MedicineStockTransactionDTO();
             $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
             $transactionDTO->medicine = $this->medicineDTO;
-            $transactionDTO->registrationId = null;
+            $transactionDTO->registration = null;
             $transactionDTO->type = TransactionType::IN;
             $transactionDTO->quantity = 10 * $i;
             $transactionDTO->expiredDate = null;
@@ -348,7 +348,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO = new MedicineStockTransactionDTO();
             $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
             $transactionDTO->medicine = $this->medicineDTO;
-            $transactionDTO->registrationId = null;
+            $transactionDTO->registration = null;
             $transactionDTO->type = TransactionType::IN;
             $transactionDTO->quantity = 10 * $i;
             $transactionDTO->expiredDate = null;
@@ -362,7 +362,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO = new MedicineStockTransactionDTO();
             $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
             $transactionDTO->medicine = $this->medicineDTO;
-            $transactionDTO->registrationId = null;
+            $transactionDTO->registration = null;
             $transactionDTO->type = TransactionType::OUT;
             $transactionDTO->quantity = 10;
             $transactionDTO->expiredDate = null;
@@ -387,7 +387,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO = new MedicineStockTransactionDTO();
             $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
             $transactionDTO->medicine = $this->medicineDTO;
-            $transactionDTO->registrationId = null;
+            $transactionDTO->registration = null;
             $transactionDTO->type = TransactionType::OUT;
             $transactionDTO->quantity = 10 * $i;
             $transactionDTO->expiredDate = null;
@@ -425,7 +425,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
             $transactionDTO = new MedicineStockTransactionDTO();
             $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
             $transactionDTO->medicine = $this->medicineDTO;
-            $transactionDTO->registrationId = null;
+            $transactionDTO->registration = null;
             $transactionDTO->type = TransactionType::IN;
             $transactionDTO->quantity = 20 * $i;
             $transactionDTO->expiredDate = Carbon::parse('2027-12-31');
@@ -453,7 +453,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction1 = new MedicineStockTransactionDTO();
         $transaction1->inventoryOfficer = $this->inventoryOfficerDTO;
         $transaction1->medicine = $this->medicineDTO;
-        $transaction1->registrationId = null;
+        $transaction1->registration = null;
         $transaction1->type = TransactionType::IN;
         $transaction1->quantity = 20;
         $transaction1->expiredDate = null;
@@ -470,7 +470,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction2 = new MedicineStockTransactionDTO();
         $transaction2->inventoryOfficer = $this->inventoryOfficerDTO;
         $transaction2->medicine = $fakeMedicineDTO;
-        $transaction2->registrationId = null;
+        $transaction2->registration = null;
         $transaction2->type = TransactionType::IN;
         $transaction2->quantity = 30;
         $transaction2->expiredDate = null;
@@ -481,7 +481,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction3 = new MedicineStockTransactionDTO();
         $transaction3->inventoryOfficer = $this->inventoryOfficerDTO;
         $transaction3->medicine = $this->medicineDTO;
-        $transaction3->registrationId = null;
+        $transaction3->registration = null;
         $transaction3->type = TransactionType::OUT;
         $transaction3->quantity = 10;
         $transaction3->expiredDate = null;
@@ -505,7 +505,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO = new MedicineStockTransactionDTO();
         $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
         $transactionDTO->medicine = $this->medicineDTO;
-        $transactionDTO->registrationId = null;
+        $transactionDTO->registration = null;
         $transactionDTO->type = TransactionType::IN;
         $transactionDTO->quantity = 50;
         $transactionDTO->expiredDate = Carbon::parse('2027-12-31');
@@ -533,7 +533,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transactionDTO = new MedicineStockTransactionDTO();
         $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
         $transactionDTO->medicine = $this->medicineDTO;
-        $transactionDTO->registrationId = null;
+        $transactionDTO->registration = null;
         $transactionDTO->type = TransactionType::OUT;
         $transactionDTO->quantity = 30;
         $transactionDTO->expiredDate = null;
@@ -563,7 +563,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction1 = new MedicineStockTransactionDTO();
         $transaction1->inventoryOfficer = $this->inventoryOfficerDTO;
         $transaction1->medicine = $this->medicineDTO;
-        $transaction1->registrationId = null;
+        $transaction1->registration = null;
         $transaction1->type = TransactionType::IN;
         $transaction1->quantity = 25;
         $transaction1->expiredDate = Carbon::parse('2027-12-31');
@@ -574,7 +574,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction2 = new MedicineStockTransactionDTO();
         $transaction2->inventoryOfficer = $this->inventoryOfficerDTO;
         $transaction2->medicine = $this->medicineDTO;
-        $transaction2->registrationId = null;
+        $transaction2->registration = null;
         $transaction2->type = TransactionType::OUT;
         $transaction2->quantity = 15;
         $transaction2->expiredDate = null;
@@ -585,7 +585,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction3 = new MedicineStockTransactionDTO();
         $transaction3->inventoryOfficer = $this->inventoryOfficerDTO;
         $transaction3->medicine = $this->medicineDTO;
-        $transaction3->registrationId = null;
+        $transaction3->registration = null;
         $transaction3->type = TransactionType::IN;
         $transaction3->quantity = 40;
         $transaction3->expiredDate = Carbon::parse('2028-06-30');
@@ -631,7 +631,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction1 = new MedicineStockTransactionDTO();
         $transaction1->inventoryOfficer = $this->inventoryOfficerDTO;
         $transaction1->medicine = $this->medicineDTO;
-        $transaction1->registrationId = null;
+        $transaction1->registration = null;
         $transaction1->type = TransactionType::IN;
         $transaction1->quantity = 20;
         $transaction1->expiredDate = null;
@@ -647,7 +647,7 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
         $transaction2 = new MedicineStockTransactionDTO();
         $transaction2->inventoryOfficer = $this->inventoryOfficerDTO;
         $transaction2->medicine = $insertedMedicine2;
-        $transaction2->registrationId = null;
+        $transaction2->registration = null;
         $transaction2->type = TransactionType::OUT;
         $transaction2->quantity = 10;
         $transaction2->expiredDate = null;
