@@ -2,10 +2,14 @@
 
 namespace App\Repository;
 
+use App\DTO\MedicineDTO;
 use App\DTO\PatientDTO;
 use App\DTO\RegistrationDTO;
 use App\DTO\MedicineStockTransactionDTO;
+use App\DTO\UserDTO;
+use App\Models\User;
 use App\Type\TransactionType;
+use App\Type\UserRole;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 
@@ -13,6 +17,23 @@ class RegistrationRepositoryImpl implements RegistrationRepository
 {
     public function getAll(): array
     {
+        // ================= USER (Inventory Officer) =================
+        $officer = new UserDTO();
+        $officer->id = '1';
+        $officer->username = 'petugas1';
+        $officer->password = 'hashed-password';
+        $officer->fullname = 'Petugas Apotek';
+        $officer->email = 'apoteker@example.com';
+        $officer->role = UserRole::ADMIN;
+        $officer->createdAt = Carbon::now()->subMonths(6);
+        $officer->updatedAt = Carbon::now();
+
+        // ================= MEDICINE =================
+        $medicine = new MedicineDTO();
+        $medicine->id = '1';
+        $medicine->name = 'Paracetamol';
+
+        // ================= PATIENT 1 =================
         $patient1 = new PatientDTO();
         $patient1->id = '1';
         $patient1->medicalRecordNumber = 'MR-001';
@@ -27,30 +48,34 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $patient1->createdAt = Carbon::now()->subDays(10);
         $patient1->updatedAt = Carbon::now()->subDays(2);
 
-        $medicineTransaction1 = new MedicineStockTransactionDTO();
-        $medicineTransaction1->id = '1';
-        $medicineTransaction1->inventoryOfficerId = '1';
-        $medicineTransaction1->medicineId = '1';
-        $medicineTransaction1->registrationId = '1';
-        $medicineTransaction1->type = TransactionType::OUT;
-        $medicineTransaction1->quantity = 2;
-        $medicineTransaction1->beginningStock = 100;
-        $medicineTransaction1->lastStock = 98;
-        $medicineTransaction1->expiredDate = Carbon::now()->addYears(2);
-        $medicineTransaction1->notes = 'Obat untuk pasien Budi Santoso';
-        $medicineTransaction1->createdAt = Carbon::now()->subDays(5);
-        $medicineTransaction1->updatedAt = Carbon::now()->subDays(5);
-
+        // ================= REGISTRATION 1 =================
         $registration1 = new RegistrationDTO();
         $registration1->id = '1';
         $registration1->patient = $patient1;
         $registration1->complaint = 'Pusing dan mual';
         $registration1->receipt = 'RCPT-001';
-        $registration1->medicineStockTransactions = [$medicineTransaction1];
         $registration1->checkDate = Carbon::parse('2024-01-15 09:00:00');
         $registration1->createdAt = Carbon::now()->subDays(5);
         $registration1->updatedAt = Carbon::now()->subDays(1);
 
+        // ================= MEDICINE TRANSACTION =================
+        $transaction1 = new MedicineStockTransactionDTO();
+        $transaction1->id = '1';
+        $transaction1->inventoryOfficer = $officer;
+        $transaction1->medicine = $medicine;
+        $transaction1->registration = $registration1;
+        $transaction1->type = TransactionType::OUT;
+        $transaction1->quantity = 2;
+        $transaction1->beginningStock = 100;
+        $transaction1->lastStock = 98;
+        $transaction1->expiredDate = Carbon::now()->addYears(2);
+        $transaction1->notes = 'Obat untuk pasien Budi Santoso';
+        $transaction1->createdAt = Carbon::now()->subDays(5);
+        $transaction1->updatedAt = Carbon::now()->subDays(5);
+
+        $registration1->medicineStockTransactions = [$transaction1];
+
+        // ================= PATIENT 2 =================
         $patient2 = new PatientDTO();
         $patient2->id = '2';
         $patient2->medicalRecordNumber = 'MR-002';
@@ -65,6 +90,7 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $patient2->createdAt = Carbon::now()->subDays(20);
         $patient2->updatedAt = Carbon::now()->subDays(5);
 
+        // ================= REGISTRATION 2 =================
         $registration2 = new RegistrationDTO();
         $registration2->id = '2';
         $registration2->patient = $patient2;
@@ -75,6 +101,7 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $registration2->createdAt = Carbon::now()->subDays(3);
         $registration2->updatedAt = Carbon::now()->subDays(1);
 
+        // ================= RETURN =================
         return [$registration1, $registration2];
     }
 
@@ -125,7 +152,7 @@ class RegistrationRepositoryImpl implements RegistrationRepository
     public function delete(string $id): bool
     {
 
-        return false;
+        return true;
     }
 
     public function getWhereCheckDateIsNull(): array
@@ -279,8 +306,8 @@ class RegistrationRepositoryImpl implements RegistrationRepository
     public function getByRangeDate(CarbonInterface $startDate, CarbonInterface $endDate): array
     {
         $all = $this->getAll();
-        
-        return array_filter($all, function($registration) use ($startDate, $endDate) {
+
+        return array_filter($all, function ($registration) use ($startDate, $endDate) {
             return $registration->createdAt->between($startDate, $endDate);
         });
     }

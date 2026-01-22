@@ -107,9 +107,9 @@
                 <div role="tabpanel" class="tab-pane" id="medicine">
                 <table class="table table-striped">
                     <tbody id="diagnosisTable">
-                        @foreach($registration->treatments as $key => $treatment)
+                        @foreach($registration->medicineStockTransactions as $key => $medicineStockTransaction)
                             <tr>
-                                <td colspan="2">{{ $treatment->treatmentCode }} - {{ $treatment->treatmentName }}</td>
+                                <td colspan="2">{{ $medicineStockTransaction->medicine->name }} - {{ $medicineStockTransaction->quantity }}</td>
                             </tr>
                         @endforeach
                     </tbody>

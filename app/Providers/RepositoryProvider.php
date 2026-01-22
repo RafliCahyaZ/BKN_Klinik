@@ -36,7 +36,7 @@ class RepositoryProvider extends ServiceProvider
         DiagnosisRepository::class => DiagnosisRepositoryEloquent::class,
         TreatmentRepository::class => TreatmentRepositoryEloquent::class,
         UserRepository::class => UserRepositoryEloquent::class,
-        RegistrationRepository::class => RegistrationRepositoryEloquent::class,
+        RegistrationRepository::class => RegistrationRepositoryImpl::class,
         AppointmentRepository::class => AppointmentRepositoryEloquent::class,
         MedicineRepository::class => MedicineRepositoryImpl::class,
         MedicineStockTransactionRepository::class => MedicineStockTransactionRepositoryImpl::class,

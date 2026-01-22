@@ -88,27 +88,22 @@ class AppointmentController extends Controller
         $editResult = true;
 
         if (!$this->appointmentRepository->attachManyDiagnosesToRegistration($registration, $diagnoses->toArray())) {
-            echo "haii";
             $editResult = false;
         }
         if (!$this->appointmentRepository->attachManyTreatmentsToRegistration($registration, $treatments->toArray())) {
-            echo "hello";
             $editResult = false;
         }
         if (!$this->registrationRepository->edit($registration)) {
-            echo "hidup jokowi";
             $editResult = false;
         }
 
         if (!$this->medicineStockTransactionRepository->insertMany($medicines)) {
-            echo "pupupapa";
             $editResult = false;
         }
-        return;
-        /* if (!$editResult) { */
-        /*     return back()->withInput(); */
-        /* } */
-        /* return redirect()->route("patient.history.show", $id)->with("success", "Berhasil melakukan pemeriksaan"); */
+        if (!$editResult) {
+            return back()->withInput();
+        }
+        return redirect()->route("patient.history.show", $id)->with("success", "Berhasil melakukan pemeriksaan");
     }
 
     private function mapInputToMedicineStockTransactionDTO($registrationId, $medicineInputs)
