@@ -20,6 +20,7 @@
                     <li> <a href="{{ url("patient") }}">Data Pasien</a></li>
                     <li> <a href="{{ url("diagnosis") }}">Data Diagnosa</a></li>
                     <li> <a href="{{ url("treatment") }}">Data Tindakan</a></li>
+                    <li> <a href="{{ route("medicine.index") }}">Data Obat</a></li>
                 </ul>
                 </li>
             @endcan
@@ -43,9 +44,9 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Laporan <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li> <a href="http://localhost:8000/laporan">Laporan Pasien Per Periode</a></li>
+                <li> <a href="{{ route("report.index") }}">Laporan Pasien Per Periode</a></li>
                 <li> <a href="http://localhost:8000/pasien/cetak" target="_blank">Laporan Pasien Keseluruhan</a></li>
-                <li> <a href="http://localhost:8000/terapi/history">Laporan History Pemeriksaan Pasien</a></li>
+                <li> <a href="{{ route("patient.history") }}">Laporan History Pemeriksaan Pasien</a></li>
 
               </ul>
             </li>

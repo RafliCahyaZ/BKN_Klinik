@@ -3,17 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\DTO\DiagnosisDTO;
+use App\DTO\MedicineStockTransactionDTO;
 use App\DTO\TreatmentDTO;
 use App\DTO\UserDTO;
-use App\Models\User;
 use App\Repository\AppointmentRepository;
 use App\Repository\DiagnosisRepository;
-use App\Repository\PatientRepository;
+use App\Repository\MedicineRepository;
 use App\Repository\RegistrationRepository;
 use App\Repository\TreatmentRepository;
 use App\Repository\UserRepository;
+use App\Type\TransactionType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
 {
@@ -22,7 +24,8 @@ class AppointmentController extends Controller
         private DiagnosisRepository $diagnosisRepository,
         private TreatmentRepository $treatmentRepository,
         private UserRepository $userRepository,
-        private AppointmentRepository $appointmentRepository
+        private AppointmentRepository $appointmentRepository,
+        private MedicineRepository $medicineRepository
     ) {}
 
     public function create($id)
@@ -36,12 +39,14 @@ class AppointmentController extends Controller
         $doctors = $this->userRepository->getByRole("doctor");
         $diagnoses = $this->diagnosisRepository->getAll();
         $treatments = $this->treatmentRepository->getAll();
+        $medicines = $this->medicineRepository->getAll();
 
         return view("dashboard.patient.appointment.create", [
             "doctors" => $doctors,
             "diagnoses" => $diagnoses,
             "treatments" => $treatments,
-            "registration" => $registrationDto
+            "registration" => $registrationDto,
+            "medicines" => $medicines
         ]);
     }
 
@@ -74,6 +79,8 @@ class AppointmentController extends Controller
             return $treatmentDto;
         });
 
+        $medicines = $this->mapInputToMedicineStockTransactionDTO($id, $request["medicine_ids"]);
+
         $editResult = true;
 
         if (!$this->appointmentRepository->attachManyDiagnosesToRegistration($registration, $diagnoses->toArray())) {
@@ -90,5 +97,25 @@ class AppointmentController extends Controller
             return back()->withInput();
         }
         return redirect()->route("patient.history.show", $id)->with("success", "Berhasil melakukan pemeriksaan");
+    }
+
+    private function mapInputToMedicineStockTransactionDTO($registrationId, $medicineInputs)
+    {
+        $medicineStocks = [];
+
+        foreach ($medicineInputs as $medicineInput) {
+            $medicineStockTransactionDto = new MedicineStockTransactionDTO();
+            $medicineStockTransactionDto->inventoryOfficerId = Auth::id();
+            $medicineStockTransactionDto->medicineId = $medicineInput["'id'"];
+            $medicineStockTransactionDto->registrationId = $registrationId;
+            $medicineStockTransactionDto->type = TransactionType::OUT;
+            $medicineStockTransactionDto->quantity = $medicineInput["'stock'"];
+            $medicineStockTransactionDto->createdAt = Carbon::now();
+            $medicineStockTransactionDto->updatedAt = Carbon::now();
+
+            $medicineStocks[] = $medicineStockTransactionDto;
+        }
+
+        return $medicineStocks;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\DTO\MedicineStockTransactionDTO;
+use App\Type\TransactionType;
 use Carbon\Carbon;
 
 class MedicineStockTransactionRepositoryImpl implements MedicineStockTransactionRepository
@@ -156,7 +157,7 @@ class MedicineStockTransactionRepositoryImpl implements MedicineStockTransaction
         $medicineStockTransactionDTO->id = '9';
         $medicineStockTransactionDTO->createdAt = Carbon::now();
         $medicineStockTransactionDTO->updatedAt = Carbon::now();
-        
+
         return $medicineStockTransactionDTO;
     }
 
@@ -170,13 +171,13 @@ class MedicineStockTransactionRepositoryImpl implements MedicineStockTransaction
     {
         $medicineStockTransactionDTO->id = $id;
         $medicineStockTransactionDTO->updatedAt = Carbon::now();
-        
+
         return $medicineStockTransactionDTO;
     }
 
     public function getLatestId(): int
     {
-        return 8;
+        return 0;
     }
 
     public function delete(string $id): bool
@@ -225,7 +226,7 @@ class MedicineStockTransactionRepositoryImpl implements MedicineStockTransaction
         return $transactions;
     }
 
-    public function getByType(string $type): array
+    public function getByType(TransactionType $type): array
     {
         $transactions = [];
 
@@ -260,7 +261,7 @@ class MedicineStockTransactionRepositoryImpl implements MedicineStockTransaction
             $transaction3->updatedAt = Carbon::now()->subDays(20);
 
             $transactions = [$transaction1, $transaction3];
-        } elseif ($type === 'out') {
+        } else {
             // Return transaksi tipe keluar
             $transaction2 = new MedicineStockTransactionDTO();
             $transaction2->id = '2';
