@@ -44,7 +44,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'last_stock' => 100,
             'expired_date' => Carbon::now()->addYears(2)->toDateString(),
             'notes' => 'Pembelian stok awal',
-            'created_at' => Carbon::now()->subDays(30),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(30)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(30)),
         ]);
 
         // Transaction 2 - Stock OUT (Paracetamol untuk Registration 1)
@@ -58,7 +59,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'last_stock' => 90,
             'expired_date' => null,
             'notes' => 'Obat untuk pasien Budi Santoso',
-            'created_at' => Carbon::now()->subDays(5),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(5)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(5)),
         ]);
 
         // Transaction 3 - Stock IN (Pembelian Amoxicillin)
@@ -72,7 +74,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'last_stock' => 50,
             'expired_date' => Carbon::now()->addYears(1)->toDateString(),
             'notes' => 'Pembelian stok awal',
-            'created_at' => Carbon::now()->subDays(30),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(30)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(30)),
         ]);
 
         // Transaction 4 - Stock OUT (Amoxicillin untuk Registration 4)
@@ -86,7 +89,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'last_stock' => 35,
             'expired_date' => null,
             'notes' => 'Obat untuk pasien Dewi Lestari',
-            'created_at' => Carbon::now()->subDays(3),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(3)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(3)),
         ]);
 
         // Transaction 5 - Stock IN (Pembelian OBH Combi)
@@ -100,7 +104,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'last_stock' => 30,
             'expired_date' => Carbon::now()->addMonths(18)->toDateString(),
             'notes' => 'Pembelian stok awal',
-            'created_at' => Carbon::now()->subDays(30),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(30)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(30)),
         ]);
 
         // Transaction 6 - Stock IN (Pembelian Vitamin B Complex)
@@ -114,7 +119,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'last_stock' => 75,
             'expired_date' => Carbon::now()->addYears(3)->toDateString(),
             'notes' => 'Pembelian stok awal',
-            'created_at' => Carbon::now()->subDays(30),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(30)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(30)),
         ]);
 
         // Transaction 7 - Stock OUT (Vitamin B untuk Registration 1)
@@ -128,7 +134,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'last_stock' => 55,
             'expired_date' => null,
             'notes' => 'Vitamin untuk pasien Budi Santoso',
-            'created_at' => Carbon::now()->subDays(5),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(5)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(5)),
         ]);
 
         // Transaction 8 - Stock IN (Pembelian Insulin)
@@ -142,7 +149,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'last_stock' => 20,
             'expired_date' => Carbon::now()->addMonths(6)->toDateString(),
             'notes' => 'Pembelian stok awal',
-            'created_at' => Carbon::now()->subDays(30),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(30)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(30)),
         ]);
 
         // Transaction 9 - Stock OUT (Insulin untuk Registration 3)
@@ -156,7 +164,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'last_stock' => 15,
             'expired_date' => null,
             'notes' => 'Insulin untuk pasien Ahmad Hidayat',
-            'created_at' => Carbon::now()->subDays(10),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(10)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(10)),
         ]);
     }
 }
