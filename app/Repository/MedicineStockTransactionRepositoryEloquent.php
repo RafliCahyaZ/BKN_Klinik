@@ -271,7 +271,6 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             return [];
         }
     }
-
     function getByType(TransactionType $type): array
     {
         try {
