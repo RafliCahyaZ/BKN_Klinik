@@ -89,24 +89,24 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     foreach ($registration->medicineStockTransactions as $transaction) {
                         $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
                         $medicineStockTransactionDTO->id = $transaction->id;
-                        
+
                         // Map inventory officer to UserDTO
                         $inventoryOfficer = new UserDTO();
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
-                        
+
                         // Map medicine to MedicineDTO
                         $medicine = new MedicineDTO();
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
                         $medicineStockTransactionDTO->medicine = $medicine;
-                        
+
                         // Map registration to RegistrationDTO (without transactions to avoid circular reference)
                         $medicineStockTransactionDTO->registration = null; // Will be set to parent registration
-                        
+
                         $medicineStockTransactionDTO->type = $transaction->type;
                         $medicineStockTransactionDTO->quantity = $transaction->quantity;
                         $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
@@ -174,14 +174,14 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 foreach ($registration->medicineStockTransactions as $transaction) {
                     $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
                     $medicineStockTransactionDTO->id = $transaction->id;
-                    
+
                     // Map inventory officer to UserDTO
                     $inventoryOfficer = new UserDTO();
                     if ($transaction->inventoryOfficer) {
                         $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                     }
                     $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
-                    
+
                     // Map medicine to MedicineDTO
                     $medicine = new MedicineDTO();
                     if ($transaction->medicine) {
@@ -189,12 +189,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     }
                     $medicineStockTransactionDTO->medicine = $medicine;
 
-
-                
-                    
                     // Map registration to RegistrationDTO (without transactions to avoid circular reference)
                     $medicineStockTransactionDTO->registration = null; // Will be set to parent registration
-                    
                     $medicineStockTransactionDTO->type = $transaction->type;
                     $medicineStockTransactionDTO->quantity = $transaction->quantity;
                     $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
@@ -336,24 +332,24 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     foreach ($registration->medicineStockTransactions as $transaction) {
                         $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
                         $medicineStockTransactionDTO->id = $transaction->id;
-                        
+
                         // Map inventory officer to UserDTO
                         $inventoryOfficer = new UserDTO();
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
-                        
+
                         // Map medicine to MedicineDTO
                         $medicine = new MedicineDTO();
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
                         $medicineStockTransactionDTO->medicine = $medicine;
-                        
+
                         // Map registration to RegistrationDTO (without transactions to avoid circular reference)
                         $medicineStockTransactionDTO->registration = null; // Will be set to parent registration
-                        
+
                         $medicineStockTransactionDTO->type = $transaction->type;
                         $medicineStockTransactionDTO->quantity = $transaction->quantity;
                         $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
@@ -420,24 +416,24 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     foreach ($registration->medicineStockTransactions as $transaction) {
                         $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
                         $medicineStockTransactionDTO->id = $transaction->id;
-                        
+
                         // Map inventory officer to UserDTO
                         $inventoryOfficer = new UserDTO();
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
-                        
+
                         // Map medicine to MedicineDTO
                         $medicine = new MedicineDTO();
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
                         $medicineStockTransactionDTO->medicine = $medicine;
-                        
+
                         // Map registration to RegistrationDTO (without transactions to avoid circular reference)
                         $medicineStockTransactionDTO->registration = null; // Will be set to parent registration
-                        
+
                         $medicineStockTransactionDTO->type = $transaction->type;
                         $medicineStockTransactionDTO->quantity = $transaction->quantity;
                         $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
@@ -505,24 +501,24 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     foreach ($registration->medicineStockTransactions as $transaction) {
                         $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
                         $medicineStockTransactionDTO->id = $transaction->id;
-                        
+
                         // Map inventory officer to UserDTO
                         $inventoryOfficer = new UserDTO();
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
-                        
+
                         // Map medicine to MedicineDTO
                         $medicine = new MedicineDTO();
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
                         $medicineStockTransactionDTO->medicine = $medicine;
-                        
+
                         // Map registration to RegistrationDTO (without transactions to avoid circular reference)
                         $medicineStockTransactionDTO->registration = null; // Will be set to parent registration
-                        
+
                         $medicineStockTransactionDTO->type = $transaction->type;
                         $medicineStockTransactionDTO->quantity = $transaction->quantity;
                         $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
