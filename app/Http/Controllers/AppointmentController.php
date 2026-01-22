@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\DTO\DiagnosisDTO;
+use App\DTO\MedicineDTO;
 use App\DTO\MedicineStockTransactionDTO;
+use App\DTO\RegistrationDTO;
 use App\DTO\TreatmentDTO;
 use App\DTO\UserDTO;
 use App\Repository\AppointmentRepository;
@@ -86,22 +88,27 @@ class AppointmentController extends Controller
         $editResult = true;
 
         if (!$this->appointmentRepository->attachManyDiagnosesToRegistration($registration, $diagnoses->toArray())) {
+            echo "haii";
             $editResult = false;
         }
         if (!$this->appointmentRepository->attachManyTreatmentsToRegistration($registration, $treatments->toArray())) {
+            echo "hello";
             $editResult = false;
         }
         if (!$this->registrationRepository->edit($registration)) {
+            echo "hidup jokowi";
             $editResult = false;
         }
 
         if (!$this->medicineStockTransactionRepository->insertMany($medicines)) {
+            echo "pupupapa";
             $editResult = false;
         }
-        if (!$editResult) {
-            return back()->withInput();
-        }
-        return redirect()->route("patient.history.show", $id)->with("success", "Berhasil melakukan pemeriksaan");
+        return;
+        /* if (!$editResult) { */
+        /*     return back()->withInput(); */
+        /* } */
+        /* return redirect()->route("patient.history.show", $id)->with("success", "Berhasil melakukan pemeriksaan"); */
     }
 
     private function mapInputToMedicineStockTransactionDTO($registrationId, $medicineInputs)
@@ -110,9 +117,12 @@ class AppointmentController extends Controller
 
         foreach ($medicineInputs as $medicineInput) {
             $medicineStockTransactionDto = new MedicineStockTransactionDTO();
-            $medicineStockTransactionDto->inventoryOfficerId = Auth::id();
-            $medicineStockTransactionDto->medicineId = $medicineInput["'id'"];
-            $medicineStockTransactionDto->registrationId = $registrationId;
+            $medicineStockTransactionDto->inventoryOfficer = new UserDTO();
+            $medicineStockTransactionDto->inventoryOfficer->id = Auth::id();
+            $medicineStockTransactionDto->medicine = new MedicineDTO();
+            $medicineStockTransactionDto->medicine->id = $medicineInput["'id'"];
+            $medicineStockTransactionDto->registration = new RegistrationDTO();
+            $medicineStockTransactionDto->registration->id = $registrationId;
             $medicineStockTransactionDto->type = TransactionType::OUT;
             $medicineStockTransactionDto->quantity = $medicineInput["'stock'"];
             $medicineStockTransactionDto->createdAt = Carbon::now();
