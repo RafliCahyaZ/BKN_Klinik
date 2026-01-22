@@ -9,6 +9,7 @@ use App\DTO\UserDTO;
 use App\Repository\AppointmentRepository;
 use App\Repository\DiagnosisRepository;
 use App\Repository\MedicineRepository;
+use App\Repository\MedicineStockTransactionRepository;
 use App\Repository\RegistrationRepository;
 use App\Repository\TreatmentRepository;
 use App\Repository\UserRepository;
@@ -25,7 +26,8 @@ class AppointmentController extends Controller
         private TreatmentRepository $treatmentRepository,
         private UserRepository $userRepository,
         private AppointmentRepository $appointmentRepository,
-        private MedicineRepository $medicineRepository
+        private MedicineRepository $medicineRepository,
+        private MedicineStockTransactionRepository $medicineStockTransactionRepository
     ) {}
 
     public function create($id)
@@ -93,6 +95,9 @@ class AppointmentController extends Controller
             $editResult = false;
         }
 
+        if (!$this->medicineStockTransactionRepository->insertMany($medicines)) {
+            $editResult = false;
+        }
         if (!$editResult) {
             return back()->withInput();
         }

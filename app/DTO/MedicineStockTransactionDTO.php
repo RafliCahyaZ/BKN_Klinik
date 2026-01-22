@@ -8,9 +8,9 @@ use Carbon\CarbonInterface;
 class MedicineStockTransactionDTO
 {
     public string $id;
-    public string $inventoryOfficerId;
-    public string $medicineId;
-    public ?string $registrationId = null;
+    public UserDTO $inventoryOfficer;
+    public MedicineDTO $medicine;
+    public ?RegistrationDTO $registrationId = null;
     public TransactionType $type;
     public int $quantity;
     public int $beginningStock;
