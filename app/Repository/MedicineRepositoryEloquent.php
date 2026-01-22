@@ -10,23 +10,31 @@ use App\Repository\MedicineRepository;
 
 class MedicineRepositoryEloquent implements MedicineRepository
 {
+    // Static helper method to map Medicine model to MedicineDTO
+    public static function mapMedicineModelToMedicineDto($medicine): MedicineDTO
+    {
+        $unitDTO = new UnitDTO();
+        $unitDTO->id = $medicine->unit->id;
+        $unitDTO->name = $medicine->unit->name;
+        
+        $medicineDTO = new MedicineDTO();
+        $medicineDTO->id = $medicine->id;
+        $medicineDTO->name = $medicine->name;
+        $medicineDTO->stock = $medicine->stock;
+        $medicineDTO->unit = $unitDTO;
+        $medicineDTO->createdAt = $medicine->created_at;
+        $medicineDTO->updatedAt = $medicine->updated_at;
+        
+        return $medicineDTO;
+    }
+
     function getAll(): array
     {
         try {
             $medicines_collections = Medicine::with(['unit'])->get();
 
             $formated_medicines = $medicines_collections->map(function ($medicine) {
-                $unitDTO = new UnitDTO();
-                $unitDTO->id = $medicine->unit->id;
-                $unitDTO->name = $medicine->unit->name;
-                $formated_medicine = new MedicineDTO();
-                $formated_medicine->id = $medicine->id;
-                $formated_medicine->name = $medicine->name;
-                $formated_medicine->stock = $medicine->stock;
-                $formated_medicine->unit = $unitDTO;
-                $formated_medicine->createdAt = $medicine->created_at;
-                $formated_medicine->updatedAt = $medicine->updated_at;
-                return $formated_medicine;
+                return self::mapMedicineModelToMedicineDto($medicine);
             });
 
             $medicines = $formated_medicines->toArray();
@@ -37,7 +45,6 @@ class MedicineRepositoryEloquent implements MedicineRepository
             return [];
         }
     }
-
 
     function insert(MedicineDTO $medicineDTO): ?MedicineDTO
     {
@@ -109,17 +116,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
                 return null;
             }
 
-            $unitDTO = new UnitDTO();
-            $unitDTO->id = $medicine->unit->id;
-            $unitDTO->name = $medicine->unit->name;
-            $formatedMedicine = new MedicineDTO();
-            $formatedMedicine->id = $medicine->id;
-            $formatedMedicine->name = $medicine->name;
-            $formatedMedicine->stock = $medicine->stock;
-            $formatedMedicine->unit = $unitDTO;
-            $formatedMedicine->createdAt = $medicine->created_at;
-            $formatedMedicine->updatedAt = $medicine->updated_at;
-            return $formatedMedicine;
+            return self::mapMedicineModelToMedicineDto($medicine);
         } catch (\Exception $e) {
             return null;
         }

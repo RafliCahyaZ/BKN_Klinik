@@ -31,7 +31,7 @@ class MedicineStockTransaction extends Model
         return $this->belongsTo(Registration::class);
     }
 
-    public function users(): BelongsTo
+    public function inventoryOfficer(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

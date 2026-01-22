@@ -7,7 +7,8 @@ use App\DTO\PatientDTO;
 use App\DTO\RegistrationDTO;
 use App\DTO\MedicineStockTransactionDTO;
 use App\DTO\UserDTO;
-use App\Models\User;
+use App\DTO\MedicineDTO;
+use App\DTO\UnitDTO;
 use App\Type\TransactionType;
 use App\Type\UserRole;
 use Carbon\Carbon;
@@ -49,6 +50,41 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $patient1->updatedAt = Carbon::now()->subDays(2);
 
         // ================= REGISTRATION 1 =================
+        $inventoryOfficer = new UserDTO();
+        $inventoryOfficer->id = '1';
+        $inventoryOfficer->username = 'inventory_officer1';
+        $inventoryOfficer->email = 'inventory@example.com';
+        $inventoryOfficer->fullname = 'Inventory Officer';
+        $inventoryOfficer->role = UserRole::INVENTORY_OFFICER;
+        $inventoryOfficer->createdAt = Carbon::now()->subDays(30);
+        $inventoryOfficer->updatedAt = Carbon::now()->subDays(30);
+
+        $unit = new UnitDTO();
+        $unit->id = '1';
+        $unit->name = 'Tablet';
+
+        $medicine = new MedicineDTO();
+        $medicine->id = '1';
+        $medicine->name = 'Paracetamol';
+        $medicine->stock = 100;
+        $medicine->unit = $unit;
+        $medicine->createdAt = Carbon::now()->subDays(60);
+        $medicine->updatedAt = Carbon::now()->subDays(60);
+
+        $medicineTransaction1 = new MedicineStockTransactionDTO();
+        $medicineTransaction1->id = '1';
+        $medicineTransaction1->inventoryOfficer = $inventoryOfficer;
+        $medicineTransaction1->medicine = $medicine;
+        $medicineTransaction1->registration = null; // Changed from string to null
+        $medicineTransaction1->type = TransactionType::OUT;
+        $medicineTransaction1->quantity = 2;
+        $medicineTransaction1->beginningStock = 100;
+        $medicineTransaction1->lastStock = 98;
+        $medicineTransaction1->expiredDate = Carbon::now()->addYears(2);
+        $medicineTransaction1->notes = 'Obat untuk pasien Budi Santoso';
+        $medicineTransaction1->createdAt = Carbon::now()->subDays(5);
+        $medicineTransaction1->updatedAt = Carbon::now()->subDays(5);
+
         $registration1 = new RegistrationDTO();
         $registration1->id = '1';
         $registration1->patient = $patient1;
@@ -171,11 +207,32 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $patient1->createdAt = Carbon::now()->subDays(10);
         $patient1->updatedAt = Carbon::now()->subDays(2);
 
+        $inventoryOfficer = new UserDTO();
+        $inventoryOfficer->id = '1';
+        $inventoryOfficer->username = 'inventory_officer1';
+        $inventoryOfficer->email = 'inventory@example.com';
+        $inventoryOfficer->fullname = 'Inventory Officer';
+        $inventoryOfficer->role = UserRole::INVENTORY_OFFICER;
+        $inventoryOfficer->createdAt = Carbon::now()->subDays(30);
+        $inventoryOfficer->updatedAt = Carbon::now()->subDays(30);
+
+        $unit = new UnitDTO();
+        $unit->id = '1';
+        $unit->name = 'Tablet';
+
+        $medicine = new MedicineDTO();
+        $medicine->id = '1';
+        $medicine->name = 'Paracetamol';
+        $medicine->stock = 100;
+        $medicine->unit = $unit;
+        $medicine->createdAt = Carbon::now()->subDays(60);
+        $medicine->updatedAt = Carbon::now()->subDays(60);
+
         $medicineTransaction1 = new MedicineStockTransactionDTO();
         $medicineTransaction1->id = '1';
-        $medicineTransaction1->inventoryOfficerId = '1';
-        $medicineTransaction1->medicineId = '1';
-        $medicineTransaction1->registrationId = '1';
+        $medicineTransaction1->inventoryOfficer = $inventoryOfficer;
+        $medicineTransaction1->medicine = $medicine;
+        $medicineTransaction1->registration = null; // Changed from string to null
         $medicineTransaction1->type = TransactionType::OUT;
         $medicineTransaction1->quantity = 2;
         $medicineTransaction1->beginningStock = 100;
@@ -238,11 +295,32 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $patient1->createdAt = Carbon::now()->subDays(10);
         $patient1->updatedAt = Carbon::now()->subDays(2);
 
+        $inventoryOfficer = new UserDTO();
+        $inventoryOfficer->id = '1';
+        $inventoryOfficer->username = 'inventory_officer1';
+        $inventoryOfficer->email = 'inventory@example.com';
+        $inventoryOfficer->fullname = 'Inventory Officer';
+        $inventoryOfficer->role = UserRole::INVENTORY_OFFICER;
+        $inventoryOfficer->createdAt = Carbon::now()->subDays(30);
+        $inventoryOfficer->updatedAt = Carbon::now()->subDays(30);
+
+        $unit1 = new UnitDTO();
+        $unit1->id = '1';
+        $unit1->name = 'Tablet';
+
+        $medicine1 = new MedicineDTO();
+        $medicine1->id = '1';
+        $medicine1->name = 'Paracetamol';
+        $medicine1->stock = 100;
+        $medicine1->unit = $unit1;
+        $medicine1->createdAt = Carbon::now()->subDays(60);
+        $medicine1->updatedAt = Carbon::now()->subDays(60);
+
         $medicineTransaction1 = new MedicineStockTransactionDTO();
         $medicineTransaction1->id = '1';
-        $medicineTransaction1->inventoryOfficerId = '1';
-        $medicineTransaction1->medicineId = '1';
-        $medicineTransaction1->registrationId = '1';
+        $medicineTransaction1->inventoryOfficer = $inventoryOfficer;
+        $medicineTransaction1->medicine = $medicine1;
+        $medicineTransaction1->registration = null; // Changed from string to null
         $medicineTransaction1->type = TransactionType::OUT;
         $medicineTransaction1->quantity = 2;
         $medicineTransaction1->beginningStock = 100;
@@ -276,11 +354,23 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $patient2->createdAt = Carbon::now()->subDays(20);
         $patient2->updatedAt = Carbon::now()->subDays(5);
 
+        $unit2 = new UnitDTO();
+        $unit2->id = '2';
+        $unit2->name = 'Kapsul';
+
+        $medicine2 = new MedicineDTO();
+        $medicine2->id = '2';
+        $medicine2->name = 'Amoxicillin';
+        $medicine2->stock = 50;
+        $medicine2->unit = $unit2;
+        $medicine2->createdAt = Carbon::now()->subDays(60);
+        $medicine2->updatedAt = Carbon::now()->subDays(60);
+
         $medicineTransaction2 = new MedicineStockTransactionDTO();
         $medicineTransaction2->id = '2';
-        $medicineTransaction2->inventoryOfficerId = '1';
-        $medicineTransaction2->medicineId = '2';
-        $medicineTransaction2->registrationId = '2';
+        $medicineTransaction2->inventoryOfficer = $inventoryOfficer;
+        $medicineTransaction2->medicine = $medicine2;
+        $medicineTransaction2->registration = null; // Changed from string to null
         $medicineTransaction2->type = TransactionType::OUT;
         $medicineTransaction2->quantity = 1;
         $medicineTransaction2->beginningStock = 50;
