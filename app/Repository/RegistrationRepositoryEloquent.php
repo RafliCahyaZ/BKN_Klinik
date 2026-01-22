@@ -2,12 +2,16 @@
 
 namespace App\Repository;
 
+use App\DTO\DiagnosisDTO;
 use App\DTO\PatientDTO;
 use App\DTO\RegistrationDTO;
 use App\DTO\UserDTO;
 use App\DTO\MedicineDTO;
 use App\DTO\MedicineStockTransactionDTO;
+use App\DTO\TreatmentDTO;
+use App\Models\Diagnosis;
 use App\Models\Registration;
+use App\Models\Treatment;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 
@@ -30,8 +34,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
         $patient->medicalRecordNumber = $registration->patient->medical_record_number;
         $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
         $patient->history = $registration->patient->history;
-        $patient->createdAt = Carbon::parse($registration->patient->created_at);
-        $patient->updatedAt = Carbon::parse($registration->patient->updated_at);
+        $patient->createdAt = $registration->patient->created_at;
+        $patient->updatedAt = $registration->patient->updated_at;
 
         $doctor = new UserDTO();
         if ($registration->doctor) {
@@ -44,8 +48,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
         $formatedRegistration->complaint = $registration->complaint;
         $formatedRegistration->receipt = $registration->receipt;
         $formatedRegistration->checkDate = $registration->check_date ? Carbon::parse($registration->check_date) : null;
-        $formatedRegistration->createdAt = Carbon::parse($registration->created_at);
-        $formatedRegistration->updatedAt = Carbon::parse($registration->updated_at);
+        $formatedRegistration->createdAt = $registration->created_at;
+        $formatedRegistration->updatedAt = $registration->updated_at;
 
         return $formatedRegistration;
     }
@@ -70,8 +74,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $patient->medicalRecordNumber = $registration->patient->medical_record_number;
                 $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
                 $patient->history = $registration->patient->history;
-                $patient->createdAt = Carbon::parse($registration->patient->created_at);
-                $patient->updatedAt = Carbon::parse($registration->patient->updated_at);
+                $patient->createdAt = $registration->patient->created_at;
+                $patient->updatedAt = $registration->patient->updated_at;
 
                 $doctor = new UserDTO();
                 if ($registration->doctor) {
@@ -80,8 +84,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     $doctor->email = $registration->doctor->email;
                     $doctor->fullname = $registration->doctor->fullname;
                     $doctor->role = $registration->doctor->role;
-                    $doctor->createdAt = Carbon::parse($registration->doctor->created_at);
-                    $doctor->updatedAt = Carbon::parse($registration->doctor->updated_at);
+                    $doctor->createdAt = $registration->doctor->created_at;
+                    $doctor->updatedAt = $registration->doctor->updated_at;
                 }
 
                 $medicineStockTransactions = [];
@@ -113,8 +117,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                         $medicineStockTransactionDTO->lastStock = $transaction->last_stock;
                         $medicineStockTransactionDTO->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
                         $medicineStockTransactionDTO->notes = $transaction->notes;
-                        $medicineStockTransactionDTO->createdAt = Carbon::parse($transaction->created_at);
-                        $medicineStockTransactionDTO->updatedAt = Carbon::parse($transaction->updated_at);
+                        $medicineStockTransactionDTO->createdAt = $transaction->created_at;
+                        $medicineStockTransactionDTO->updatedAt = $transaction->updated_at;
                         $medicineStockTransactions[] = $medicineStockTransactionDTO;
                     }
                 }
@@ -125,8 +129,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $formatedRegistration->complaint = $registration->complaint;
                 $formatedRegistration->receipt = $registration->receipt;
                 $formatedRegistration->checkDate = $registration->check_date ? Carbon::parse($registration->check_date) : null;
-                $formatedRegistration->createdAt = Carbon::parse($registration->created_at);
-                $formatedRegistration->updatedAt = Carbon::parse($registration->updated_at);
+                $formatedRegistration->createdAt = $registration->created_at;
+                $formatedRegistration->updatedAt = $registration->updated_at;
 
                 return $formatedRegistration;
             });
@@ -141,7 +145,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
     function getById(string $id): ?RegistrationDTO
     {
         try {
-            $registration = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit'])->find($id);
+            $registration = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit', 'diagnoses', 'treatments'])->find($id);
 
             if (!$registration) {
                 return null;
@@ -161,12 +165,40 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             $patient->medicalRecordNumber = $registration->patient->medical_record_number;
             $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
             $patient->history = $registration->patient->history;
-            $patient->createdAt = Carbon::parse($registration->patient->created_at);
-            $patient->updatedAt = Carbon::parse($registration->patient->updated_at);
+            $patient->createdAt = $registration->patient->created_at;
+            $patient->updatedAt = $registration->patient->updated_at;
 
             $doctor = new UserDTO();
             if ($registration->doctor) {
                 $doctor = UserRepositoryEloquent::mapUserModelToUserDto($registration->doctor);
+            }
+
+            $diagnoses = [];
+
+            if ($registration->diagnoses) {
+                foreach ($registration->diagnoses as $diagnosis) {
+                    $diagnosisDTO = new DiagnosisDTO();
+                    $diagnosisDTO->id = $diagnosis->id;
+                    $diagnosisDTO->icdCode = $diagnosis->name;
+                    $diagnosisDTO->diseaseName = $diagnosis->description;
+                    $diagnosisDTO->createdAt = $diagnosis->created_at;
+                    $diagnosisDTO->updatedAt = $diagnosis->updated_at;
+                    $diagonses[] = $diagnosisDTO;
+                }
+            }
+
+            $treatments = [];
+
+            if ($registration->treatments) {
+                foreach ($registration->treatments as $treatment) {
+                    $treatmentDTO = new TreatmentDTO();
+                    $treatmentDTO->id = $treatment->id;
+                    $treatmentDTO->treatmentCode = $treatment->name;
+                    $treatmentDTO->treatmentName = $treatment->description;
+                    $treatmentDTO->createdAt = $treatment->created_at;
+                    $treatmentDTO->updatedAt = $treatment->updated_at;
+                    $treatments[] = $treatmentDTO;
+                }
             }
 
             $medicineStockTransactions = [];
@@ -189,6 +221,9 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     }
                     $medicineStockTransactionDTO->medicine = $medicine;
 
+
+
+
                     // Map registration to RegistrationDTO (without transactions to avoid circular reference)
                     $medicineStockTransactionDTO->registration = null; // Will be set to parent registration
 
@@ -207,6 +242,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             $formated_registration->patient = $patient;
             $formated_registration->doctor = $doctor;
             $formated_registration->medicineStockTransactions = $medicineStockTransactions;
+            $formated_registration->diagnoses = $diagnoses;
+            $formated_registration->treatments = $treatments;
             $formated_registration->complaint = $registration->complaint;
             $formated_registration->receipt = $registration->receipt;
             $formated_registration->checkDate = $registration->check_date ? Carbon::parse($registration->check_date) : null;
@@ -234,15 +271,16 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             $registrationDTO->id = $registration->id;
             $registrationDTO->receipt = $registration->receipt;
             $registrationDTO->complaint = $registration->complaint;
-            $registrationDTO->checkDate = $registration->check_date ? Carbon::parse($registration->check_date) : null;
-            $registrationDTO->createdAt = Carbon::parse($registration->created_at);
-            $registrationDTO->updatedAt = Carbon::parse($registration->updated_at);
+            $registrationDTO->checkDate = Carbon::parse($registration->check_date);
+            $registrationDTO->createdAt = $registration->created_at;
+            $registrationDTO->updatedAt = $registration->updated_at;
 
             return $registrationDTO;
         } catch (\Exception $e) {
             return null;
         }
     }
+
 
     function edit(RegistrationDTO $registrationDTO): ?RegistrationDTO
     {
@@ -275,9 +313,9 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     $formatedUpdatedData->doctor = $doctor;
                     $formatedUpdatedData->complaint = $updatedData->complaint;
                     $formatedUpdatedData->receipt = $updatedData->receipt;
-                    $formatedUpdatedData->checkDate = $updatedData->check_date ? Carbon::parse($updatedData->check_date) : null;
+                    $formatedUpdatedData->checkDate = Carbon::parse($updatedData->check_date);
                     $formatedUpdatedData->createdAt = Carbon::parse($updatedData->created_at);
-                    $formatedUpdatedData->updatedAt = Carbon::parse($updatedData->updated_at);
+                    $formatedUpdatedData->updatedAt = $updatedData->updated_at;
 
                     return $formatedUpdatedData;
                 } else {
@@ -313,8 +351,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $patient->medicalRecordNumber = $registration->patient->medical_record_number;
                 $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
                 $patient->history = $registration->patient->history;
-                $patient->createdAt = Carbon::parse($registration->patient->created_at);
-                $patient->updatedAt = Carbon::parse($registration->patient->updated_at);
+                $patient->createdAt = $registration->patient->created_at;
+                $patient->updatedAt = $registration->patient->updated_at;
 
                 $doctor = new UserDTO();
                 if ($registration->doctor) {
@@ -323,8 +361,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     $doctor->email = $registration->doctor->email;
                     $doctor->fullname = $registration->doctor->fullname;
                     $doctor->role = $registration->doctor->role;
-                    $doctor->createdAt = Carbon::parse($registration->doctor->created_at);
-                    $doctor->updatedAt = Carbon::parse($registration->doctor->updated_at);
+                    $doctor->createdAt = $registration->doctor->created_at;
+                    $doctor->updatedAt = $registration->doctor->updated_at;
                 }
 
                 $medicineStockTransactions = [];
@@ -356,8 +394,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                         $medicineStockTransactionDTO->lastStock = $transaction->last_stock;
                         $medicineStockTransactionDTO->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
                         $medicineStockTransactionDTO->notes = $transaction->notes;
-                        $medicineStockTransactionDTO->createdAt = Carbon::parse($transaction->created_at);
-                        $medicineStockTransactionDTO->updatedAt = Carbon::parse($transaction->updated_at);
+                        $medicineStockTransactionDTO->createdAt = $transaction->created_at;
+                        $medicineStockTransactionDTO->updatedAt = $transaction->updated_at;
                         $medicineStockTransactions[] = $medicineStockTransactionDTO;
                     }
                 }
@@ -368,8 +406,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $formatedRegistration->complaint = $registration->complaint;
                 $formatedRegistration->receipt = $registration->receipt;
                 $formatedRegistration->checkDate = $registration->check_date ? Carbon::parse($registration->check_date) : null;
-                $formatedRegistration->createdAt = Carbon::parse($registration->created_at);
-                $formatedRegistration->updatedAt = Carbon::parse($registration->updated_at);
+                $formatedRegistration->createdAt = $registration->created_at;
+                $formatedRegistration->updatedAt = $registration->updated_at;
 
                 return $formatedRegistration;
             });
@@ -403,8 +441,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $patient->medicalRecordNumber = $registration->patient->medical_record_number;
                 $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
                 $patient->history = $registration->patient->history;
-                $patient->createdAt = Carbon::parse($registration->patient->created_at);
-                $patient->updatedAt = Carbon::parse($registration->patient->updated_at);
+                $patient->createdAt = $registration->patient->created_at;
+                $patient->updatedAt = $registration->patient->updated_at;
 
                 $doctor = new UserDTO();
                 if ($registration->doctor) {
@@ -440,8 +478,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                         $medicineStockTransactionDTO->lastStock = $transaction->last_stock;
                         $medicineStockTransactionDTO->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
                         $medicineStockTransactionDTO->notes = $transaction->notes;
-                        $medicineStockTransactionDTO->createdAt = Carbon::parse($transaction->created_at);
-                        $medicineStockTransactionDTO->updatedAt = Carbon::parse($transaction->updated_at);
+                        $medicineStockTransactionDTO->createdAt = $transaction->created_at;
+                        $medicineStockTransactionDTO->updatedAt = $transaction->updated_at;
                         $medicineStockTransactions[] = $medicineStockTransactionDTO;
                     }
                 }
@@ -452,8 +490,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $formatedRegistration->complaint = $registration->complaint;
                 $formatedRegistration->receipt = $registration->receipt;
                 $formatedRegistration->checkDate = $registration->check_date ? Carbon::parse($registration->check_date) : null;
-                $formatedRegistration->createdAt = Carbon::parse($registration->created_at);
-                $formatedRegistration->updatedAt = Carbon::parse($registration->updated_at);
+                $formatedRegistration->createdAt = $registration->created_at;
+                $formatedRegistration->updatedAt = $registration->updated_at;
 
                 return $formatedRegistration;
             });
@@ -464,6 +502,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             return [];
         }
     }
+
 
     function getByRangeDate(CarbonInterface $startDate, CarbonInterface $endDate): array
     {
@@ -487,8 +526,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $patient->medicalRecordNumber = $registration->patient->medical_record_number;
                 $patient->medicalRecordFileUrl = $registration->patient->medical_record_file_url;
                 $patient->history = $registration->patient->history;
-                $patient->createdAt = Carbon::parse($registration->patient->created_at);
-                $patient->updatedAt = Carbon::parse($registration->patient->updated_at);
+                $patient->createdAt = $registration->patient->created_at;
+                $patient->updatedAt = $registration->patient->updated_at;
 
                 $doctor = new UserDTO();
                 if ($registration->doctor) {
@@ -524,8 +563,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                         $medicineStockTransactionDTO->lastStock = $transaction->last_stock;
                         $medicineStockTransactionDTO->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
                         $medicineStockTransactionDTO->notes = $transaction->notes;
-                        $medicineStockTransactionDTO->createdAt = Carbon::parse($transaction->created_at);
-                        $medicineStockTransactionDTO->updatedAt = Carbon::parse($transaction->updated_at);
+                        $medicineStockTransactionDTO->createdAt = $transaction->created_at;
+                        $medicineStockTransactionDTO->updatedAt = $transaction->updated_at;
                         $medicineStockTransactions[] = $medicineStockTransactionDTO;
                     }
                 }
@@ -536,8 +575,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $formatedRegistration->complaint = $registration->complaint;
                 $formatedRegistration->receipt = $registration->receipt;
                 $formatedRegistration->checkDate = $registration->check_date ? Carbon::parse($registration->check_date) : null;
-                $formatedRegistration->createdAt = Carbon::parse($registration->created_at);
-                $formatedRegistration->updatedAt = Carbon::parse($registration->updated_at);
+                $formatedRegistration->createdAt = $registration->created_at;
+                $formatedRegistration->updatedAt = $registration->updated_at;
 
                 return $formatedRegistration;
             });
