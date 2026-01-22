@@ -4,7 +4,10 @@ namespace App\Repository;
 
 use App\DTO\PatientDTO;
 use App\DTO\RegistrationDTO;
+use App\DTO\MedicineStockTransactionDTO;
+use App\Type\TransactionType;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 
 class RegistrationRepositoryImpl implements RegistrationRepository
 {
@@ -24,11 +27,26 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $patient1->createdAt = Carbon::now()->subDays(10);
         $patient1->updatedAt = Carbon::now()->subDays(2);
 
+        $medicineTransaction1 = new MedicineStockTransactionDTO();
+        $medicineTransaction1->id = '1';
+        $medicineTransaction1->inventoryOfficerId = '1';
+        $medicineTransaction1->medicineId = '1';
+        $medicineTransaction1->registrationId = '1';
+        $medicineTransaction1->type = TransactionType::OUT;
+        $medicineTransaction1->quantity = 2;
+        $medicineTransaction1->beginningStock = 100;
+        $medicineTransaction1->lastStock = 98;
+        $medicineTransaction1->expiredDate = Carbon::now()->addYears(2);
+        $medicineTransaction1->notes = 'Obat untuk pasien Budi Santoso';
+        $medicineTransaction1->createdAt = Carbon::now()->subDays(5);
+        $medicineTransaction1->updatedAt = Carbon::now()->subDays(5);
+
         $registration1 = new RegistrationDTO();
         $registration1->id = '1';
         $registration1->patient = $patient1;
         $registration1->complaint = 'Pusing dan mual';
         $registration1->receipt = 'RCPT-001';
+        $registration1->medicineStockTransactions = [$medicineTransaction1];
         $registration1->checkDate = Carbon::parse('2024-01-15 09:00:00');
         $registration1->createdAt = Carbon::now()->subDays(5);
         $registration1->updatedAt = Carbon::now()->subDays(1);
@@ -52,6 +70,7 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $registration2->patient = $patient2;
         $registration2->complaint = 'Batuk dan demam';
         $registration2->receipt = null;
+        $registration2->medicineStockTransactions = [];
         $registration2->checkDate = null;
         $registration2->createdAt = Carbon::now()->subDays(3);
         $registration2->updatedAt = Carbon::now()->subDays(1);
@@ -125,11 +144,26 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $patient1->createdAt = Carbon::now()->subDays(10);
         $patient1->updatedAt = Carbon::now()->subDays(2);
 
+        $medicineTransaction1 = new MedicineStockTransactionDTO();
+        $medicineTransaction1->id = '1';
+        $medicineTransaction1->inventoryOfficerId = '1';
+        $medicineTransaction1->medicineId = '1';
+        $medicineTransaction1->registrationId = '1';
+        $medicineTransaction1->type = TransactionType::OUT;
+        $medicineTransaction1->quantity = 2;
+        $medicineTransaction1->beginningStock = 100;
+        $medicineTransaction1->lastStock = 98;
+        $medicineTransaction1->expiredDate = Carbon::now()->addYears(2);
+        $medicineTransaction1->notes = 'Obat untuk pasien Budi Santoso';
+        $medicineTransaction1->createdAt = Carbon::now()->subDays(5);
+        $medicineTransaction1->updatedAt = Carbon::now()->subDays(5);
+
         $registration1 = new RegistrationDTO();
         $registration1->id = '1';
         $registration1->patient = $patient1;
         $registration1->complaint = 'Pusing dan mual';
         $registration1->receipt = 'RCPT-001';
+        $registration1->medicineStockTransactions = [$medicineTransaction1];
         $registration1->checkDate = null;
         $registration1->createdAt = Carbon::now()->subDays(5);
         $registration1->updatedAt = Carbon::now()->subDays(1);
@@ -153,6 +187,7 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $registration2->patient = $patient2;
         $registration2->complaint = 'Batuk dan demam';
         $registration2->receipt = null;
+        $registration2->medicineStockTransactions = [];
         $registration2->checkDate = null;
         $registration2->createdAt = Carbon::now()->subDays(3);
         $registration2->updatedAt = Carbon::now()->subDays(1);
@@ -176,11 +211,26 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $patient1->createdAt = Carbon::now()->subDays(10);
         $patient1->updatedAt = Carbon::now()->subDays(2);
 
+        $medicineTransaction1 = new MedicineStockTransactionDTO();
+        $medicineTransaction1->id = '1';
+        $medicineTransaction1->inventoryOfficerId = '1';
+        $medicineTransaction1->medicineId = '1';
+        $medicineTransaction1->registrationId = '1';
+        $medicineTransaction1->type = TransactionType::OUT;
+        $medicineTransaction1->quantity = 2;
+        $medicineTransaction1->beginningStock = 100;
+        $medicineTransaction1->lastStock = 98;
+        $medicineTransaction1->expiredDate = Carbon::now()->addYears(2);
+        $medicineTransaction1->notes = 'Obat untuk pasien Budi Santoso';
+        $medicineTransaction1->createdAt = Carbon::now()->subDays(5);
+        $medicineTransaction1->updatedAt = Carbon::now()->subDays(5);
+
         $registration1 = new RegistrationDTO();
         $registration1->id = '1';
         $registration1->patient = $patient1;
         $registration1->complaint = 'Pusing dan mual';
         $registration1->receipt = 'RCPT-001';
+        $registration1->medicineStockTransactions = [$medicineTransaction1];
         $registration1->checkDate = Carbon::now();
         $registration1->createdAt = Carbon::now()->subDays(5);
         $registration1->updatedAt = Carbon::now()->subDays(1);
@@ -199,15 +249,39 @@ class RegistrationRepositoryImpl implements RegistrationRepository
         $patient2->createdAt = Carbon::now()->subDays(20);
         $patient2->updatedAt = Carbon::now()->subDays(5);
 
+        $medicineTransaction2 = new MedicineStockTransactionDTO();
+        $medicineTransaction2->id = '2';
+        $medicineTransaction2->inventoryOfficerId = '1';
+        $medicineTransaction2->medicineId = '2';
+        $medicineTransaction2->registrationId = '2';
+        $medicineTransaction2->type = TransactionType::OUT;
+        $medicineTransaction2->quantity = 1;
+        $medicineTransaction2->beginningStock = 50;
+        $medicineTransaction2->lastStock = 49;
+        $medicineTransaction2->expiredDate = Carbon::now()->addYears(1);
+        $medicineTransaction2->notes = 'Obat untuk pasien Siti Aminah';
+        $medicineTransaction2->createdAt = Carbon::now()->subDays(3);
+        $medicineTransaction2->updatedAt = Carbon::now()->subDays(3);
+
         $registration2 = new RegistrationDTO();
         $registration2->id = '2';
         $registration2->patient = $patient2;
         $registration2->complaint = 'Batuk dan demam';
         $registration2->receipt = null;
+        $registration2->medicineStockTransactions = [$medicineTransaction2];
         $registration2->checkDate = Carbon::now();
         $registration2->createdAt = Carbon::now()->subDays(3);
         $registration2->updatedAt = Carbon::now()->subDays(1);
 
         return [$registration1, $registration2];
+    }
+
+    public function getByRangeDate(CarbonInterface $startDate, CarbonInterface $endDate): array
+    {
+        $all = $this->getAll();
+        
+        return array_filter($all, function($registration) use ($startDate, $endDate) {
+            return $registration->createdAt->between($startDate, $endDate);
+        });
     }
 }
