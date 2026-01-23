@@ -35,7 +35,7 @@
                                 <tr>
                                     <td>{{ $medicine->id }}</td>
                                     <td>{{ $medicine->name }}</td>
-                                    <td>{{ $medicine->stock }}</td>
+                                    <td>{{ $medicine->stock }} {{ $medicine->unit->name }}</td>
                                     <td>
                                         <a href="{{ route("medicine.edit.view", $medicine->id) }}" class="btn btn-sm btn-info" title="Ubah Data"><i class="glyphicon glyphicon-pencil"></i></a>
                                     <form

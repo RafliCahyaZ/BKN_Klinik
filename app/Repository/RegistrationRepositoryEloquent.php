@@ -584,4 +584,9 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             return [];
         }
     }
+
+    public function getByUserId(): array
+    {
+        return [];
+    }
 }

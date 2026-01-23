@@ -146,7 +146,7 @@
                             <th>
                                 <select name="medicine" id="selectMedicineElement" class="form-control select2">
                                     @foreach($medicines as $index => $medicine)
-                                        <option data-icd="{{ $medicine->id }}" value="{{ $medicine->id }}">{{ $medicine->name }}</option>
+                                        <option data-quantity="{{ $medicine->unit->name }}" data-icd="{{ $medicine->id }}" value="{{ $medicine->id }}">{{ $medicine->name }}</option>
                                     @endforeach
                                 </select>
                             </th>
@@ -298,6 +298,7 @@
                 value: this.selectElement.value,
                 text: this.selectElement.options[this.selectElement.selectedIndex].text,
                 icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd,
+                quantity: this.selectElement.options[this.selectElement.selectedIndex].dataset.quantity,
                 stock: this.inputStock.value
             };
             return selected
@@ -324,7 +325,7 @@
             console.log(this.selected);
             const appendedElement = `
                 <tr>
-                    <td>${this.selected.icd} - ${this.selected.text} | kuantitas: ${this.selected.stock}</td>
+                    <td>${this.selected.icd} - ${this.selected.text} | kuantitas: ${this.selected.stock} ${this.selected.quantity}</td>
                     <td>
                         <a href="#" onclick="hapus('11','000044','10467','2026-01-14')" title="Hapus Data Diagnosa" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
                     </td>

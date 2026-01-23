@@ -13,7 +13,7 @@
                 <tr>
                     <th>Stok saat ini</th>
                     <th>:</th>
-                    <th>{{ $medicine->stock }}</th>
+                    <th>{{ $medicine->stock }} {{ $medicine->unit->name }}</th>
                 </tr>
             </tbody>
         </table>
@@ -35,7 +35,7 @@
                         </tr>
                     @enderror
                     <tr>
-                        <th>Unit<span class="text-danger">(*)</span></th>
+                        <th>Tipe<span class="text-danger">*</span></th>
                         <th>:</th>
                         <th>
                         <select name="transactionType">
@@ -52,19 +52,10 @@
                         </tr>
                     @enderror
                     <tr>
-                        <th>Kuantitas<span class="text-danger">(*)</span></th>
+                        <th>Kuantitas<span class="text-danger">*</span></th>
                         <th>:</th>
                         <th><input type="number" name="quantity" value="1" class="form-control" id="quantity" required="required"></th>
                     </tr>
-
-                    @error('expiredDate')
-                    @enderror
-                    <tr>
-                        <th>Tanggal Kedaluarsa</th>
-                        <th>:</th>
-                        <th><input type="date" name="expiredDate" class="form-control" id="expiredDate"/></th>
-                    </tr>
-
 
                     <tr>
                         <th colspan="3">
