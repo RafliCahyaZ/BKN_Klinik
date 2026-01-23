@@ -47,7 +47,9 @@ class RegistrationSeeder extends Seeder
             'doctor_id' => $doctor->id,
             'complaint' => 'Pusing dan mual',
             'receipt' => 'Istirahat cukup, minum obat teratur',
-            'check_date' => Carbon::now()->subDays(5),
+            'check_date' => Carbon::parse(Carbon::now()->subDays(5)),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(5)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(5)),
         ]);
         $registration1->diagnoses()->attach([$hypertension->id]);
         $registration1->treatments()->attach([$consultation->id, $bloodPressure->id]);
@@ -59,6 +61,8 @@ class RegistrationSeeder extends Seeder
             'complaint' => 'Batuk dan pilek',
             'receipt' => null,
             'check_date' => null,
+            'created_at' => Carbon::parse(Carbon::now()->subDays(2)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(2)),
         ]);
 
         // Registration 3 - Already checked
@@ -67,7 +71,9 @@ class RegistrationSeeder extends Seeder
             'doctor_id' => $doctor->id,
             'complaint' => 'Kontrol gula darah',
             'receipt' => 'Diet rendah gula, olahraga teratur',
-            'check_date' => Carbon::now()->subDays(10),
+            'check_date' => Carbon::parse(Carbon::now()->subDays(10)),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(10)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(10)),
         ]);
         $registration3->diagnoses()->attach([$diabetes->id]);
         $registration3->treatments()->attach([$consultation->id, $bloodSugar->id]);
@@ -78,7 +84,9 @@ class RegistrationSeeder extends Seeder
             'doctor_id' => $doctor->id,
             'complaint' => 'Sesak nafas',
             'receipt' => 'Hindari pemicu asma, gunakan inhaler',
-            'check_date' => Carbon::now()->subDays(3),
+            'check_date' => Carbon::parse(Carbon::now()->subDays(3)),
+            'created_at' => Carbon::parse(Carbon::now()->subDays(3)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(3)),
         ]);
         $registration4->diagnoses()->attach([$asthma->id]);
         $registration4->treatments()->attach([$consultation->id, $nebulizer->id]);
@@ -90,6 +98,8 @@ class RegistrationSeeder extends Seeder
             'complaint' => 'Sakit kepala',
             'receipt' => null,
             'check_date' => null,
+            'created_at' => Carbon::parse(Carbon::now()->subDays(1)),
+            'updated_at' => Carbon::parse(Carbon::now()->subDays(1)),
         ]);
     }
 }
