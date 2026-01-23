@@ -38,7 +38,18 @@
                                     <td>{{ $user->role }}</td>
                                     <td style="text-align:center">
                                         <a href="{{ route("user.edit.view", $user->id) }}" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-pencil"></i></a>&nbsp;
-                                        <a href="http://localhost:8000/pengguna/hapus/23" class="btn btn-sm btn-danger" onclick="return confirm('Apakah yakin ingin menghapus pengguna ini?')"><i class="glyphicon glyphicon-trash"></i></a>
+                                    <form
+                                        style="display: inline-block;"
+                                        action="{{ route('user.destroy', $user->id) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('Yakin ingin menghapus data ini?')"
+                                    >
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm">
+                                            <i class="glyphicon glyphicon-trash"></i>
+                                        </button>
+                                    </form>
                                     </td>
                                     </tr>
                             @endforeach
