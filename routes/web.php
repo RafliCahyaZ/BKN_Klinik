@@ -63,6 +63,10 @@ Route::middleware("auth")->group(function () {
         Route::get("/edit/{id}", [MedicineController::class, 'edit'])->name("edit.view");
         Route::post("/edit/{id}", [MedicineController::class, 'editAction'])->name("edit.action");
         Route::delete("/destroy/{id}", [MedicineController::class, 'destroy'])->name("destroy");
+
+        Route::get("/{id}/history", [MedicineController::class, 'history'])->name("history");
+        Route::get("/{id}/transaction", [MedicineController::class, 'transaction'])->name("transaction.create.view");
+        Route::post("/{id}/transaction", [MedicineController::class, 'transactionAction'])->name("transaction.create.action");
     });
 
     Route::get('/', function () {
@@ -108,3 +112,4 @@ Route::prefix("user")->name("user.")->group(function () {
     Route::get("//edit/{id}", [UserController::class, 'edit'])->name("edit.view");
     Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
 });
+
