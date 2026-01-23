@@ -19,7 +19,7 @@ class Registration extends Model
 
     public function diagnoses(): BelongsToMany
     {
-        return $this->belongsToMany(Diagnosis::class);
+        return $this->belongsToMany(Diagnosis::class)->withTimestamps();
     }
 
     public function medicineStockTransactions(): HasMany
@@ -39,7 +39,7 @@ class Registration extends Model
 
     public function treatments(): BelongsToMany
     {
-        return $this->belongsToMany(Treatment::class);
+        return $this->belongsToMany(Treatment::class)->withTimestamps();
     }
 
 
