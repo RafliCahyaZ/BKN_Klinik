@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    <x-dashboard-container title="Tambah Data Master Diagnosa">
+    <x-dashboard-container title="Tambah Data Master Obat">
         <form
             action="{{ route('medicine.store') }}"
             method="post"
@@ -30,7 +30,7 @@
                     <tr>
                         <th>Stok</th>
                         <th>:</th>
-                        <th><input type="number" name="stock" value="0" class="form-control" id="nama" required="required"></th>
+                        <th><input type="number" name="stock" value="1" class="form-control" id="nama" required="required"></th>
                     </tr>
 
                     @error('unit')

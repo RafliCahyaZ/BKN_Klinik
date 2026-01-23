@@ -1,7 +1,15 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    <x-dashboard-container title="Tambah Data Master Diagnosa">
+    <x-dashboard-container title="Edit Data Master Obat">
+
+        <div style="padding: 12px 0">
+            <a href="{{ route('medicine.transaction.create.view', $medicine->id) }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Buat Transaksi</a>
+            <a href="{{ route('medicine.history', $medicine->id) }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-print"></i> Histori Transaksi</a>
+        </div>
+
+        <hr/>
+
         <form
             action="{{ route('medicine.edit.action', $medicine->id) }}"
             method="post"

@@ -20,11 +20,14 @@ use App\Repository\AppointmentRepository;
 use App\Repository\AppointmentRepositoryEloquent;
 use App\Repository\AppointmentRepositoryImpl;
 use App\Repository\MedicineRepository;
+use App\Repository\MedicineRepositoryEloquent;
 use App\Repository\MedicineRepositoryImpl;
 use App\Repository\MedicineStockTransactionRepository;
+use App\Repository\MedicineStockTransactionRepositoryEloquent;
 use App\Repository\MedicineStockTransactionRepositoryImpl;
 use App\Repository\RegistrationRepositoryEloquent;
 use App\Repository\UnitRepository;
+use App\Repository\UnitRepositoryEloquent;
 use App\Repository\UnitRepositoryImpl;
 use App\Repository\UserRepositoryEloquent;
 
@@ -38,9 +41,9 @@ class RepositoryProvider extends ServiceProvider
         UserRepository::class => UserRepositoryEloquent::class,
         RegistrationRepository::class => RegistrationRepositoryEloquent::class,
         AppointmentRepository::class => AppointmentRepositoryEloquent::class,
-        MedicineRepository::class => MedicineRepositoryImpl::class,
-        MedicineStockTransactionRepository::class => MedicineStockTransactionRepositoryImpl::class,
-        UnitRepository::class => UnitRepositoryImpl::class
+        MedicineRepository::class => MedicineRepositoryEloquent::class,
+        MedicineStockTransactionRepository::class => MedicineStockTransactionRepositoryEloquent::class,
+        UnitRepository::class => UnitRepositoryEloquent::class
     ];
     /**
      * Register services.

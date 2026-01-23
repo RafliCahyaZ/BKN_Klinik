@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\DTO\UserDTO;
+use App\Type\UserRole;
 use Carbon\Carbon;
 
 class UserRepositoryImpl implements UserRepository
@@ -16,7 +17,7 @@ class UserRepositoryImpl implements UserRepository
         $user1->password = 'password';
         $user1->fullname = 'Administrator Sistem';
         $user1->email = 'admin@example.com';
-        $user1->role = 'ADMIN';
+        $user1->role = UserRole::ADMIN;
         $user1->createdAt = Carbon::now()->subMonths(2);
         $user1->updatedAt = Carbon::now()->subDays(5);
 
@@ -27,7 +28,7 @@ class UserRepositoryImpl implements UserRepository
         $user2->password = 'password';
         $user2->fullname = 'Dr. Andi Wijaya';
         $user2->email = 'andi@example.com';
-        $user2->role = 'DOCTOR';
+        $user2->role = UserRole::DOCTOR;
         $user2->createdAt = Carbon::now()->subMonth();
         $user2->updatedAt = Carbon::now()->subDays(3);
 
@@ -38,7 +39,7 @@ class UserRepositoryImpl implements UserRepository
         $user3->password = 'password';
         $user3->fullname = 'Siti Aminah';
         $user3->email = 'siti@example.com';
-        $user3->role = 'NURSE';
+        $user3->role = UserRole::OFFICER;
         $user3->createdAt = Carbon::now()->subWeeks(3);
         $user3->updatedAt = Carbon::now()->subDays(2);
 
@@ -49,7 +50,7 @@ class UserRepositoryImpl implements UserRepository
         $user4->password = 'password';
         $user4->fullname = 'Dewi Lestari';
         $user4->email = 'dewi@example.com';
-        $user4->role = 'RECEPTIONIST';
+        $user4->role = UserRole::OFFICER;
         $user4->createdAt = Carbon::now()->subWeeks(2);
         $user4->updatedAt = Carbon::now()->subDay();
 
@@ -60,7 +61,7 @@ class UserRepositoryImpl implements UserRepository
         $user5->password = 'password';
         $user5->fullname = 'Rizky Pratama';
         $user5->email = 'rizky@example.com';
-        $user5->role = 'USER';
+        $user5->role = UserRole::INVENTORY_OFFICER;
         $user5->createdAt = Carbon::now()->subDays(5);
         $user5->updatedAt = Carbon::now();
 

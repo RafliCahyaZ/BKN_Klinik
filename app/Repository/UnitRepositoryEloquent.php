@@ -39,6 +39,7 @@ class UnitRepositoryEloquent implements UnitRepository
             ]);
 
             $unitDTO->id = $unit->id;
+            $unitDTO->name = $unit->name;
             $unitDTO->createdAt = $unit->created_at;
             $unitDTO->updatedAt = $unit->updated_at;
 

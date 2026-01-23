@@ -63,9 +63,11 @@
                     <li role="periksa">
                         <a href="#terapi" aria-controls="terapi" role="tab" data-toggle="tab">Terapi</a>
                     </li>
+                    <li role="periksa">
+                        <a href="#medicine" aria-controls="medicine" role="tab" data-toggle="tab">Obat</a>
+                    </li>
                 </ul>
             </div>
-
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="diagnosa">
                     <table class="table">
@@ -133,13 +135,50 @@
                 </table>
                 </div>
 
+                <div role="tabpanel" class="tab-pane" id="medicine">
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th colspan="2">Input Obat</th>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <select name="medicine" id="selectMedicineElement" class="form-control select2">
+                                    @foreach($medicines as $index => $medicine)
+                                        <option data-icd="{{ $medicine->id }}" value="{{ $medicine->id }}">{{ $medicine->name }}</option>
+                                    @endforeach
+                                </select>
+                            </th>
+                            <th>
+                            <input
+                                type="number"
+                                name="stock"
+                                value="1"
+                                min="1"
+                                class="form-control"
+                                id="inputStockElement"
+                            >
+                            </th>
+                            <th>
+                                <input type="button" name="" value="Tambah" id="submitMedicineButton" class="btn btn-info">
+                            </th>
+                        </tr>
+                    </table>
+
+                    <table class="table table-striped">
+                        <tbody id="medicineTable">
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
 
             <div id="dynamic-data">
             </div>
 
             <div class="well">
-                <input type="submit" name="submit" value="Selesai Pemeriksaan" id="submit" class="btn btn-success">
+                <input type="submit" disabled="true" name="submit" value="Selesai Pemeriksaan" id="submit" class="btn btn-success">
                 <a class="btn btn-info" href="{{ route('patient.queue') }}">Kembali</a>
                 </div>
             </form>
@@ -160,11 +199,35 @@
             this.selectElement = selectElement
             this.inputName = inputName
             this.dynamicDataContainer = document.getElementById("dynamic-data");
+            this.selected = null;
+            this.counter = 0;
+            this.observer = null;
 
             this.submitButton.addEventListener("click", () => {
-                const selected = this.getSelected();
-                this.appendData(selected);
+                this.submitButtonEventListener();
+
+                console.log("haihai");
+                if(this.observer) {
+                        console.log("ada")
+                    this.observer.eventCallback()
+                } else {
+                        console.log("tidak ada")
+                    }
             })
+        }
+
+        subscribeTo(observer) {
+            this.observer = observer
+            this.observer.subscribe(this)
+        }
+
+        submitButtonEventListener()
+        {
+            this.selected = this.getSelected();
+            this.appendData();
+            this.appendInputElement();
+
+            this.counter++;
         }
 
         getSelected()
@@ -178,29 +241,133 @@
             return selected
         }
 
-        createInputElement(selected)
+        createInputElement(name, value)
         {
             const input = document.createElement('input');
             input.type = 'hidden';
-            input.name = `${this.inputName}[]`;
-            input.value = selected.value;
+            input.name = name;
+            input.value = value;
 
-            this.dynamicDataContainer.appendChild(input);
+            return input;
         }
 
-        appendData(selected) {
+        createAppendElement()
+        {
             const appendedElement = `
                 <tr>
-                    <td>${selected.icd} - ${selected.text}</td>
+                    <td>${this.selected.icd} - ${this.selected.text}</td>
                     <td>
                         <a href="#" onclick="hapus('11','000044','10467','2026-01-14')" title="Hapus Data Diagnosa" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
                     </td>
                 </tr>
             `
-            this.tableElement.insertAdjacentHTML("beforeend", appendedElement);
-            this.createInputElement(selected);
+
+            return appendedElement;
+        }
+
+        appendInputElement()
+        {
+            this.dynamicDataContainer.appendChild(this.createInputElement(`${this.inputName}[]`, this.selected.value));
+        }
+
+        appendData() {
+            this.tableElement.insertAdjacentHTML("beforeend", this.createAppendElement());
+        }
+
+        isAny() {
+            return this.counter > 0;
         }
     }
+
+    class MedicineAttachManager extends AttachManager
+    {
+        constructor(
+            submitButton,
+            tableElement,
+            selectElement,
+            inputName,
+            inputStock
+        ) {
+            super(submitButton, tableElement, selectElement, inputName)
+            this.inputStock = inputStock
+        }
+
+        getSelected()
+        {
+            const selected = {
+                value: this.selectElement.value,
+                text: this.selectElement.options[this.selectElement.selectedIndex].text,
+                icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd,
+                stock: this.inputStock.value
+            };
+            return selected
+        }
+
+        submitButtonEventListener()
+        {
+            this.selected = this.getSelected();
+            this.appendData();
+            this.appendInputElement();
+            this.counter++;
+
+            this.inputStock.value = ""
+        }
+
+        appendInputElement()
+        {
+            this.dynamicDataContainer.appendChild(this.createInputElement(`${this.inputName}[${this.counter}]['id']`, this.selected.value));
+            this.dynamicDataContainer.appendChild(this.createInputElement(`${this.inputName}[${this.counter}]['stock']`, this.selected.stock));
+        }
+
+        createAppendElement()
+        {
+            console.log(this.selected);
+            const appendedElement = `
+                <tr>
+                    <td>${this.selected.icd} - ${this.selected.text} | kuantitas: ${this.selected.stock}</td>
+                    <td>
+                        <a href="#" onclick="hapus('11','000044','10467','2026-01-14')" title="Hapus Data Diagnosa" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
+                    </td>
+                </tr>
+            `
+
+            return appendedElement;
+        }
+    }
+
+    class StatusButtonObserver
+    {
+        constructor(buttonElement) {
+            this.buttonElement = buttonElement
+            this.subscribers = []
+        }
+
+        subscribe(subscriber){
+            this.subscribers.push(subscriber)
+        }
+
+        eventCallback()
+        {
+            let isAllAny = true;
+
+            for(const subscriber of this.subscribers) {
+                console.log("aman ", isAllAny);
+                if(!subscriber.isAny()) {
+                    isAllAny = false;
+                    break;
+                }
+            }
+
+            console.log("Is Any: ", isAllAny);
+
+            if(!isAllAny) {
+                this.buttonElement.disabled = true;
+            } else {
+                this.buttonElement.disabled = false;
+            }
+        }
+    }
+
 
     const diagnosisTable = document.getElementById("diagnosisTable");
     const submitDiagnosisButton = document.getElementById('submitDiagnosisButton');
@@ -213,5 +380,18 @@
     const selectTreatmentElement = document.getElementById("selectTreatmentElement");
 
     const treatmentAttachManager = new AttachManager(submitTreatmentButton, treatmentTable, selectTreatmentElement, 'treatment_ids');
+
+    const medicineTable = document.getElementById("medicineTable");
+    const submitMedicineButton = document.getElementById("submitMedicineButton");
+    const selectMedicineElement = document.getElementById("selectMedicineElement");
+    const inputStockElement = document.getElementById("inputStockElement");
+
+    const medicineAttachManager = new MedicineAttachManager(submitMedicineButton, medicineTable, selectMedicineElement, 'medicine_ids', inputStockElement);
+
+    const statusButtonObserver = new StatusButtonObserver(document.getElementById("submit"))
+
+    diagnosisAttachManager.subscribeTo(statusButtonObserver)
+    treatmentAttachManager.subscribeTo(statusButtonObserver)
+    medicineAttachManager.subscribeTo(statusButtonObserver)
 </script>
 @endpush
