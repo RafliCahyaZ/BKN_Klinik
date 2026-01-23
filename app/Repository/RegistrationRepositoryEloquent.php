@@ -79,13 +79,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
 
                 $doctor = new UserDTO();
                 if ($registration->doctor) {
-                    $doctor->id = $registration->doctor->id;
-                    $doctor->username = $registration->doctor->fullname;
-                    $doctor->email = $registration->doctor->email;
-                    $doctor->fullname = $registration->doctor->fullname;
-                    $doctor->role = $registration->doctor->role;
-                    $doctor->createdAt = $registration->doctor->created_at;
-                    $doctor->updatedAt = $registration->doctor->updated_at;
+                    $doctor = UserRepositoryEloquent::mapUserModelToUserDto($registration->doctor);
                 }
 
                 $medicineStockTransactions = [];
@@ -587,6 +581,6 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
 
     public function getByUserId(): array
     {
-        return [];
+        return $this->getAll();
     }
 }
