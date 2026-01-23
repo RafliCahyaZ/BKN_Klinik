@@ -15,6 +15,7 @@ use App\Repository\MedicineStockTransactionRepository;
 use App\Repository\RegistrationRepository;
 use App\Repository\TreatmentRepository;
 use App\Repository\UserRepository;
+use App\Service\PatientExaminationServiceEloquent;
 use App\Type\TransactionType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,7 +30,8 @@ class AppointmentController extends Controller
         private UserRepository $userRepository,
         private AppointmentRepository $appointmentRepository,
         private MedicineRepository $medicineRepository,
-        private MedicineStockTransactionRepository $medicineStockTransactionRepository
+        private MedicineStockTransactionRepository $medicineStockTransactionRepository,
+        private PatientExaminationServiceEloquent $patientExaminationService
     ) {}
 
     public function create($id)
@@ -86,23 +88,13 @@ class AppointmentController extends Controller
 
         $medicines = $this->mapInputToMedicineStockTransactionDTO($id, $request["medicine_ids"]);
 
-        $editResult = true;
-
-        if (!$this->appointmentRepository->attachManyDiagnosesToRegistration($registration, $diagnoses->toArray())) {
-            $editResult = false;
-        }
-        if (!$this->appointmentRepository->attachManyTreatmentsToRegistration($registration, $treatments->toArray())) {
-            $editResult = false;
-        }
-        if (!$this->registrationRepository->edit($registration)) {
-            $editResult = false;
-        }
-
-        if (!$this->medicineStockTransactionRepository->insertMany($medicines)) {
-            $editResult = false;
-        }
-        if (!$editResult) {
-            return back()->withInput();
+        if (!$this->patientExaminationService->execute(
+            $registration,
+            $diagnoses->toArray(),
+            $treatments->toArray(),
+            $medicines
+        )) {
+            return back()->with("failed", "Failed make appointment");
         }
         return redirect()->route("patient.history.show", $id)->with("success", "Berhasil melakukan pemeriksaan");
     }
