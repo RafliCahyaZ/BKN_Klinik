@@ -10,6 +10,9 @@ use App\Repository\UserRepositoryEloquent;
 use App\Repository\PatientRepositoryEloquent;
 use App\Repository\MedicineRepositoryEloquent;
 use App\Repository\MedicineStockTransactionRepositoryEloquent;
+use App\Repository\AppointmentRepositoryEloquent;
+use App\Repository\DiagnosisRepositoryEloquent;
+use App\Repository\TreatmentRepositoryEloquent;
 use App\DTO\RegistrationDTO;
 use App\DTO\PatientDTO;
 use App\DTO\UserDTO;
@@ -32,6 +35,9 @@ class RegistrationRepositoryEloquentTest extends TestCase
     protected PatientRepositoryEloquent $patientRepository;
     protected MedicineRepositoryEloquent $medicineRepository;
     protected MedicineStockTransactionRepositoryEloquent $medicineStockTransactionRepository;
+    protected AppointmentRepositoryEloquent $appointmentRepository;
+    protected DiagnosisRepositoryEloquent $diagnosisRepository;
+    protected TreatmentRepositoryEloquent $treatmentRepository;
 
     protected PatientDTO $patientDTO;
     protected UserDTO $doctorDTO;
@@ -47,6 +53,9 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->patientRepository = new PatientRepositoryEloquent();
         $this->medicineRepository = new MedicineRepositoryEloquent();
         $this->medicineStockTransactionRepository = new MedicineStockTransactionRepositoryEloquent();
+        $this->appointmentRepository = new AppointmentRepositoryEloquent();
+        $this->diagnosisRepository = new DiagnosisRepositoryEloquent();
+        $this->treatmentRepository = new TreatmentRepositoryEloquent();
 
         // Create a patient using PatientRepository
         $patientDTO = new PatientDTO();
@@ -261,6 +270,8 @@ class RegistrationRepositoryEloquentTest extends TestCase
         
         $this->assertEquals($insertedRegistrationId, $fetchedRegistrationDTO->id);
     }
+
+    
 
     // test getById registration yang tidak ada
     public function testGetByIdNonExistentRegistration(): void
@@ -547,5 +558,111 @@ class RegistrationRepositoryEloquentTest extends TestCase
             $this->assertInstanceOf(UserDTO::class, $registration->medicineStockTransactions[0]->inventoryOfficer);
             $this->assertInstanceOf(MedicineDTO::class, $registration->medicineStockTransactions[0]->medicine);
         }
+    }
+
+    // Test untuk verifikasi diagnosis dan treatment yang di-attach pada registration
+    public function testGetByIdWithDiagnosesAndTreatments(): void
+    {
+        // Insert registration
+        $registrationDTO = new RegistrationDTO();
+        $registrationDTO->patient = $this->patientDTO;
+        $registrationDTO->doctor = $this->doctorDTO;
+        $registrationDTO->complaint = 'Demam tinggi dan batuk';
+        $registrationDTO->checkDate = Carbon::now();
+
+        $insertedRegistration = $this->registrationRepository->insert($registrationDTO);
+        $this->assertNotNull($insertedRegistration);
+
+        // Create diagnoses using DiagnosisRepository
+        $diagnosisDTO1 = new \App\DTO\DiagnosisDTO();
+        $diagnosisDTO1->icdCode = 'A000';
+        $diagnosisDTO1->diseaseName = 'Cholera due to Vibrio cholerae';
+        $insertedDiagnosis1 = $this->diagnosisRepository->insert($diagnosisDTO1);
+
+        $diagnosisDTO2 = new \App\DTO\DiagnosisDTO();
+        $diagnosisDTO2->icdCode = 'A001';
+        $diagnosisDTO2->diseaseName = 'Cholera due to Vibrio cholerae El Tor';
+        $insertedDiagnosis2 = $this->diagnosisRepository->insert($diagnosisDTO2);
+
+        $diagnosisDTO3 = new \App\DTO\DiagnosisDTO();
+        $diagnosisDTO3->icdCode = 'J00';
+        $diagnosisDTO3->diseaseName = 'Acute nasopharyngitis (common cold)';
+        $insertedDiagnosis3 = $this->diagnosisRepository->insert($diagnosisDTO3);
+
+        // Create treatments using TreatmentRepository
+        $treatmentDTO1 = new \App\DTO\TreatmentDTO();
+        $treatmentDTO1->treatmentCode = 'T001';
+        $treatmentDTO1->treatmentName = 'Konsultasi Dokter Umum';
+        $insertedTreatment1 = $this->treatmentRepository->insert($treatmentDTO1);
+
+        $treatmentDTO2 = new \App\DTO\TreatmentDTO();
+        $treatmentDTO2->treatmentCode = 'T002';
+        $treatmentDTO2->treatmentName = 'Pemeriksaan Fisik';
+        $insertedTreatment2 = $this->treatmentRepository->insert($treatmentDTO2);
+
+        $treatmentDTO3 = new \App\DTO\TreatmentDTO();
+        $treatmentDTO3->treatmentCode = 'T003';
+        $treatmentDTO3->treatmentName = 'Pemberian Obat Oral';
+        $insertedTreatment3 = $this->treatmentRepository->insert($treatmentDTO3);
+
+        // Attach diagnoses to registration using AppointmentRepository
+        $attachDiagnoses = $this->appointmentRepository->attachManyDiagnosesToRegistration(
+            $insertedRegistration,
+            [$insertedDiagnosis1, $insertedDiagnosis2, $insertedDiagnosis3]
+        );
+        $this->assertTrue($attachDiagnoses, 'Failed to attach diagnoses');
+
+        // Attach treatments to registration using AppointmentRepository
+        $attachTreatments = $this->appointmentRepository->attachManyTreatmentsToRegistration(
+            $insertedRegistration,
+            [$insertedTreatment1, $insertedTreatment2, $insertedTreatment3]
+        );
+        $this->assertTrue($attachTreatments, 'Failed to attach treatments');
+
+        // Get registration by ID
+        $fetchedRegistration = $this->registrationRepository->getById($insertedRegistration->id);
+
+        $this->assertNotNull($fetchedRegistration);
+        $this->assertInstanceOf(RegistrationDTO::class, $fetchedRegistration);
+
+        // Verify diagnoses
+        // dd($fetchedRegistration->diagnoses);
+        $this->assertIsArray($fetchedRegistration->diagnoses);
+        $this->assertCount(3, $fetchedRegistration->diagnoses, 'Should have 3 diagnoses attached');
+
+        // Verify each diagnosis data
+        $diagnosisIds = array_column($fetchedRegistration->diagnoses, 'id');
+        $this->assertContains($insertedDiagnosis1->id, $diagnosisIds);
+        $this->assertContains($insertedDiagnosis2->id, $diagnosisIds);
+        $this->assertContains($insertedDiagnosis3->id, $diagnosisIds);
+
+        // Verify diagnosis ICD codes
+        $icdCodes = array_column($fetchedRegistration->diagnoses, 'icdCode');
+        dd($icdCodes);
+        $this->assertContains('A000', $icdCodes);
+        $this->assertContains('A001', $icdCodes);
+        $this->assertContains('J00', $icdCodes);
+
+        // Verify treatments
+        $this->assertIsArray($fetchedRegistration->treatments);
+        $this->assertCount(3, $fetchedRegistration->treatments, 'Should have 3 treatments attached');
+
+        // Verify each treatment data
+        $treatmentIds = array_column($fetchedRegistration->treatments, 'id');
+        $this->assertContains($insertedTreatment1->id, $treatmentIds);
+        $this->assertContains($insertedTreatment2->id, $treatmentIds);
+        $this->assertContains($insertedTreatment3->id, $treatmentIds);
+
+        // Verify treatment codes
+        $treatmentCodes = array_column($fetchedRegistration->treatments, 'treatment_code');
+        $this->assertContains('T001', $treatmentCodes);
+        $this->assertContains('T002', $treatmentCodes);
+        $this->assertContains('T003', $treatmentCodes);
+
+        // Verify treatment names
+        $treatmentNames = array_column($fetchedRegistration->treatments, 'treatment_name');
+        $this->assertContains('Konsultasi Dokter Umum', $treatmentNames);
+        $this->assertContains('Pemeriksaan Fisik', $treatmentNames);
+        $this->assertContains('Pemberian Obat Oral', $treatmentNames);
     }
 }

@@ -179,13 +179,15 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 foreach ($registration->diagnoses as $diagnosis) {
                     $diagnosisDTO = new DiagnosisDTO();
                     $diagnosisDTO->id = $diagnosis->id;
-                    $diagnosisDTO->icdCode = $diagnosis->name;
-                    $diagnosisDTO->diseaseName = $diagnosis->description;
-                    $diagnosisDTO->createdAt = $diagnosis->created_at;
-                    $diagnosisDTO->updatedAt = $diagnosis->updated_at;
-                    $diagonses[] = $diagnosisDTO;
+                    $diagnosisDTO->icdCode = $diagnosis->icd_code;
+                    $diagnosisDTO->diseaseName = $diagnosis->disease_name;
+                    $diagnosisDTO->createdAt = Carbon::parse($diagnosis->created_at);
+                    $diagnosisDTO->updatedAt = Carbon::parse($diagnosis->updated_at);
+                    $diagnoses[] = $diagnosisDTO;
                 }
             }
+
+            // dd($diagnoses);
 
             $treatments = [];
 
@@ -193,10 +195,10 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 foreach ($registration->treatments as $treatment) {
                     $treatmentDTO = new TreatmentDTO();
                     $treatmentDTO->id = $treatment->id;
-                    $treatmentDTO->treatmentCode = $treatment->name;
-                    $treatmentDTO->treatmentName = $treatment->description;
-                    $treatmentDTO->createdAt = $treatment->created_at;
-                    $treatmentDTO->updatedAt = $treatment->updated_at;
+                    $treatmentDTO->treatmentCode = $treatment->treatment_code;
+                    $treatmentDTO->treatmentName = $treatment->treatment_name;
+                    $treatmentDTO->createdAt = Carbon::parse($treatment->created_at);
+                    $treatmentDTO->updatedAt = Carbon::parse($treatment->updated_at);
                     $treatments[] = $treatmentDTO;
                 }
             }
@@ -268,8 +270,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             $registrationDTO->receipt = $registration->receipt;
             $registrationDTO->complaint = $registration->complaint;
             $registrationDTO->checkDate = Carbon::parse($registration->check_date);
-            $registrationDTO->createdAt = $registration->created_at;
-            $registrationDTO->updatedAt = $registration->updated_at;
+            $registrationDTO->createdAt = Carbon::parse($registration->created_at);
+            $registrationDTO->updatedAt = Carbon::parse($registration->updated_at);
 
             return $registrationDTO;
         } catch (\Exception $e) {
@@ -380,9 +382,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
                         $medicineStockTransactionDTO->medicine = $medicine;
-
-                        // Map registration to RegistrationDTO (without transactions to avoid circular reference)
-                        $medicineStockTransactionDTO->registration = null; // Will be set to parent registration
+                        $medicineStockTransactionDTO->registration = null; 
 
                         $medicineStockTransactionDTO->type = $transaction->type;
                         $medicineStockTransactionDTO->quantity = $transaction->quantity;
@@ -390,8 +390,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                         $medicineStockTransactionDTO->lastStock = $transaction->last_stock;
                         $medicineStockTransactionDTO->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
                         $medicineStockTransactionDTO->notes = $transaction->notes;
-                        $medicineStockTransactionDTO->createdAt = $transaction->created_at;
-                        $medicineStockTransactionDTO->updatedAt = $transaction->updated_at;
+                        $medicineStockTransactionDTO->createdAt = Carbon::parse( $transaction->created_at);
+                        $medicineStockTransactionDTO->updatedAt = Carbon::parse($transaction->updated_at);
                         $medicineStockTransactions[] = $medicineStockTransactionDTO;
                     }
                 }

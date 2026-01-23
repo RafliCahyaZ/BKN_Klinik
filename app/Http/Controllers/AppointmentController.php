@@ -56,7 +56,6 @@ class AppointmentController extends Controller
 
     public function createAction($id, Request $request)
     {
-        // dd($request);
         $registration = $this->registrationRepository->getById($id);
 
         if (!$registration) {
