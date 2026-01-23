@@ -116,8 +116,6 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 'notes' => $medicineStockTransactionDTO->notes,
             ]);
 
-            dd($transaction);
-
             $medicineStockTransactionDTO->id = $transaction->id;
             $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
             $medicineStockTransactionDTO->lastStock = $transaction->last_stock;

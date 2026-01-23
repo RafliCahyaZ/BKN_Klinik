@@ -21,4 +21,9 @@ class TransactionTypeHelper
     {
         return $transactionType->value;
     }
+
+    public static function getArrayOptions(): array
+    {
+        return [TransactionType::IN, TransactionType::OUT, TransactionType::ADJUSTMENT, TransactionType::EXPIRED];
+    }
 }
