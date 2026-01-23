@@ -65,7 +65,7 @@ class AppointmentController extends Controller
         }
 
         $doctor = new UserDTO();
-        $doctor->id = $id;
+        $doctor->id = $request["doctor"];
 
         $registration->checkDate = Carbon::now();
         $registration->doctor = $doctor;

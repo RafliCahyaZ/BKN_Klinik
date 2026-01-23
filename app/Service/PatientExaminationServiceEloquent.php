@@ -30,16 +30,20 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
         ) {
             $editResult = true;
             if (!$this->appointmentRepository->attachManyDiagnosesToRegistration($registrationDto, $diagnoses)) {
+                dd("haii");
                 $editResult = false;
             }
             if (!$this->appointmentRepository->attachManyTreatmentsToRegistration($registrationDto, $treatments)) {
+                dd("hello");
                 $editResult = false;
             }
             if (!$this->registrationRepository->edit($registrationDto)) {
+                dd("aiii");
                 $editResult = false;
             }
 
             if (!$this->medicineStockTransactionRepository->insertMany($medicines)) {
+                dd("asu");
                 $editResult = false;
             }
 
