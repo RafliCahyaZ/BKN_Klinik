@@ -121,6 +121,7 @@ class AppointmentController extends Controller
             $medicineStockTransactionDto->registration->id = $registrationId;
             $medicineStockTransactionDto->type = TransactionType::OUT;
             $medicineStockTransactionDto->quantity = $medicineInput["'stock'"];
+            $medicineStockTransactionDto->expiredDate = Carbon::now();
             $medicineStockTransactionDto->createdAt = Carbon::now();
             $medicineStockTransactionDto->updatedAt = Carbon::now();
 

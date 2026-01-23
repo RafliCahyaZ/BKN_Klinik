@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\DTO\MedicineStockTransactionDTO;
 use App\DTO\UserDTO;
 use App\DTO\MedicineDTO;
-use App\DTO\RegistrationDTO;
 use App\Models\MedicineStockTransaction;
 use App\Repository\MedicineStockTransactionRepository;
 use App\Type\TransactionType;
@@ -54,28 +53,28 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             $formated_transactions = $transactions_collections->map(function ($transaction) {
                 $formated_transaction = new MedicineStockTransactionDTO();
                 $formated_transaction->id = $transaction->id;
-                
+
                 // Map inventory officer to UserDTO
                 $inventoryOfficer = new UserDTO();
                 if ($transaction->inventoryOfficer) {
                     $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                 }
                 $formated_transaction->inventoryOfficer = $inventoryOfficer;
-                
+
                 // Map medicine to MedicineDTO
                 $medicine = new MedicineDTO();
                 if ($transaction->medicine) {
                     $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                 }
                 $formated_transaction->medicine = $medicine;
-                
+
                 // Map registration to RegistrationDTO
                 $registration = null;
                 if ($transaction->registration) {
                     $registration = RegistrationRepositoryEloquent::mapRegistrationModelToRegistrationDto($transaction->registration);
                 }
                 $formated_transaction->registration = $registration;
-                
+
                 $formated_transaction->type = $transaction->type;
                 $formated_transaction->quantity = $transaction->quantity;
                 $formated_transaction->beginningStock = $transaction->beginning_stock;
@@ -117,6 +116,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 'notes' => $medicineStockTransactionDTO->notes,
             ]);
 
+            dd($transaction);
+
             $medicineStockTransactionDTO->id = $transaction->id;
             $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
             $medicineStockTransactionDTO->lastStock = $transaction->last_stock;
@@ -148,6 +149,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                     'last_stock' => $lastStock,
                     'expired_date' => $dto->expiredDate ? $dto->expiredDate->toDateString() : null,
                     'notes' => $dto->notes,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
                 ];
             });
             $newDataArray = $newData->toArray();
@@ -187,28 +190,28 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
 
                     $formatedUpdatedData = new MedicineStockTransactionDTO();
                     $formatedUpdatedData->id = $updatedData->id;
-                    
+
                     // Map inventory officer to UserDTO
                     $inventoryOfficer = new UserDTO();
                     if ($updatedData->inventoryOfficer) {
                         $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($updatedData->inventoryOfficer);
                     }
                     $formatedUpdatedData->inventoryOfficer = $inventoryOfficer;
-                    
+
                     // Map medicine to MedicineDTO
                     $medicine = new MedicineDTO();
                     if ($updatedData->medicine) {
                         $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($updatedData->medicine);
                     }
                     $formatedUpdatedData->medicine = $medicine;
-                    
+
                     // Map registration to RegistrationDTO
                     $registration = null;
                     if ($updatedData->registration) {
                         $registration = RegistrationRepositoryEloquent::mapRegistrationModelToRegistrationDto($updatedData->registration);
                     }
                     $formatedUpdatedData->registration = $registration;
-                    
+
                     $formatedUpdatedData->type = $updatedData->type;
                     $formatedUpdatedData->quantity = $updatedData->quantity;
                     $formatedUpdatedData->beginningStock = $updatedData->beginning_stock;
@@ -241,28 +244,28 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
 
             $formatedTransaction = new MedicineStockTransactionDTO();
             $formatedTransaction->id = $transaction->id;
-            
+
             // Map inventory officer to UserDTO
             $inventoryOfficer = new UserDTO();
             if ($transaction->inventoryOfficer) {
                 $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
             }
             $formatedTransaction->inventoryOfficer = $inventoryOfficer;
-            
+
             // Map medicine to MedicineDTO
             $medicine = new MedicineDTO();
             if ($transaction->medicine) {
                 $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
             }
             $formatedTransaction->medicine = $medicine;
-            
+
             // Map registration to RegistrationDTO
             $registration = null;
             if ($transaction->registration) {
                 $registration = RegistrationRepositoryEloquent::mapRegistrationModelToRegistrationDto($transaction->registration);
             }
             $formatedTransaction->registration = $registration;
-            
+
             $formatedTransaction->type = $transaction->type;
             $formatedTransaction->quantity = $transaction->quantity;
             $formatedTransaction->beginningStock = $transaction->beginning_stock;
@@ -316,28 +319,28 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             $formated_transactions = $transactions_collections->map(function ($transaction) {
                 $formated_transaction = new MedicineStockTransactionDTO();
                 $formated_transaction->id = $transaction->id;
-                
+
                 // Map inventory officer to UserDTO
                 $inventoryOfficer = new UserDTO();
                 if ($transaction->inventoryOfficer) {
                     $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                 }
                 $formated_transaction->inventoryOfficer = $inventoryOfficer;
-                
+
                 // Map medicine to MedicineDTO
                 $medicine = new MedicineDTO();
                 if ($transaction->medicine) {
                     $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                 }
                 $formated_transaction->medicine = $medicine;
-                
+
                 // Map registration to RegistrationDTO
                 $registration = null;
                 if ($transaction->registration) {
                     $registration = RegistrationRepositoryEloquent::mapRegistrationModelToRegistrationDto($transaction->registration);
                 }
                 $formated_transaction->registration = $registration;
-                
+
                 $formated_transaction->type = $transaction->type;
                 $formated_transaction->quantity = $transaction->quantity;
                 $formated_transaction->beginningStock = $transaction->beginning_stock;
@@ -365,28 +368,28 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             $formated_transactions = $transactions_collections->map(function ($transaction) {
                 $formated_transaction = new MedicineStockTransactionDTO();
                 $formated_transaction->id = $transaction->id;
-                
+
                 // Map inventory officer to UserDTO
                 $inventoryOfficer = new UserDTO();
                 if ($transaction->inventoryOfficer) {
                     $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                 }
                 $formated_transaction->inventoryOfficer = $inventoryOfficer;
-                
+
                 // Map medicine to MedicineDTO
                 $medicine = new MedicineDTO();
                 if ($transaction->medicine) {
                     $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                 }
                 $formated_transaction->medicine = $medicine;
-                
+
                 // Map registration to RegistrationDTO
                 $registration = null;
                 if ($transaction->registration) {
                     $registration = RegistrationRepositoryEloquent::mapRegistrationModelToRegistrationDto($transaction->registration);
                 }
                 $formated_transaction->registration = $registration;
-                
+
                 $formated_transaction->type = $transaction->type;
                 $formated_transaction->quantity = $transaction->quantity;
                 $formated_transaction->beginningStock = $transaction->beginning_stock;

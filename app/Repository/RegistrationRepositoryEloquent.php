@@ -221,12 +221,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     }
                     $medicineStockTransactionDTO->medicine = $medicine;
 
-
-
-
                     // Map registration to RegistrationDTO (without transactions to avoid circular reference)
                     $medicineStockTransactionDTO->registration = null; // Will be set to parent registration
-
                     $medicineStockTransactionDTO->type = $transaction->type;
                     $medicineStockTransactionDTO->quantity = $transaction->quantity;
                     $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;

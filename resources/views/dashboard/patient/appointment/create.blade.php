@@ -178,7 +178,7 @@
             </div>
 
             <div class="well">
-                <input type="submit" name="submit" value="Selesai Pemeriksaan" id="submit" class="btn btn-success">
+                <input type="submit" disabled="true" name="submit" value="Selesai Pemeriksaan" id="submit" class="btn btn-success">
                 <a class="btn btn-info" href="{{ route('patient.queue') }}">Kembali</a>
                 </div>
             </form>
@@ -201,10 +201,24 @@
             this.dynamicDataContainer = document.getElementById("dynamic-data");
             this.selected = null;
             this.counter = 0;
+            this.observer = null;
 
             this.submitButton.addEventListener("click", () => {
                 this.submitButtonEventListener();
+
+                console.log("haihai");
+                if(this.observer) {
+                        console.log("ada")
+                    this.observer.eventCallback()
+                } else {
+                        console.log("tidak ada")
+                    }
             })
+        }
+
+        subscribeTo(observer) {
+            this.observer = observer
+            this.observer.subscribe(this)
         }
 
         submitButtonEventListener()
@@ -259,6 +273,10 @@
         appendData() {
             this.tableElement.insertAdjacentHTML("beforeend", this.createAppendElement());
         }
+
+        isAny() {
+            return this.counter > 0;
+        }
     }
 
     class MedicineAttachManager extends AttachManager
@@ -290,6 +308,7 @@
             this.selected = this.getSelected();
             this.appendData();
             this.appendInputElement();
+            this.counter++;
 
             this.inputStock.value = ""
         }
@@ -316,6 +335,40 @@
         }
     }
 
+    class StatusButtonObserver
+    {
+        constructor(buttonElement) {
+            this.buttonElement = buttonElement
+            this.subscribers = []
+        }
+
+        subscribe(subscriber){
+            this.subscribers.push(subscriber)
+        }
+
+        eventCallback()
+        {
+            let isAllAny = true;
+
+            for(const subscriber of this.subscribers) {
+                console.log("aman ", isAllAny);
+                if(!subscriber.isAny()) {
+                    isAllAny = false;
+                    break;
+                }
+            }
+
+            console.log("Is Any: ", isAllAny);
+
+            if(!isAllAny) {
+                this.buttonElement.disabled = true;
+            } else {
+                this.buttonElement.disabled = false;
+            }
+        }
+    }
+
+
     const diagnosisTable = document.getElementById("diagnosisTable");
     const submitDiagnosisButton = document.getElementById('submitDiagnosisButton');
     const selectDiagnosisElement = document.getElementById("selectDiagnosisElement");
@@ -334,5 +387,11 @@
     const inputStockElement = document.getElementById("inputStockElement");
 
     const medicineAttachManager = new MedicineAttachManager(submitMedicineButton, medicineTable, selectMedicineElement, 'medicine_ids', inputStockElement);
+
+    const statusButtonObserver = new StatusButtonObserver(document.getElementById("submit"))
+
+    diagnosisAttachManager.subscribeTo(statusButtonObserver)
+    treatmentAttachManager.subscribeTo(statusButtonObserver)
+    medicineAttachManager.subscribeTo(statusButtonObserver)
 </script>
 @endpush
