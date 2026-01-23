@@ -3,17 +3,98 @@
 namespace App\Http\Controllers;
 
 use App\DTO\MedicineDTO;
+use App\DTO\MedicineStockTransactionDTO;
 use App\DTO\UnitDTO;
+use App\DTO\UserDTO;
+use App\Helper\TransactionTypeHelper;
 use App\Repository\MedicineRepository;
+use App\Repository\MedicineStockTransactionRepository;
 use App\Repository\UnitRepository;
+use App\Type\TransactionType;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class MedicineController extends Controller
 {
     public function __construct(
         private MedicineRepository $medicineRepository,
-        private UnitRepository $unitRepository
+        private UnitRepository $unitRepository,
+        private MedicineStockTransactionRepository $medicineStockTransactionRepository
     ) {}
+
+    public function history($id)
+    {
+        $medicine = $this->medicineRepository->getById($id);
+
+        if (!$medicine) {
+            abort(404);
+        }
+
+        $medicineStockTransactions = $this->medicineStockTransactionRepository->getByMedicineId($id);
+
+        return view("dashboard.medicine.history", [
+            "medicineStockTransactions" => $medicineStockTransactions,
+            "medicine" => $medicine
+        ]);
+    }
+
+    public function transaction($id)
+    {
+        $medicine = $this->medicineRepository->getById($id);
+
+        if (!$medicine) {
+            abort(404);
+        }
+
+        $transactionTypes = TransactionTypeHelper::getArrayOptions();
+        return view("dashboard.medicine.transaction", [
+            'transactionTypes' => $transactionTypes,
+            "medicine" => $medicine
+        ]);
+    }
+
+    public function transactionAction($id, Request $request)
+    {
+        $validated = $request->validate([
+            "transactionType" => [
+                'required',
+                Rule::in(TransactionTypeHelper::getArrayOptions()),
+            ],
+            'quantity' => [
+                'required',
+                'integer',
+                'min:1'
+            ],
+            'expiredDate' => [
+                'nullable',
+                'date',
+                'after:today'
+            ]
+        ]);
+
+        $medicineStockTransaction = new MedicineStockTransactionDTO();
+
+        $medicineStockTransaction->inventoryOfficer = new UserDTO();
+        $medicineStockTransaction->inventoryOfficer->id = Auth::id();
+
+        $medicineStockTransaction->medicine = new MedicineDTO();
+        $medicineStockTransaction->medicine->id = $id;
+
+        $medicineStockTransaction->type = TransactionTypeHelper::stringToTransactionRole($validated["transactionType"]);
+        $medicineStockTransaction->quantity = $validated["quantity"];
+
+        $medicineStockTransaction->expiredDate = ($validated["expiredDate"]) ? Carbon::parse($validated["expiredDate"]) : null;
+        $medicineStockTransaction->createdAt = Carbon::now();
+        $medicineStockTransaction->updatedAt = Carbon::now();
+
+        if (!$this->medicineStockTransactionRepository->insert($medicineStockTransaction)) {
+            return redirect()->route('medicine.index')->with("failed", "Insert medicine failed");
+        }
+
+        return redirect()->route("medicine.index")->with("success", "Success Create Transaction");
+    }
 
     public function index()
     {

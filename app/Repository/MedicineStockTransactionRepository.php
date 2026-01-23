@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\DTO\MedicineStockTransactionDTO;
+use App\Type\TransactionType;
 
 interface MedicineStockTransactionRepository
 {
@@ -10,6 +11,8 @@ interface MedicineStockTransactionRepository
     public function getAll(): array;
 
     public function insert(MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO;
+
+    public function insertMany(array $medicineStockTransactionDTOs): bool;
 
     public function edit(string $id, MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO;
 
@@ -21,5 +24,5 @@ interface MedicineStockTransactionRepository
 
     public function getByMedicineId(string $medicineId): array;
 
-    public function getByType(string $type): array;
+    public function getByType(TransactionType $type): array;
 }

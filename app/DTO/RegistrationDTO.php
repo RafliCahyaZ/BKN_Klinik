@@ -12,6 +12,7 @@ class RegistrationDTO
     public string $complaint;
     public array $diagnoses = [];
     public array $treatments = [];
+    public array $medicineStockTransactions = [];
     public ?string $receipt = null;
     public ?CarbonInterface $checkDate = null;
     public CarbonInterface $updatedAt;
