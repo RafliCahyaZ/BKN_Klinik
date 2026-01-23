@@ -323,6 +323,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 return null;
             }
         } catch (\Exception $e) {
+            dd($e);
             return null;
         }
     }
@@ -382,7 +383,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
                         $medicineStockTransactionDTO->medicine = $medicine;
-                        $medicineStockTransactionDTO->registration = null; 
+                        $medicineStockTransactionDTO->registration = null;
 
                         $medicineStockTransactionDTO->type = $transaction->type;
                         $medicineStockTransactionDTO->quantity = $transaction->quantity;
@@ -390,7 +391,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                         $medicineStockTransactionDTO->lastStock = $transaction->last_stock;
                         $medicineStockTransactionDTO->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
                         $medicineStockTransactionDTO->notes = $transaction->notes;
-                        $medicineStockTransactionDTO->createdAt = Carbon::parse( $transaction->created_at);
+                        $medicineStockTransactionDTO->createdAt = Carbon::parse($transaction->created_at);
                         $medicineStockTransactionDTO->updatedAt = Carbon::parse($transaction->updated_at);
                         $medicineStockTransactions[] = $medicineStockTransactionDTO;
                     }

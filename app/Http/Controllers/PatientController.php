@@ -40,6 +40,13 @@ class PatientController extends Controller
 
     public function index(PatientRepository $patientRepository)
     {
+        $patients = collect($patientRepository->getAll());
+
+        $patients = $patients->map(function ($patient) {
+            $patient->medicalRecordFileUrl = Storage::disk("public")->url($patient->medicalRecordFileUrl);
+
+            return $patient;
+        });
         return view("dashboard/patient.home", [
             "patients" => $patientRepository->getAll()
         ]);
