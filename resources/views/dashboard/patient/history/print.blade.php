@@ -11,7 +11,7 @@
     </button>
 </div>
 
-<x-dashboard-container title="Data History Pasien">
+<x-dashboard-container title="Detail History Pasien No. Reg {{ $registration->id }}">
 
     <table class="table table-bordered table-hover table-condensed">
         {{-- <thead>
@@ -50,7 +50,7 @@
 
                 </tr>
                 <tr>
-                    <td>therapy</td>
+                    <td>treatment</td>
                     <td>
                         <ol>
                             @foreach ($registration->treatments as $treatment)
@@ -60,12 +60,19 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>medicine</td>
                     <td>
                         <ol>
                             @foreach ($registration->medicineStockTransactions as $medicineStockTransaction)
                                 <li>{{$medicineStockTransaction->medicine->name}}</li>
                             @endforeach
                         </ol>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Resep</td>
+                    <td>
+                        {{ $registration->receipt }}
                     </td>
                 </tr>
         </tbody>

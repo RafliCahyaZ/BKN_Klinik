@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repository\RegistrationRepository;
 
+
 class HistoryController extends Controller
 {
     public function __construct(
@@ -13,15 +14,15 @@ class HistoryController extends Controller
     public function print($id)
     {
         $registration = $this->registrationRepository->getById($id);
-        $diagnoses = $this->diagnosisRepository->getAll();
-        $treatments = $this->treatmentRepository->getAll();
 
-        $registration->diagnoses = $diagnoses;
-        $registration->treatments = $treatments;
 
         return view("dashboard.patient.history.print", [
-            "registration" => $registration
+            "registration" => $registration,
+            "printTitle" => "Sistem Informasi Praktik Dokter - Detail History Pasien",
+            "No.Reg" => $registration->id
         ]);
+
+
     }
 
 
