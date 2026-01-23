@@ -44,8 +44,9 @@
             border-spacing: 0;
         }
 
+
         th, td {
-            border: 1px dashed #000
+            border: 1px dashed #000;
             padding: 6px;
             font-size: 11px;
             vertical-align: top;
@@ -81,7 +82,7 @@
             text-align: center;
             margin-bottom: 15px;
             font-size: 20px;
-            font-weight: bold;
+            font-weight: semi-bold;
             font-family: "Source Code Pro", monospace;
         }
 

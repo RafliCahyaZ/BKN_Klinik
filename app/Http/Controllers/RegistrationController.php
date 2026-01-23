@@ -31,6 +31,11 @@ class RegistrationController extends Controller
         );
     }
 
+    public function print()
+    {
+        return view("dashboard.registration.print");
+    }
+
     public function store($patientId, Request $request)
     {
         $patient = $this->patientRepository->getById($patientId);
