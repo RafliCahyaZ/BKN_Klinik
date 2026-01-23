@@ -23,8 +23,8 @@
                         <table class="table table-bordered table-hover table-condensed data-table order-table ">
                             <thead>
                                 <tr>
-                                <th>Kode ICD</th>
-                                <th>Nama Penyakit</th>
+                                <th>Kode Obat</th>
+                                <th>Nama Obat</th>
                                 <th>Stok</th>
                                 <th>Kelola</th>
                                 </tr>

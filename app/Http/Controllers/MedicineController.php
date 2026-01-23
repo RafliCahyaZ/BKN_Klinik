@@ -174,6 +174,16 @@ class MedicineController extends Controller
         return redirect()->route("medicine.index")->with("success", "Sukses! Data berhasil dihapus");
     }
 
+    public function print()
+    {
+        $medicines = $this->medicineRepository->getAll();
+
+        return view("dashboard.medicine.print", [
+            "medicines" => $medicines,
+            "printTitle" => "Sistem Informasi Praktik Dokter - Master Data Obat"
+        ]);
+    }
+
 
     public function store(Request $request)
     {
