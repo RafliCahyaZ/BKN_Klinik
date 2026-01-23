@@ -18,6 +18,7 @@ class PatientController extends Controller
         private RegistrationRepository $registrationRepository,
         private UserRepository $userRepository,
         private DiagnosisRepository $diagnosisRepository,
+        private PatientRepository $patientRepository,
         private TreatmentRepository $treatmentRepository
     ) {}
 
@@ -40,6 +41,13 @@ class PatientController extends Controller
 
     public function index(PatientRepository $patientRepository)
     {
+        $patients = collect($patientRepository->getAll());
+
+        $patients = $patients->map(function ($patient) {
+            $patient->medicalRecordFileUrl = Storage::disk("public")->url($patient->medicalRecordFileUrl);
+
+            return $patient;
+        });
         return view("dashboard/patient.home", [
             "patients" => $patientRepository->getAll()
         ]);
@@ -71,6 +79,17 @@ class PatientController extends Controller
     public function create()
     {
         return view("dashboard.patient.create");
+    }
+
+    public function userHistory($id)
+    {
+        $patient = $this->patientRepository->getById($id);
+        $registrations = $this->registrationRepository->getByUserId($id);
+
+        return view("dashboard.patient.history.user", [
+            "patient" => $patient,
+            "registrations" => $registrations
+        ]);
     }
 
     public function edit(int $id, PatientRepository $patientRepository)

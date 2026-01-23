@@ -38,6 +38,8 @@ Route::middleware("auth")->group(function () {
         Route::get("/create", [PatientController::class, 'create'])->name("create");
         Route::get("/queue", [PatientController::class, 'queue'])->name("queue");
 
+        Route::get("/{id}/history", [PatientController::class, 'userHistory'])->name("user.history");
+
         Route::get("/history", [PatientController::class, 'history'])->name("history");
         Route::get("/history/{id}", [HistoryController::class, 'show'])->name("history.show");
         Route::get("/history/print/{id}", [HistoryController::class, 'print'])->name("history.print");

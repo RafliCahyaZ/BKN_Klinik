@@ -109,7 +109,7 @@
                     <tbody id="diagnosisTable">
                         @foreach($registration->medicineStockTransactions as $key => $medicineStockTransaction)
                             <tr>
-                                <td colspan="2">{{ $medicineStockTransaction->medicine->name }} - {{ $medicineStockTransaction->quantity }}</td>
+                                <td colspan="2">{{ $medicineStockTransaction->medicine->name }} - {{ $medicineStockTransaction->quantity . " " . $medicineStockTransaction->medicine->unit->name }} </td>
                             </tr>
                         @endforeach
                     </tbody>

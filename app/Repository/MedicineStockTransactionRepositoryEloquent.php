@@ -12,14 +12,10 @@ use Carbon\Carbon;
 
 class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransactionRepository
 {
-    protected $medicineRepository;
-    protected $userRepository;
-
-    public function __construct()
-    {
-        $this->medicineRepository = new MedicineRepositoryEloquent();
-        $this->userRepository = new UserRepositoryEloquent();
-    }
+    public function __construct(
+        private MedicineRepository $medicineRepository,
+        private UserRepository $userRepository
+    ) {}
 
     protected function getBeginningStock($medicineId)
     {
@@ -98,11 +94,22 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
     function insert(MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO
     {
         try {
+            $medicine = $this->medicineRepository->getById($medicineStockTransactionDTO->medicine->id);
+
             $medicineId = $medicineStockTransactionDTO->medicine->id;
-            $beginningStock = $this->getBeginningStock($medicineId);
+
+            $beginningStock = $medicine->stock;
             $quantity = $medicineStockTransactionDTO->quantity;
             $transactionType = $medicineStockTransactionDTO->type;
             $lastStock = $this->calculateLastStock($beginningStock, $quantity, $transactionType);
+
+            if ($medicineStockTransactionDTO->type == TransactionType::IN) {
+                $medicine->stock += $medicineStockTransactionDTO->quantity;
+            } else  if ($medicineStockTransactionDTO->type == TransactionType::IN) {
+                $medicine->stock -= $medicineStockTransactionDTO->quantity;
+            } else if ($medicineStockTransactionDTO->type == TransactionType::ADJUSTMENT) {
+                $medicine->stock = $medicineStockTransactionDTO->quantity;
+            }
 
             $transaction = MedicineStockTransaction::create([
                 'inventory_officer_id' => $medicineStockTransactionDTO->inventoryOfficer->id,
@@ -115,6 +122,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 'expired_date' => $medicineStockTransactionDTO->expiredDate ? $medicineStockTransactionDTO->expiredDate->toDateString() : null,
                 'notes' => $medicineStockTransactionDTO->notes,
             ]);
+
+            $this->medicineRepository->edit($medicineId, $medicine);
 
             $medicineStockTransactionDTO->id = $transaction->id;
             $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
