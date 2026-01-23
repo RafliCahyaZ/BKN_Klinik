@@ -31,9 +31,11 @@
         }
 
         body {
-            font-family: "Courier New", Courier, monospace;
+            font-family: "Source Code Pro", monospace;
+            font-weight: lighter;
             font-size: 12px;
         }
+
 
         table {
             width: 100%;
@@ -43,7 +45,7 @@
         }
 
         th, td {
-            border: 1px dashed #000;
+            border: 1px dashed #000
             padding: 6px;
             font-size: 11px;
             vertical-align: top;
@@ -80,7 +82,7 @@
             margin-bottom: 15px;
             font-size: 20px;
             font-weight: bold;
-            font-family: "Courier New", Courier, monospace;
+            font-family: "Source Code Pro", monospace;
         }
 
 
