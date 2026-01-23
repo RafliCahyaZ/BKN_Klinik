@@ -67,11 +67,6 @@ class MedicineController extends Controller
                 'integer',
                 'min:1'
             ],
-            'expiredDate' => [
-                'nullable',
-                'date',
-                'after:today'
-            ]
         ]);
 
         $medicineStockTransaction = new MedicineStockTransactionDTO();
@@ -85,15 +80,19 @@ class MedicineController extends Controller
         $medicineStockTransaction->type = TransactionTypeHelper::stringToTransactionRole($validated["transactionType"]);
         $medicineStockTransaction->quantity = $validated["quantity"];
 
-        $medicineStockTransaction->expiredDate = ($validated["expiredDate"]) ? Carbon::parse($validated["expiredDate"]) : null;
+        $medicineStockTransaction->expiredDate = null;
         $medicineStockTransaction->createdAt = Carbon::now();
         $medicineStockTransaction->updatedAt = Carbon::now();
+
+        if ($request["notes"]) {
+            $medicineStockTransaction->notes = $request["notes"];
+        }
 
         if (!$this->medicineStockTransactionRepository->insert($medicineStockTransaction)) {
             return redirect()->route('medicine.index')->with("failed", "Insert medicine failed");
         }
 
-        return redirect()->route("medicine.index")->with("success", "Success Create Transaction");
+        return redirect()->route("medicine.history", $id)->with("success", "Success Create Transaction");
     }
 
     public function index()
