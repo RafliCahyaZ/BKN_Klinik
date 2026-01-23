@@ -49,7 +49,7 @@
                                 <td>{{ $patient->address }}</td>
                                 <td>{{ $patient->telpNumber }}</td>
                                 <td>{{ $patient->createdAt->format('Y-m-d'); }}</td>
-                                <td width="12%" class="d-flex">
+                                <td width="15%" class="d-flex">
                                 <a href="{{ route("patient.edit.view", $patient->id) }}" class="btn btn-sm btn-info" title="Ubah Pasien"><i class="glyphicon glyphicon-pencil"></i></a>
                                 <form
                                     style="display: inline-block;"
@@ -64,6 +64,7 @@
                                     </button>
                                 </form>
                                 <a href="{{ route("registration.create", $patient->id) }}" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i></a>
+                                <a class="btn btn-sm btn-warning" href="{{ route("patient.user.history", $patient->id) }}"><i class="fa fa-history"></i></a>
                                 </td>
 
                             </tr>
