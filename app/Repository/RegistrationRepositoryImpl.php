@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\DTO\MedicineDTO;
 use App\DTO\PatientDTO;
 use App\DTO\RegistrationDTO;
 use App\DTO\MedicineStockTransactionDTO;
