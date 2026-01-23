@@ -125,4 +125,19 @@ class UserController extends Controller
 
         return redirect()->route("user.index")->with("success", "Sukses! Berhasil edit user");
     }
+
+    public function destroy($id)
+    {
+        $user = $this->userRepository->getById($id);
+
+        if (!$user) {
+            abort(404);
+        }
+
+        if (!$this->userRepository->delete($id)) {
+            return redirect()->route("user.index")->with("failed", "Failed! Data gagal dihapus");
+        }
+
+        return redirect()->route("user.index")->with("success", "Sukses! Data berhasil dihapus");
+    }
 }
