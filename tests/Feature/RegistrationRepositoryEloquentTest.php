@@ -638,7 +638,6 @@ class RegistrationRepositoryEloquentTest extends TestCase
 
         // Verify diagnosis ICD codes
         $icdCodes = array_column($fetchedRegistration->diagnoses, 'icdCode');
-        dd($icdCodes);
         $this->assertContains('A000', $icdCodes);
         $this->assertContains('A001', $icdCodes);
         $this->assertContains('J00', $icdCodes);
@@ -654,15 +653,174 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertContains($insertedTreatment3->id, $treatmentIds);
 
         // Verify treatment codes
-        $treatmentCodes = array_column($fetchedRegistration->treatments, 'treatment_code');
+        $treatmentCodes = array_column($fetchedRegistration->treatments, 'treatmentCode');
         $this->assertContains('T001', $treatmentCodes);
         $this->assertContains('T002', $treatmentCodes);
         $this->assertContains('T003', $treatmentCodes);
 
         // Verify treatment names
-        $treatmentNames = array_column($fetchedRegistration->treatments, 'treatment_name');
+        $treatmentNames = array_column($fetchedRegistration->treatments, 'treatmentName');
         $this->assertContains('Konsultasi Dokter Umum', $treatmentNames);
         $this->assertContains('Pemeriksaan Fisik', $treatmentNames);
         $this->assertContains('Pemberian Obat Oral', $treatmentNames);
+    }
+
+    // Test 1: Get registrations by patient_id with multiple registrations
+    public function testGetByPatientIdWithMultipleRegistrations(): void
+    {
+        // Create multiple registrations for the same patient at different times
+        $registrations = [];
+        
+        // Registration 1 - 10 days ago
+        \Illuminate\Support\Carbon::setTestNow(\Illuminate\Support\Carbon::now()->subDays(10));
+        $registrationDTO1 = new RegistrationDTO();
+        $registrationDTO1->patient = $this->patientDTO;
+        $registrationDTO1->doctor = $this->doctorDTO;
+        $registrationDTO1->complaint = 'First visit - Demam';
+        $registrationDTO1->receipt = 'Paracetamol';
+        $registrationDTO1->checkDate = Carbon::now();
+        $inserted1 = $this->registrationRepository->insert($registrationDTO1);
+        $this->createMedicineStockTransaction($inserted1);
+        $registrations[] = $inserted1;
+        \Illuminate\Support\Carbon::setTestNow();
+
+        // Registration 2 - 5 days ago
+        \Illuminate\Support\Carbon::setTestNow(\Illuminate\Support\Carbon::now()->subDays(5));
+        $registrationDTO2 = new RegistrationDTO();
+        $registrationDTO2->patient = $this->patientDTO;
+        $registrationDTO2->doctor = $this->doctorDTO;
+        $registrationDTO2->complaint = 'Second visit - Batuk';
+        $registrationDTO2->receipt = 'OBH';
+        $registrationDTO2->checkDate = Carbon::now();
+        $inserted2 = $this->registrationRepository->insert($registrationDTO2);
+        $this->createMedicineStockTransaction($inserted2);
+        $registrations[] = $inserted2;
+        \Illuminate\Support\Carbon::setTestNow();
+
+        // Registration 3 - Today (most recent)
+        $registrationDTO3 = new RegistrationDTO();
+        $registrationDTO3->patient = $this->patientDTO;
+        $registrationDTO3->doctor = $this->doctorDTO;
+        $registrationDTO3->complaint = 'Third visit - Kontrol';
+        $registrationDTO3->receipt = 'Vitamin';
+        $registrationDTO3->checkDate = Carbon::now();
+        $inserted3 = $this->registrationRepository->insert($registrationDTO3);
+        $this->createMedicineStockTransaction($inserted3);
+        $registrations[] = $inserted3;
+
+        // Create registration for different patient (should not appear in results)
+        $otherPatientDTO = new PatientDTO();
+        $otherPatientDTO->name = 'Other Patient';
+        $otherPatientDTO->medicalRecordNumber = 'MRN-999';
+        $otherPatientDTO->medicalRecordFileUrl = 'files/mrn-999.pdf';
+        $otherPatientDTO->address = 'Jl. Other No. 999';
+        $otherPatientDTO->telpNumber = '089999999999';
+        $otherPatientDTO->dateOfBirth = Carbon::parse('1995-01-01');
+        $otherPatientDTO->gender = 'male';
+        $otherPatientDTO->history = 'No history';
+        $insertedOtherPatient = $this->patientRepository->insert($otherPatientDTO);
+
+        $otherRegistrationDTO = new RegistrationDTO();
+        $otherRegistrationDTO->patient = $insertedOtherPatient;
+        $otherRegistrationDTO->doctor = $this->doctorDTO;
+        $otherRegistrationDTO->complaint = 'Other patient complaint';
+        $this->registrationRepository->insert($otherRegistrationDTO);
+
+        // Get registrations by patient_id
+        $results = $this->registrationRepository->getByPatientId($this->patientDTO->id);
+
+        // Verify results
+        $this->assertIsArray($results);
+        $this->assertCount(3, $results, 'Should have 3 registrations for this patient');
+
+        // Verify all results are RegistrationDTO instances
+        foreach ($results as $result) {
+            $this->assertInstanceOf(RegistrationDTO::class, $result);
+            $this->assertEquals($this->patientDTO->id, $result->patient->id, 'All results should belong to the same patient');
+        }
+
+        // Verify first item is the most recent (created_at terbaru)
+        $this->assertEquals($inserted3->id, $results[0]->id, 'First item should be the most recent registration');
+        $this->assertEquals('Third visit - Kontrol', $results[0]->complaint);
+        $this->assertEquals('Vitamin', $results[0]->receipt);
+        $this->assertInstanceOf(PatientDTO::class, $results[0]->patient);
+        $this->assertInstanceOf(UserDTO::class, $results[0]->doctor);
+
+        // Verify second item
+        $this->assertEquals($inserted2->id, $results[1]->id);
+        $this->assertEquals('Second visit - Batuk', $results[1]->complaint);
+        $this->assertEquals('OBH', $results[1]->receipt);
+
+        // Verify third item (oldest)
+        $this->assertEquals($inserted1->id, $results[2]->id);
+        $this->assertEquals('First visit - Demam', $results[2]->complaint);
+        $this->assertEquals('Paracetamol', $results[2]->receipt);
+
+        // Verify all have medicine stock transactions
+        foreach ($results as $result) {
+            $this->assertIsArray($result->medicineStockTransactions);
+            $this->assertCount(1, $result->medicineStockTransactions);
+            $this->assertInstanceOf(MedicineStockTransactionDTO::class, $result->medicineStockTransactions[0]);
+            $this->assertInstanceOf(UserDTO::class, $result->medicineStockTransactions[0]->inventoryOfficer);
+            $this->assertInstanceOf(MedicineDTO::class, $result->medicineStockTransactions[0]->medicine);
+        }
+
+        // Verify created_at timestamps are in descending order (newest first)
+        $this->assertGreaterThan(
+            $results[1]->createdAt->timestamp,
+            $results[0]->createdAt->timestamp,
+            'First item should have newer created_at than second'
+        );
+        $this->assertGreaterThan(
+            $results[2]->createdAt->timestamp,
+            $results[1]->createdAt->timestamp,
+            'Second item should have newer created_at than third'
+        );
+
+        // Verify check_date is not null for all
+        foreach ($results as $result) {
+            $this->assertNotNull($result->checkDate);
+            $this->assertInstanceOf(\Carbon\CarbonInterface::class, $result->checkDate);
+        }
+
+        // Verify patient data integrity
+        foreach ($results as $result) {
+            $this->assertEquals('John Doe', $result->patient->name);
+            $this->assertEquals('MRN-001', $result->patient->medicalRecordNumber);
+        }
+
+        // Clean up
+        \Illuminate\Support\Carbon::setTestNow();
+    }
+
+    // Test 2: Get registrations by patient_id with no data
+    public function testGetByPatientIdWithNoRegistrations(): void
+    {
+        // Create a patient without any registrations
+        $patientDTO = new PatientDTO();
+        $patientDTO->name = 'Patient Without Registrations';
+        $patientDTO->medicalRecordNumber = 'MRN-888';
+        $patientDTO->medicalRecordFileUrl = 'files/mrn-888.pdf';
+        $patientDTO->address = 'Jl. Empty No. 888';
+        $patientDTO->telpNumber = '088888888888';
+        $patientDTO->dateOfBirth = Carbon::parse('1992-06-15');
+        $patientDTO->gender = 'female';
+        $patientDTO->history = 'No history';
+        $insertedPatient = $this->patientRepository->insert($patientDTO);
+
+        // Create registrations for different patient (should not appear in results)
+        $registrationDTO = new RegistrationDTO();
+        $registrationDTO->patient = $this->patientDTO; // Different patient
+        $registrationDTO->doctor = $this->doctorDTO;
+        $registrationDTO->complaint = 'Other patient complaint';
+        $this->registrationRepository->insert($registrationDTO);
+
+        // Get registrations by patient_id (should return empty array)
+        $results = $this->registrationRepository->getByPatientId($insertedPatient->id);
+
+        // Verify results
+        $this->assertIsArray($results);
+        $this->assertCount(0, $results, 'Should have no registrations for this patient');
+        $this->assertEmpty($results);
     }
 }

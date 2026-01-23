@@ -23,5 +23,5 @@ interface RegistrationRepository
 
     public function getByRangeDate(CarbonInterface $startDate, CarbonInterface $endDate): array;
 
-    public function getByUserId(): array;
+    public function getByPatientId(string $patientId): array;
 }
