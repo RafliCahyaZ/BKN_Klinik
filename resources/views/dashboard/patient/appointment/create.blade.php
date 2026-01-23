@@ -61,7 +61,7 @@
                         <a href="#tindakan" aria-controls="tindakan" role="tab" data-toggle="tab">Tindakan</a>
                     </li>
                     <li role="periksa">
-                        <a href="#terapi" aria-controls="terapi" role="tab" data-toggle="tab">Terapi</a>
+                        <a href="#terapi" aria-controls="terapi" role="tab" data-toggle="tab">Resep</a>
                     </li>
                     <li role="periksa">
                         <a href="#medicine" aria-controls="medicine" role="tab" data-toggle="tab">Obat</a>
