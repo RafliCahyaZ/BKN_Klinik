@@ -92,6 +92,20 @@ class PatientController extends Controller
         ]);
     }
 
+    public function userHistoryPrint($id)
+    {
+        //dd(123);
+        $patient = $this->patientRepository->getById($id);
+        $registrations = $this->registrationRepository->getByUserId($id);
+
+        return view("dashboard.patient.history.user.print", [
+            "patient" => $patient,
+            "registrations" => $registrations,
+            "printTitle" => "Sistem Informasi Praktik Dokter - Detail History Pasien",
+            //"A/N" => $patient->name
+        ]);
+    }
+
     public function edit(int $id, PatientRepository $patientRepository)
     {
         $patient = $patientRepository->getById($id);

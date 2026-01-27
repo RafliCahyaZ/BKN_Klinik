@@ -39,9 +39,11 @@ Route::middleware("auth")->group(function () {
         Route::get("/queue", [PatientController::class, 'queue'])->name("queue");
 
         Route::get("/{id}/history", [PatientController::class, 'userHistory'])->name("user.history");
+        Route::get("/{id}/history/print", [PatientController::class, 'userHistoryPrint'])->name("user.history.print");
 
         Route::get("/history", [PatientController::class, 'history'])->name("history");
         Route::get("/history/{id}", [HistoryController::class, 'show'])->name("history.show");
+        Route::get("/history/print/{id}", [HistoryController::class, 'print'])->name("history.print");
 
         // ini print pasien
         Route::get("/print", [PatientController::class, 'print'])->name("print");
@@ -59,6 +61,7 @@ Route::middleware("auth")->group(function () {
         Route::get("/create/{patientId}", [RegistrationController::class, 'create'])->name("create");
         Route::post("/create/{patientId}", [RegistrationController::class, 'store'])->name("store");
         Route::get("/{id}/print", [HistoryController::class, 'show'])->name("registration.print");
+        //Route::get("/print", [RegistrationController::class, 'print'])->name("print");
     });
 
     Route::prefix("medicine")->name("medicine.")->group(function () {
@@ -74,6 +77,7 @@ Route::middleware("auth")->group(function () {
         Route::get("/{id}/transaction", [MedicineController::class, 'transaction'])->name("transaction.create.view");
         Route::post("/{id}/transaction", [MedicineController::class, 'transactionAction'])->name("transaction.create.action");
     });
+
 
     Route::get('/', function () {
         return view('dashboard.home');

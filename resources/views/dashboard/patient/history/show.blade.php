@@ -45,7 +45,7 @@
                 </tbody>
             </table>
 
-            <a href="http://localhost:8000/terapi/cetakhistory/000001" class="btn btn-info" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Data</a>
+            <a href="{{ route('patient.history.print', $registration->id) }}" class="btn btn-info" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Data</a>
             <hr>
 
             <h4>Data Medik Pasien</h4>
