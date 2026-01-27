@@ -15,6 +15,20 @@ use Carbon\CarbonInterface;
 
 class RegistrationRepositoryImpl implements RegistrationRepository
 {
+    public function getByPatientId(string $patientId): array
+    {
+        $all = $this->getAll();
+
+        $results = [];
+
+        foreach ($all as $registration) {
+            if ($registration->patient->id === $patientId) {
+                $results[] = $registration;
+            }
+        }
+
+        return $results ?? null;
+    }
     public function getAll(): array
     {
         // ================= USER (Inventory Officer) =================

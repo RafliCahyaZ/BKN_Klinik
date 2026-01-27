@@ -38,18 +38,20 @@
                                     <td>{{ $medicine->stock }} {{ $medicine->unit->name }}</td>
                                     <td>
                                         <a href="{{ route("medicine.edit.view", $medicine->id) }}" class="btn btn-sm btn-info" title="Ubah Data"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <form
-                                        style="display: inline-block;"
-                                        action="{{ route('medicine.destroy', $medicine->id) }}"
-                                        method="POST"
-                                        onsubmit="return confirm('Yakin ingin menghapus data ini?')"
-                                    >
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger btn-sm">
-                                            <i class="glyphicon glyphicon-trash"></i>
-                                        </button>
-                                    </form>
+                                        <a class="btn btn-sm btn-warning" href="{{ route('medicine.history', $medicine->id) }}"  class="btn btn-sm btn-info" title="Ubah Data"><i class="fa fa-history"></i></a>
+                                        <form
+                                            style="display: inline-block;"
+                                            action="{{ route('medicine.destroy', $medicine->id) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Yakin ingin menghapus data ini?')"
+                                        >
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm">
+                                                <i class="glyphicon glyphicon-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>

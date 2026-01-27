@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('gender', ['male', 'female']);
             $table->text('address');
             $table->dateTime('date_of_birth');
-            $table->string('telp_number', 13)->unique();
+            $table->string('telp_number', 15)->unique();
             $table->string('history', 100);
             $table->string('medical_record_number', 50)->unique();
             $table->string('medical_record_file_url', 100);

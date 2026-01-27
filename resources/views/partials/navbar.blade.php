@@ -13,14 +13,18 @@
 
         <ul class="nav navbar-nav">
             <li class="active"> <a href="{{ url("/") }}">Home</a></li>
-            @can('is-officer-or-admin')
-                <li class="dropdown">
+            @can('is-inventory-officer-or-officer-or-admin')
+            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Master Data <b class="caret"></b></a>
                 <ul class="dropdown-menu">
+                    @can('is-officer-or-admin')
                     <li> <a href="{{ url("patient") }}">Data Pasien</a></li>
                     <li> <a href="{{ url("diagnosis") }}">Data Diagnosa</a></li>
                     <li> <a href="{{ url("treatment") }}">Data Tindakan</a></li>
+                    @endcan
+                    @can('is-inventory-officer-or-admin')
                     <li> <a href="{{ route("medicine.index") }}">Data Obat</a></li>
+                    @endcan
                 </ul>
                 </li>
             @endcan

@@ -48,7 +48,7 @@ class PatientController extends Controller
 
             return $patient;
         });
-        return view("dashboard/patient.home", [
+        return view("dashboard.patient.home", [
             "patients" => $patientRepository->getAll()
         ]);
     }
@@ -57,7 +57,7 @@ class PatientController extends Controller
     {
         $registrations = $this->registrationRepository->getWhereCheckDateIsNull();
         return view(
-            "dashboard/patient.queue",
+            "dashboard.patient.queue",
             [
                 "registrations" => $registrations
             ]
@@ -69,7 +69,7 @@ class PatientController extends Controller
         $histories = $this->registrationRepository->getWhereCheckDateIsNotNull();
 
         return view(
-            "dashboard/patient.history",
+            "dashboard.patient.history",
             [
                 "histories" => $histories
             ]
@@ -84,7 +84,7 @@ class PatientController extends Controller
     public function userHistory($id)
     {
         $patient = $this->patientRepository->getById($id);
-        $registrations = $this->registrationRepository->getByUserId($id);
+        $registrations = $this->registrationRepository->getByPatientId($patient->id);
 
         return view("dashboard.patient.history.user", [
             "patient" => $patient,
