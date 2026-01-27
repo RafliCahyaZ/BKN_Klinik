@@ -34,10 +34,10 @@ class MedicineStockTransactionRepositoryEloquentTest extends TestCase
     {
         parent::setUp();
 
-        $this->transactionRepository = new MedicineStockTransactionRepositoryEloquent();
         $this->medicineRepository = new MedicineRepositoryEloquent();
         $this->userRepository = new UserRepositoryEloquent();
         $this->unitRepository = new UnitRepositoryEloquent();
+        $this->transactionRepository = new MedicineStockTransactionRepositoryEloquent($this->medicineRepository, $this->userRepository);
 
         $unitDTO = new UnitDTO();
         $unitDTO->name = 'Tablet';

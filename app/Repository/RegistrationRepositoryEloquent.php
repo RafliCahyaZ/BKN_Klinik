@@ -17,7 +17,6 @@ use Carbon\CarbonInterface;
 
 class RegistrationRepositoryEloquent implements RegistrationRepository
 {
-    // Static helper method to map Registration model to RegistrationDTO (without medicine transactions to avoid circular reference)
     public static function mapRegistrationModelToRegistrationDto($registration): RegistrationDTO
     {
         $formatedRegistration = new RegistrationDTO();
@@ -44,7 +43,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
 
         $formatedRegistration->patient = $patient;
         $formatedRegistration->doctor = $doctor;
-        $formatedRegistration->medicineStockTransactions = []; // Empty to avoid circular reference
+        $formatedRegistration->medicineStockTransactions = []; 
         $formatedRegistration->complaint = $registration->complaint;
         $formatedRegistration->receipt = $registration->receipt;
         $formatedRegistration->checkDate = $registration->check_date ? Carbon::parse($registration->check_date) : null;
@@ -97,14 +96,13 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
 
                         // Map medicine to MedicineDTO
                         $medicine = new MedicineDTO();
+                        
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
+
                         $medicineStockTransactionDTO->medicine = $medicine;
-
-                        // Map registration to RegistrationDTO (without transactions to avoid circular reference)
-                        $medicineStockTransactionDTO->registration = null; // Will be set to parent registration
-
+                        $medicineStockTransactionDTO->registration = null; 
                         $medicineStockTransactionDTO->type = $transaction->type;
                         $medicineStockTransactionDTO->quantity = $transaction->quantity;
                         $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
@@ -118,7 +116,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 }
 
                 $formatedRegistration->patient = $patient;
-                $formatedRegistration->doctor = $doctor;
+                $formatedRegistration->doctor = $doctor; 
                 $formatedRegistration->medicineStockTransactions = $medicineStockTransactions;
                 $formatedRegistration->complaint = $registration->complaint;
                 $formatedRegistration->receipt = $registration->receipt;
@@ -139,7 +137,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
     function getById(string $id): ?RegistrationDTO
     {
         try {
-            $registration = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit', 'diagnoses', 'treatments'])->find($id);
+            $registration = Registration::with(['doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit', 'diagnoses', 'treatments'])->find($id);
 
             if (!$registration) {
                 return null;

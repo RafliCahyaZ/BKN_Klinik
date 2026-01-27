@@ -52,7 +52,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->userRepository = new UserRepositoryEloquent();
         $this->patientRepository = new PatientRepositoryEloquent();
         $this->medicineRepository = new MedicineRepositoryEloquent();
-        $this->medicineStockTransactionRepository = new MedicineStockTransactionRepositoryEloquent();
+        $this->medicineStockTransactionRepository = new MedicineStockTransactionRepositoryEloquent($this->medicineRepository, $this->userRepository);
         $this->appointmentRepository = new AppointmentRepositoryEloquent();
         $this->diagnosisRepository = new DiagnosisRepositoryEloquent();
         $this->treatmentRepository = new TreatmentRepositoryEloquent();
