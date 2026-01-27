@@ -17,5 +17,8 @@ class HistoryController extends Controller
         return view("dashboard.patient.history.show", [
             "registration" => $registration
         ]);
+        // return view("pdf.registration", [
+        //     "registration" => $registration
+        // ]);
     }
 }
