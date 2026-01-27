@@ -60,8 +60,8 @@ Route::middleware("auth")->group(function () {
     Route::prefix("registration")->name("registration.")->group(function () {
         Route::get("/create/{patientId}", [RegistrationController::class, 'create'])->name("create");
         Route::post("/create/{patientId}", [RegistrationController::class, 'store'])->name("store");
-        Route::get("/{id}/print", [HistoryController::class, 'show'])->name("registration.print");
-        //Route::get("/print", [RegistrationController::class, 'print'])->name("print");
+        Route::get("/{id}/print", [HistoryController::class, 'show'])->name("print");
+        // Route::get("/print", [RegistrationController::class, 'print'])->name("print");
     });
 
     Route::prefix("medicine")->name("medicine.")->group(function () {

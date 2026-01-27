@@ -48,7 +48,7 @@
             <a href="{{ route('patient.history.print', $registration->id) }}" class="btn btn-info" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Data</a>
             <hr>
 
-            <h4>Data Medik Pasien</h4>
+            <h4>Data Medis Pasien</h4>
             <hr>
             <div role="tabpanel">
                 <ul class="nav nav-tabs" role="tablist">

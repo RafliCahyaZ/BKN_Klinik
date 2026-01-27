@@ -14,20 +14,6 @@
 <x-dashboard-container title="Detail History Pasien No. Reg {{ $registration->id }}">
 
     <table class="table table-bordered table-hover table-condensed">
-        {{-- <thead>
-            <tr>
-                <th>No</th>
-                <th>No. Rekam</th>
-                <th>Nama Pasien</th>
-                <th>JK</th>
-                <th>Umur</th>
-                <th>Riwayat Penyakit</th>
-                <th>Berkas RM</th>
-                <th>Alamat</th>
-                <th>Telp</th>
-                <th>Tgl. Register</th>
-            </tr>
-        </thead> --}}
         <tbody>
 
                 <tr>
