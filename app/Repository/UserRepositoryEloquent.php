@@ -55,7 +55,7 @@ class UserRepositoryEloquent implements UserRepository
                 'email' => $userDTO->email,
             ]
         );
-        $user->role = $userDTO->role;;
+        $user->role = $userDTO->role;
         $user->save();
         $userDTO->id = $user->id;
         $userDTO->createdAt = $user->created_at;

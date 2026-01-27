@@ -46,7 +46,6 @@ class PatientController extends Controller
 
         $patients = $patients->map(function ($patient) {
             $patient->medicalRecordFileUrl = Storage::disk("public")->url($patient->medicalRecordFileUrl);
-
             return $patient;
         });
         return view("dashboard.patient.home", [
