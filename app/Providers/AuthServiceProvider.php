@@ -35,5 +35,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('is-officer-or-admin', function ($user) {
             return UserRoleHelper::stringToUserRole($user->role) == UserRole::OFFICER || UserRoleHelper::stringToUserRole($user->role) == UserRole::ADMIN;
         });
+
+        Gate::define('is-inventory-officer-or-admin', function ($user) {
+            return UserRoleHelper::stringToUserRole($user->role) == UserRole::INVENTORY_OFFICER || UserRoleHelper::stringToUserRole($user->role) == UserRole::ADMIN;
+        });
     }
 }
