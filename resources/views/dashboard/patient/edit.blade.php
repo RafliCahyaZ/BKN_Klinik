@@ -149,6 +149,7 @@
                                 <input
                                     type="text"
                                     class="form-control"
+                                    id="filename-input"
                                     disabled
                                 >
                                 <span class="group-span-filestyle input-group-btn" tabindex="0">
@@ -162,19 +163,19 @@
                     </tr>
 
                     <tr>
-                    <th></th>
-                    <th></th>
-                    <th>
-                        <div class="bg-primary" style="display: flex; gap: 12px; padding: 12px 16px;">
-                            <div>
-                            <i class="fa fa-file"></i>
+                        <th></th>
+                        <th></th>
+                        <th>
+                            <div class="bg-primary" style="display: flex; gap: 12px; padding: 12px 16px;">
+                                <div>
+                                <i class="fa fa-file"></i>
+                                </div>
+                                <div>Preview Rekam Medis</div>
                             </div>
-                            <div>Preview Rekam Medis</div>
-                        </div>
-                        <div style="max-height: 100%; max-height: 600px; display: block; overflow-y: hidden;display:flex;justify-content: center;align-items: center;">
-                            <img id="preview-image" style="width: 100%;" src="{{ $patient->medicalRecordFileUrl }}" alt="Belum upload rekam medis" />
-                        </div>
-                    </th>
+                            <div style="max-height: 100%; max-height: 600px; display: block; overflow-y: hidden;display:flex;justify-content: center;align-items: center;">
+                                <img id="preview-image" style="width: 100%;" src="{{ $patient->medicalRecordFileUrl }}" alt="Belum upload rekam medis" />
+                            </div>
+                        </th>
                     </tr>
 
                     <tr>
@@ -211,6 +212,8 @@
             e.target.value = '';
             return;
         }
+
+        document.getElementById('filename-input').value = file.name;
 
         const preview = document.getElementById('preview-image');
 
