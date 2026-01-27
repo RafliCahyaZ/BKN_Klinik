@@ -27,6 +27,10 @@
                 <td>{{ $history->patient->telpNumber }}</td>
                 <td>{{ $history->checkDate->diffForHumans() }}</td>
                 <td>
+                    {{-- <a href="{{ route("patient.history.show", $history->id) }}" class="btn btn-sm btn-info">
+                        <i class="glyphicon glyphicon-search"></i>
+                        Detail
+                    </a> --}}
                     <a href="{{ route("patient.history.show", $history->id) }}" class="btn btn-sm btn-info">
                         <i class="glyphicon glyphicon-search"></i>
                         Detail

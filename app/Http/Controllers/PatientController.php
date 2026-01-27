@@ -8,6 +8,7 @@ use App\Repository\PatientRepository;
 use App\Repository\RegistrationRepository;
 use App\Repository\TreatmentRepository;
 use App\Repository\UserRepository;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -94,16 +95,17 @@ class PatientController extends Controller
 
     public function userHistoryPrint($id)
     {
-        //dd(123);
-        $patient = $this->patientRepository->getById($id);
-        $registrations = $this->registrationRepository->getByUserId($id);
+        
+        $registrations = $this->registrationRepository->getByPatientId($id);
+        $patient = null;
+        if(!count($registrations)){
+            $patient = $this->patientRepository->getById($id);
+        } else {
+            $patient = $registrations[0]->patient;
+        }
 
-        return view("dashboard.patient.history.user.print", [
-            "patient" => $patient,
-            "registrations" => $registrations,
-            "printTitle" => "Sistem Informasi Praktik Dokter - Detail History Pasien",
-            //"A/N" => $patient->name
-        ]);
+        $pdf = Pdf::loadView('pdf.patient-history', compact('registrations'));
+        return $pdf->download('history_rekam_medis_' . $patient->name . '.pdf');
     }
 
     public function edit(int $id, PatientRepository $patientRepository)
