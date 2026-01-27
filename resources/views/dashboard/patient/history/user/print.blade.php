@@ -11,9 +11,9 @@
     </button>
 </div>
 
-<x-dashboard-container title="Detail History Pasien Atas Nama {{ $patient->name }}">
-<table class="table table-bordered table-hover table-condensed">
+<x-dashboard-container title="Detail History Pasien a.n. {{ $patient->name }}">
 
+<table class="table-bordered table-condensed table-hover">
     <div>
         <tr>
             Nama :
@@ -44,24 +44,74 @@
         </tr>
     </div>
 
-    <div>
+        <div>
         <tr>
-            Complaints :
+            Jenis Kelamin :
         </tr>
 
         <tr>
-                        <ol>
-                            @foreach ($registrations as $index => $registration)
-                            <ol>
-                                @foreach ($registration->diagnoses as $diagnosis)
-                                        <li>{{ $diagnosis->diseaseName}}</li>
-                                @endforeach
-                            </ol>
-                            {{$registration->complaint}}
-                            @endforeach
-                        </ol>
+            {{ $patient->gender }}
         </tr>
     </div>
+
+    <br></br>
+</table>
+
+@foreach ($registrations as $registration)
+    <div style="margin-bottom:20px; border:1px solid #000; padding:10px">
+
+        <strong>No. Registrasi:</strong> {{ $registration->id }} <br>
+        <strong>Tanggal:</strong>
+        {{ $registration->checkDate
+            ? $registration->checkDate->format('d-m-Y')
+            : 'Belum diperiksa' }}
+        <br>
+
+        <strong>Keluhan:</strong>
+        {{ $registration->complaint ?? '-' }}
+
+        <hr>
+
+
+        <strong>Diagnosis:</strong>
+        <ul>
+            @forelse ($registration->diagnoses as $diagnosis)
+                <li>{{ $diagnosis->name }}</li>
+            @empty
+                <li>-</li>
+            @endforelse
+        </ul>
+
+
+        <strong>Treatment:</strong>
+        <ul>
+            @forelse ($registration->treatments as $treatment)
+                <li>{{ $treatment->name }}</li>
+            @empty
+                <li>-</li>
+            @endforelse
+        </ul>
+
+
+        <strong>Obat:</strong>
+        <ul>
+            @forelse ($registration->medicineStockTransactions as $trx)
+                <li>
+                    {{ $trx->medicine->name }}
+                    ({{ $trx->quantity }})
+                </li>
+            @empty
+                <li>-</li>
+            @endforelse
+        </ul>
+
+    </div>
+@endforeach
+
+
+
+<table class="table table-bordered table-hover table-condensed">
+
                 {{-- <tr>
                     <td>Nama</td>
                     <td>{{ $patient->name }}</td>
