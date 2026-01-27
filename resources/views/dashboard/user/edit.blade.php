@@ -69,6 +69,11 @@
                                     value="{{ \App\Type\UserRole::DOCTOR }}">
                                     Dokter
                                 </option>
+                                <option
+                                    {{ ($user->role == \App\Type\UserRole::INVENTORY_OFFICER) ? 'selected' : '' }}
+                                    value="{{ \App\Type\UserRole::INVENTORY_OFFICER }}">
+                                    Petugas Gudang
+                                </option>
                             </select>
                         </td>
                     </tr>

@@ -59,7 +59,7 @@ class UserController extends Controller
             ],
             'role' => [
                 'required',
-                Rule::in([UserRole::ADMIN->value, UserRole::OFFICER->value, UserRole::DOCTOR->value]),
+                Rule::in([UserRole::ADMIN->value, UserRole::OFFICER->value, UserRole::DOCTOR->value, UserRole::INVENTORY_OFFICER->value]),
             ],
         ], [
             'email.required' => 'Email wajib diisi',
@@ -108,7 +108,7 @@ class UserController extends Controller
             ],
             'role' => [
                 'required',
-                Rule::in([UserRole::ADMIN->value, UserRole::OFFICER->value, UserRole::DOCTOR->value]),
+                Rule::in([UserRole::ADMIN->value, UserRole::OFFICER->value, UserRole::DOCTOR->value, UserRole::INVENTORY_OFFICER->value]),
             ],
         ], [
             'role.in' => 'Role tidak valid',
