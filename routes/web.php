@@ -39,6 +39,7 @@ Route::middleware("auth")->group(function () {
         Route::get("/queue", [PatientController::class, 'queue'])->name("queue");
 
         Route::get("/{id}/history", [PatientController::class, 'userHistory'])->name("user.history");
+        Route::get("/{id}/history/print", [PatientController::class, 'userHistoryPrint'])->name("user.history.print");
 
         Route::get("/history", [PatientController::class, 'history'])->name("history");
         Route::get("/history/{id}", [HistoryController::class, 'show'])->name("history.show");
