@@ -9,6 +9,7 @@ use App\DTO\UserDTO;
 use App\DTO\MedicineDTO;
 use App\DTO\MedicineStockTransactionDTO;
 use App\DTO\TreatmentDTO;
+use App\Helper\UserRoleHelper;
 use App\Models\Diagnosis;
 use App\Models\Registration;
 use App\Models\Treatment;
@@ -172,8 +173,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     $diagnosisDTO = new DiagnosisDTO();
                     $diagnosisDTO->id = $diagnosis->id;
                     $diagnosisDTO->icdCode = $diagnosis->icd_code;
-                    $diagnosisDTO->diseaseName = $diagnosis->disease_name;
                     $diagnosisDTO->createdAt = Carbon::parse($diagnosis->created_at);
+                    $diagnosisDTO->diseaseName = $diagnosis->disease_name;
                     $diagnosisDTO->updatedAt = Carbon::parse($diagnosis->updated_at);
                     $diagnoses[] = $diagnosisDTO;
                 }
@@ -275,7 +276,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     $doctor->username = $registration->doctor->fullname;
                     $doctor->email = $registration->doctor->email;
                     $doctor->fullname = $registration->doctor->fullname;
-                    $doctor->role = $registration->doctor->role;
+                    $doctor->role = UserRoleHelper::stringToUserRole($registration->doctor->role);
                     $doctor->createdAt = $registration->doctor->created_at;
                     $doctor->updatedAt = $registration->doctor->updated_at;
                 }

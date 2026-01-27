@@ -84,7 +84,7 @@ class PatientController extends Controller
     public function userHistory($id)
     {
         $patient = $this->patientRepository->getById($id);
-        $registrations = $this->registrationRepository->getByUserId($id);
+        $registrations = $this->registrationRepository->getByPatientId($patient->id);
 
         return view("dashboard.patient.history.user", [
             "patient" => $patient,
