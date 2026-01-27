@@ -13,8 +13,56 @@
 
 <x-dashboard-container title="Detail History Pasien Atas Nama {{ $patient->name }}">
 <table class="table table-bordered table-hover table-condensed">
-     <tbody>
-                <tr>
+
+    <div>
+        <tr>
+            Nama :
+        </tr>
+
+        <tr>
+            {{ $patient->name }}
+        </tr>
+    </div>
+
+    <div>
+        <tr>
+            Umur :
+        </tr>
+
+        <tr>
+            {{ $patient->dateOfBirth->age }}
+        </tr>
+    </div>
+
+    <div>
+        <tr>
+            Alamat :
+        </tr>
+
+        <tr>
+            {{ $patient->address }}
+        </tr>
+    </div>
+
+    <div>
+        <tr>
+            Complaints :
+        </tr>
+
+        <tr>
+                        <ol>
+                            @foreach ($registrations as $index => $registration)
+                            <ol>
+                                @foreach ($registration->diagnoses as $diagnosis)
+                                        <li>{{ $diagnosis->diseaseName}}</li>
+                                @endforeach
+                            </ol>
+                            {{$registration->complaint}}
+                            @endforeach
+                        </ol>
+        </tr>
+    </div>
+                {{-- <tr>
                     <td>Nama</td>
                     <td>{{ $patient->name }}</td>
                 </tr>
@@ -27,7 +75,7 @@
                     <td>{{ $patient->address }}</td>
                 </tr>
                 <tr>
-                    <td>registration</td>
+                    <td>Registration</td>
                         <td>
                             @foreach ($registrations as $index => $registration)
                                 <li>
@@ -38,8 +86,8 @@
                                 </li>
                             @endforeach
                         </td>
-                </tr>
- </tbody>
+                </tr> --}}
+
 </table>
 
 </x-dashboard-container>
