@@ -110,7 +110,7 @@
 
 
 
-<table class="table table-bordered table-hover table-condensed">
+{{-- <table class="table table-bordered table-hover table-condensed">
 
                 {{-- <tr>
                     <td>Nama</td>
@@ -138,7 +138,7 @@
                         </td>
                 </tr> --}}
 
-</table>
+</table> --}}
 
 </x-dashboard-container>
 @endsection

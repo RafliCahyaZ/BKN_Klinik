@@ -95,7 +95,7 @@ class PatientController extends Controller
 
     public function userHistoryPrint($id)
     {
-        
+
         $registrations = $this->registrationRepository->getByPatientId($id);
         $patient = null;
         if(!count($registrations)){
@@ -104,7 +104,7 @@ class PatientController extends Controller
             $patient = $registrations[0]->patient;
         }
 
-        $pdf = Pdf::loadView('pdf.patient-history', compact('registrations'));
+        $pdf = Pdf::loadView('pdf.patient-history', compact('registrations', 'patient'));
         return $pdf->download('history_rekam_medis_' . $patient->name . '.pdf');
     }
 
