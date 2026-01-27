@@ -18,6 +18,13 @@ class HistoryController extends Controller
         return $pdf->download('history_rekam_medis_' . $registration->patient->name . '.pdf');
     }
 
+    public function printAll() {
+        $registrations = $this->registrationRepository->getAll();
+
+        $pdf = Pdf::loadView('pdf.all-history', compact('registrations'));
+        return $pdf->download('all_patient_histories.pdf');
+    }
+
     public function show($id)
     {
         $registration = $this->registrationRepository->getById($id);

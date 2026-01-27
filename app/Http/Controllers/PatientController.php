@@ -46,7 +46,6 @@ class PatientController extends Controller
 
         $patients = $patients->map(function ($patient) {
             $patient->medicalRecordFileUrl = Storage::disk("public")->url($patient->medicalRecordFileUrl);
-
             return $patient;
         });
         return view("dashboard.patient.home", [
@@ -104,7 +103,7 @@ class PatientController extends Controller
             $patient = $registrations[0]->patient;
         }
 
-        $pdf = Pdf::loadView('pdf.patient-history', compact('registrations'));
+        $pdf = Pdf::loadView('pdf.patient-history', compact('registrations', 'patient'));
         return $pdf->download('history_rekam_medis_' . $patient->name . '.pdf');
     }
 

@@ -135,7 +135,7 @@ class PatientRepositoryEloquentTest extends TestCase
         $patientDTO->name = $this->patientData['fullname'];
         $patientDTO->gender = $this->patientData['gender']; 
         $patientDTO->address = $this->patientData['address'];
-        $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);;
+        $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);
         $patientDTO->telpNumber = $this->patientData['telp_number'];
         $patientDTO->history = $this->patientData['history'];
         $patientDTO->medicalRecordFileUrl = $this->patientData['medical_record_file_url'];
@@ -178,7 +178,7 @@ class PatientRepositoryEloquentTest extends TestCase
         $patientDTO->name = $this->patientData['fullname'];
         $patientDTO->gender = $this->patientData['gender']; 
         $patientDTO->address = $this->patientData['address'];
-        $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);;
+        $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);
         $patientDTO->telpNumber = $this->patientData['telp_number'];
         $patientDTO->history = $this->patientData['history'];
         $patientDTO->medicalRecordFileUrl = $this->patientData['medical_record_file_url'];
@@ -200,7 +200,7 @@ class PatientRepositoryEloquentTest extends TestCase
         $patientDTO->name = $this->patientData['fullname'];
         $patientDTO->gender = $this->patientData['gender']; 
         $patientDTO->address = $this->patientData['address'];
-        $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);;
+        $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);
         $patientDTO->telpNumber = $this->patientData['telp_number'];
         $patientDTO->history = $this->patientData['history'];
         $patientDTO->medicalRecordFileUrl = $this->patientData['medical_record_file_url'];
@@ -262,7 +262,7 @@ class PatientRepositoryEloquentTest extends TestCase
         $patientDTO->name = $this->patientData['fullname'];
         $patientDTO->gender = $this->patientData['gender']; 
         $patientDTO->address = $this->patientData['address'];
-        $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);;
+        $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);
         $patientDTO->telpNumber = $this->patientData['telp_number'];
         $patientDTO->history = $this->patientData['history'];
         $patientDTO->medicalRecordFileUrl = $this->patientData['medical_record_file_url'];
