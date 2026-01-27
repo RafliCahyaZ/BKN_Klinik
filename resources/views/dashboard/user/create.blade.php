@@ -79,6 +79,7 @@
                                 <option value="{{ \App\Type\UserRole::ADMIN->value }}">Administrator</option>
                                 <option value="{{ \App\Type\UserRole::OFFICER->value }}">Petugas</option>
                                 <option value="{{ \App\Type\UserRole::DOCTOR->value }}">Dokter</option>
+                                <option value="{{ \App\Type\UserRole::INVENTORY_OFFICER->value }}">Petugas Gudang</option>
                             </select>
                         </td>
                     </tr>
