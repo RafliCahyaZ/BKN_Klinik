@@ -15,7 +15,7 @@
     <div class="content">
         <div class="header">
             <h2>HISTORY REKAM MEDIS</h2>
-            
+
             <!-- Patient Information -->
             <div class="patient-info">
                 <table class="info-table">
@@ -39,7 +39,7 @@
                         <td class="colon">:</td>
                         <td class="value">
                             @if($registration->patient->dateOfBirth)
-                                {{ \Carbon\Carbon::parse($registration->patient->dateOfBirth)->locale('id')->isoFormat('D MMMM YYYY') }}
+                                {{ \Carbon\Carbon::parse($registration->patient->dateOfBirth)->locale('id')->isoFormat('D MMMM YYYY') }} ({{ $registration->patient->dateOfBirth->age }} Tahun)
                             @else
                                 -
                             @endif
@@ -106,23 +106,23 @@
     </div>
 
     <style>
-        .content { 
-            margin: 0 auto; 
-            max-width: 800px; 
+        .content {
+            margin: 0 auto;
+            max-width: 800px;
             padding: 20px;
         }
         .patient-info { margin-bottom: 30px; }
-        .info-table { 
+        .info-table {
             border: none;
-            margin-bottom: 20px; 
+            margin-bottom: 20px;
             max-width: 400px;
         }
         .info-table td {
             padding: 5px 0;
             border: none;
         }
-        .label { 
-            font-weight: bold; 
+        .label {
+            font-weight: bold;
             width: 150px;
             text-align: left;
         }
@@ -130,15 +130,15 @@
             width: 20px;
             text-align: center;
         }
-        .value { 
+        .value {
             padding-left: 10px;
             text-align: left;
         }
         .section { margin-bottom: 25px; }
         .section h3 { margin-bottom: 10px; color: #333; }
-        .data-table { 
-            max-width: 100%; 
-            margin: 0 auto; 
+        .data-table {
+            max-width: 100%;
+            margin: 0 auto;
         }
         .data-table th { text-align: left; font-weight: bold; }
         .text-center { text-align: center; }

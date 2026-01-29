@@ -94,7 +94,7 @@ class PatientController extends Controller
 
     public function userHistoryPrint($id)
     {
-        
+
         $registrations = $this->registrationRepository->getByPatientId($id);
         $patient = null;
         if(!count($registrations)){
