@@ -2,8 +2,8 @@
 
 @section('content')
 <x-dashboard-container title="Data Pasien">
-                    <a href="{{ url('patient/create') }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Tambah Pasien</a>
-                    <a href="{{ url('patient/print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Data Pasien</a>
+                    <a href="{{ route('patient.create') }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Tambah Pasien</a>
+                    <a href="{{ route('patient.print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Data Pasien</a>
                     <hr>
 
                     @if (session('success'))

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DTO\TreatmentDTO;
 use App\Repository\TreatmentRepository;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TreatmentController extends Controller
 {
@@ -87,10 +88,8 @@ class TreatmentController extends Controller
     {
         $treatments = $this->treatmentRepository->getAll();
 
-        return view("dashboard.treatment.print", [
-            "treatments" => $treatments,
-            "printTitle" => "Sistem Informasi Praktik Dokter - Master Data Tindakan"
-        ]);
+        $pdf = Pdf::loadView('pdf.treatments', compact('treatments'));
+        return $pdf->download('master_data_tindakan.pdf');
     }
 
     private function getTreatmentInputValidation(Request $request)

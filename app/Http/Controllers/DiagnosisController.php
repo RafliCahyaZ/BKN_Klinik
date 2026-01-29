@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DTO\DiagnosisDTO;
 use Illuminate\Http\Request;
 use App\Repository\DiagnosisRepository;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DiagnosisController extends Controller
 {
@@ -73,10 +74,8 @@ class DiagnosisController extends Controller
     {
         $diagnoses = $this->diagnosisRepository->getAll();
 
-        return view("dashboard.diagnosis.print", [
-            "diagnoses" => $diagnoses,
-            "printTitle" => "Sistem Informasi Praktik Dokter - Master Data Diagnosa"
-        ]);
+        $pdf = Pdf::loadView('pdf.diagnoses', compact('diagnoses'));
+        return $pdf->download('master_data_diagnosa.pdf');
     }
 
     public function destroy($id)

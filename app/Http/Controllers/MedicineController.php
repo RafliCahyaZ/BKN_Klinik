@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MedicineController extends Controller
 {
@@ -177,12 +178,23 @@ class MedicineController extends Controller
     {
         $medicines = $this->medicineRepository->getAll();
 
-        return view("dashboard.medicine.print", [
-            "medicines" => $medicines,
-            "printTitle" => "Sistem Informasi Praktik Dokter - Master Data Obat"
-        ]);
+        $pdf = Pdf::loadView('pdf.medicines', compact('medicines'));
+        return $pdf->download('master_data_obat.pdf');
     }
 
+    public function printHistory($id)
+    {
+        $medicine = $this->medicineRepository->getById($id);
+
+        if (!$medicine) {
+            abort(404);
+        }
+
+        $medicineStockTransactions = $this->medicineStockTransactionRepository->getByMedicineId($id);
+
+        $pdf = Pdf::loadView('pdf.medicine-history', compact('medicine', 'medicineStockTransactions'));
+        return $pdf->download('histori_transaksi_' . $medicine->name . '.pdf');
+    }
 
     public function store(Request $request)
     {

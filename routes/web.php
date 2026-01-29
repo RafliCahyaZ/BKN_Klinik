@@ -46,7 +46,6 @@ Route::middleware("auth")->group(function () {
         Route::get("/history/{id}", [HistoryController::class, 'show'])->name("history.show");
         Route::get("/history/print/{id}", [HistoryController::class, 'print'])->name("history.print");
 
-        // ini print pasien
         Route::get("/print", [PatientController::class, 'print'])->name("print");
 
         Route::post("/store", [PatientController::class, 'store'])->name("store");
@@ -75,6 +74,7 @@ Route::middleware("auth")->group(function () {
         Route::delete("/destroy/{id}", [MedicineController::class, 'destroy'])->name("destroy");
 
         Route::get("/{id}/history", [MedicineController::class, 'history'])->name("history");
+        Route::get("/{id}/history/print", [MedicineController::class, 'printHistory'])->name("history.print");
         Route::get("/{id}/transaction", [MedicineController::class, 'transaction'])->name("transaction.create.view");
         Route::post("/{id}/transaction", [MedicineController::class, 'transactionAction'])->name("transaction.create.action");
     });
