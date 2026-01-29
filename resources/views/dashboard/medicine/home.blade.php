@@ -40,7 +40,7 @@
                                     <td>{{ $medicine->stock }} {{ $medicine->unit->name }}</td>
                                     <td>
                                         <a href="{{ route("medicine.edit.view", $medicine->id) }}" class="btn btn-sm btn-info" title="Ubah Data"><i class="glyphicon glyphicon-pencil"></i></a>
-                                        <a class="btn btn-sm btn-warning" href="{{ route('medicine.history', $medicine->id) }}"  class="btn btn-sm btn-info" title="Ubah Data"><i class="fa fa-history"></i></a>
+                                        <a class="btn btn-sm btn-warning" href="{{ route('medicine.history', $medicine->id) }}"  class="btn btn-sm btn-info" title="Lihat Data History"><i class="fa fa-history"></i></a>
                                         <form
                                             style="display: inline-block;"
                                             action="{{ route('medicine.destroy', $medicine->id) }}"

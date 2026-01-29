@@ -59,7 +59,7 @@
             </table>
 
             <div>
-                <a href="{{ route('medicine.edit.view', $medicine->id) }}" class="btn btn-danger">
+                <a href="{{ route('medicine.index') }}" class="btn btn-danger">
                     Kembali
                 </a>
             </div>
