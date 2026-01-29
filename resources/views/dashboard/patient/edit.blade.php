@@ -149,6 +149,7 @@
                                 <input
                                     type="text"
                                     class="form-control"
+                                    id="filename-input"
                                     disabled
                                 >
                                 <span class="group-span-filestyle input-group-btn" tabindex="0">
@@ -157,6 +158,22 @@
                                         <span class="buttonText">Pilih file</span>
                                     </label>
                                 </span>
+                            </div>
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>
+                            <div class="bg-primary" style="display: flex; gap: 12px; padding: 12px 16px;">
+                                <div>
+                                <i class="fa fa-file"></i>
+                                </div>
+                                <div>Preview Rekam Medis</div>
+                            </div>
+                            <div style="max-height: 100%; max-height: 600px; display: block; overflow-y: hidden;display:flex;justify-content: center;align-items: center;">
+                                <img id="preview-image" style="width: 100%;" src="{{ $patient->medicalRecordFileUrl }}" alt="Belum upload rekam medis" />
                             </div>
                         </th>
                     </tr>
@@ -182,3 +199,31 @@
         </form>
     </x-dashboard-container>
 @endsection
+
+@push("scripts")
+<script>
+    document.getElementById('filestyle-0').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // validasi sederhana
+        if (!file.type.startsWith('image/')) {
+            alert('File harus berupa gambar');
+            e.target.value = '';
+            return;
+        }
+
+        document.getElementById('filename-input').value = file.name;
+
+        const preview = document.getElementById('preview-image');
+
+        // cara modern & ringan
+        preview.src = URL.createObjectURL(file);
+
+        // optional: bersihkan memory
+        preview.onload = () => {
+            URL.revokeObjectURL(preview.src);
+        };
+    });
+</script>
+@endpush

@@ -3,7 +3,9 @@
 
 @section('content')
 <x-dashboard-container title="Data Master Obat">
-                    <a href="{{ route('medicine.create') }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Tambah Data Master Obat</a>
+                    @can('is-inventory-officer-or-admin')
+                        <a href="{{ route('medicine.create') }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Tambah Data Master Obat</a>
+                    @endcan
                     <a href="{{ route('medicine.print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Master Data Obat</a>
                     <hr>
 
