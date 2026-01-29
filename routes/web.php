@@ -27,6 +27,9 @@ Route::middleware("auth")->group(function () {
             Route::post("/store", [UserController::class, 'store'])->name("store");
             Route::get("//edit/{id}", [UserController::class, 'edit'])->name("edit.view");
             Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
+
+            Route::get("/profile", [UserController::class, 'profile'])->name("profile.view");
+            Route::post("/profile", [UserController::class, 'profileAction'])->name("profile.action");
         });
     });
 
@@ -124,4 +127,3 @@ Route::prefix("user")->name("user.")->group(function () {
     Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
     Route::delete("/destroy/{id}", [UserController::class, 'destroy'])->name("destroy");
 });
-

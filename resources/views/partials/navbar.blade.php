@@ -66,7 +66,7 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pengaturan</a>
                 <ul class="dropdown-menu">
-                    <li><a href="/">Profil</a></li>
+                    <li><a href="{{ route('user.profile.view') }}">Profil</a></li>
                     <li>
                         <form action="{{ route("auth.logout") }}" method="POST">
                             @csrf

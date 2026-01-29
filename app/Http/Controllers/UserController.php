@@ -7,6 +7,8 @@ use App\Helper\UserRoleHelper;
 use App\Repository\UserRepository;
 use App\Type\UserRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -139,5 +141,23 @@ class UserController extends Controller
         }
 
         return redirect()->route("user.index")->with("success", "Sukses! Data berhasil dihapus");
+    }
+
+    public function profile()
+    {
+        return view('dashboard.user.profile');
+    }
+
+    public function profileAction(Request $request)
+    {
+        $validated = $request->validate([
+            "password" => ['required', 'min:8', 'confirmed']
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated["password"])
+        ]);
+
+        return back()->with("success", "Password berhasil diubah");
     }
 }
