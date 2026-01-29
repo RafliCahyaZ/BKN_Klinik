@@ -21,7 +21,7 @@ class HistoryController extends Controller
     public function printAll() {
         $registrations = $this->registrationRepository->getAll();
 
-        $pdf = Pdf::loadView('pdf.all-history', compact('registrations'));
+        $pdf = Pdf::loadView('pdf.histories', compact('registrations'));
         return $pdf->download('all_patient_histories.pdf');
     }
 

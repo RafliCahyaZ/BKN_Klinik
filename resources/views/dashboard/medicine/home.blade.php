@@ -3,7 +3,9 @@
 
 @section('content')
 <x-dashboard-container title="Data Master Obat">
-                    <a href="{{ route('medicine.create') }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Tambah Data Master Obat</a>
+                    @can('is-inventory-officer-or-admin')
+                        <a href="{{ route('medicine.create') }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Tambah Data Master Obat</a>
+                    @endcan
                     <a href="{{ route('medicine.print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Master Data Obat</a>
                     <hr>
 
@@ -38,7 +40,7 @@
                                     <td>{{ $medicine->stock }} {{ $medicine->unit->name }}</td>
                                     <td>
                                         <a href="{{ route("medicine.edit.view", $medicine->id) }}" class="btn btn-sm btn-info" title="Ubah Data"><i class="glyphicon glyphicon-pencil"></i></a>
-                                        <a class="btn btn-sm btn-warning" href="{{ route('medicine.history', $medicine->id) }}"  class="btn btn-sm btn-info" title="Ubah Data"><i class="fa fa-history"></i></a>
+                                        <a class="btn btn-sm btn-warning" href="{{ route('medicine.history', $medicine->id) }}"  class="btn btn-sm btn-info" title="Lihat Data History"><i class="fa fa-history"></i></a>
                                         <form
                                             style="display: inline-block;"
                                             action="{{ route('medicine.destroy', $medicine->id) }}"

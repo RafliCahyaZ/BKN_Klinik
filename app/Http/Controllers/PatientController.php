@@ -159,10 +159,8 @@ class PatientController extends Controller
     {
         $patients = $patientRepository->getAll();
 
-        return view("dashboard.patient.print", [
-            "patients" => $patients,
-            "printTitle" => "Sistem Informasi Praktik Dokter - Master Data Pasien"
-        ]);
+        $pdf = Pdf::loadView('pdf.patients', compact('patients'));
+        return $pdf->download('data_pasien.pdf');
     }
 
     public function store(Request $request, PatientRepository $patientRepository)
