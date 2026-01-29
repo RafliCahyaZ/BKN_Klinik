@@ -77,7 +77,7 @@
     <div class="header">
         <h2>Master Data Obat</h2>
         <p>Sistem Informasi Praktik Dokter</p>
-        <p>Dicetak pada: {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM YYYY, HH:mm') }} WIB</p>
+        <p>Dicetak pada: {{ \Carbon\Carbon::now()->setTimezone('Asia/Jakarta')->locale('id')->isoFormat('D MMMM YYYY, HH:mm') }} WIB</p>
     </div>
 
     <table>
