@@ -6,6 +6,7 @@ use App\DTO\DiagnosisDTO;
 use Illuminate\Http\Request;
 use App\Repository\DiagnosisRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class DiagnosisController extends Controller
 {
@@ -73,9 +74,10 @@ class DiagnosisController extends Controller
     public function print()
     {
         $diagnoses = $this->diagnosisRepository->getAll();
+        $timestamp = Carbon::now()->format('Y-m-d_His');
 
         $pdf = Pdf::loadView('pdf.diagnoses', compact('diagnoses'));
-        return $pdf->download('master_data_diagnosa.pdf');
+        return $pdf->stream("master_data_diagnosa_{$timestamp}.pdf");
     }
 
     public function destroy($id)

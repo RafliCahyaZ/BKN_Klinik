@@ -8,7 +8,7 @@
           <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> <b>Laporan Pasien</b></h3>
         </div>
         <div class="panel-body">
-        <form action="{{ route("report.create") }}" method="post" accept-charset="utf-8" name="adminForm" id="adminForm" class="form-horizontal">                  <div class="form-group">
+        <form action="{{ route("report.print") }}" method="get" accept-charset="utf-8" name="adminForm" id="adminForm" class="form-horizontal">                  <div class="form-group">
             @csrf
               <label for="inputkode" class="col-md-2 control-label">Periode Laporan</label><br>
               <div class="col-lg-4">
@@ -25,7 +25,7 @@
                 <div class="input-group input-group-sm">
                     <div class="input-group date" data-date="" data-date-format="yyyy-mm-dd">
                       <span class="input-group-addon"><i class="glyphicon glyphicon-th-list"></i></span>
-                      <input class="form-control" type="text" name="end-date" placeholder="Sampai" required="">
+                      <input class="form-control" type="text" name="end-date" placeholder="Sampai" required>
                     </div>
 
                 </div>
@@ -44,7 +44,7 @@
 
             <div class="form-group">
               <div class="col-lg-10 col-lg-offset-2">
-                <button type="submit" name="submit" class="btn btn-success"><i class="glyphicon glyphicon-search"></i> Proses Laporan</button>
+                <button type="submit" name="submit" class="btn btn-primary"><i class="glyphicon glyphicon-retweet"></i> Proses Laporan</button>
                 <button type="reset" name="reset" class="btn btn-danger"><i class="glyphicon glyphicon-retweet"></i> Ulangi</button>
               </div>
             </div>
@@ -59,6 +59,6 @@
 @push("scripts")
 <script text="text/javascript">
   $(".input-group.date").datepicker({ autoclose: true, todayHighlight: true });
-
+  
 </script>
 @endpush

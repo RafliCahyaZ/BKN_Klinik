@@ -33,8 +33,13 @@ Route::middleware("auth")->group(function () {
         });
     });
 
-    Route::get("/report", [ReportController::class, 'index'])->name("report.index");
+    // Route::get("/report", [ReportController::class, 'index'])->name("report.index");
     Route::post("/report", [ReportController::class, 'create'])->name("report.create");
+
+    Route::prefix('report')->name('report.')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('index');
+        Route::get('/print', [ReportController::class, 'print'])->name('print');
+    });
 
     Route::prefix("patient")->name("patient.")->group(function () {
         Route::get("/", [PatientController::class, 'index'])->name("index");

@@ -6,6 +6,7 @@ use App\DTO\TreatmentDTO;
 use App\Repository\TreatmentRepository;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class TreatmentController extends Controller
 {
@@ -87,9 +88,10 @@ class TreatmentController extends Controller
     public function print()
     {
         $treatments = $this->treatmentRepository->getAll();
+        $timestamp = Carbon::now()->format('Y-m-d_His');
 
         $pdf = Pdf::loadView('pdf.treatments', compact('treatments'));
-        return $pdf->download('master_data_tindakan.pdf');
+        return $pdf->stream("master_data_tindakan_{$timestamp}.pdf");
     }
 
     private function getTreatmentInputValidation(Request $request)
