@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         // Admin User (dari factory)
         User::create([
             'username' => 'farhannivta',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('AdminPassword123!'),
             'fullname' => 'Farhan Naufal Rivta',
             'email' => 'admin@clinic.com',
             'role' => 'admin',
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
         // Doctor User
         User::create([
             'username' => 'dr.smith',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('DoctorPassword123!'),
             'fullname' => 'Dr. Jane Smith',
             'email' => 'doctor@clinic.com',
             'role' => 'doctor',
@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
         // Inventory Officer User
         User::create([
             'username' => 'inventory_officer',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('InventoryPassword123!'),
             'fullname' => 'John Inventory',
             'email' => 'inventory@clinic.com',
             'role' => 'inventory_officer',
@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
         // Additional Doctor
         User::create([
             'username' => 'dr.ahmad',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('DoctorAhmad123!'),
             'fullname' => 'Dr. Ahmad Rahman',
             'email' => 'ahmad@clinic.com',
             'role' => 'doctor',
@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
         // Additional Inventory Officer
         User::create([
             'username' => 'inventory_officer2',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('InventorySarah123!'),
             'fullname' => 'Sarah Inventory',
             'email' => 'sarah@clinic.com',
             'role' => 'inventory_officer',
