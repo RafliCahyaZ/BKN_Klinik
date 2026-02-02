@@ -14,7 +14,7 @@ use App\Http\Controllers\ReportController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/auth/login', [LoginController::class, 'index'])->name("login");
-    Route::post('/auth/login', [LoginController::class, 'create'])->name("login.post");
+    Route::post('/auth/login', [LoginController::class, 'create'])->middleware('throttle:5,1')->name("login.post");
 });
 
 Route::middleware("auth")->group(function () {
@@ -33,7 +33,6 @@ Route::middleware("auth")->group(function () {
         });
     });
 
-    // Route::get("/report", [ReportController::class, 'index'])->name("report.index");
     Route::post("/report", [ReportController::class, 'create'])->name("report.create");
 
     Route::prefix('report')->name('report.')->group(function () {
@@ -128,7 +127,8 @@ Route::prefix("user")->name("user.")->group(function () {
     Route::get("/", [UserController::class, 'index'])->name("index");
     Route::get("/create", [UserController::class, 'create'])->name("create");
     Route::post("/store", [UserController::class, 'store'])->name("store");
-    Route::get("//edit/{id}", [UserController::class, 'edit'])->name("edit.view");
+    Route::post("/activate/{id}", [UserController::class, 'activate'])->name("activate");
+    Route::get("/edit/{id}", [UserController::class, 'edit'])->name("edit.view");
     Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
     Route::delete("/destroy/{id}", [UserController::class, 'destroy'])->name("destroy");
 });

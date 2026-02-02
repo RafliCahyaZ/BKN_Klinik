@@ -28,6 +28,7 @@ class User extends Authenticatable
         'fullname',
         'email',
         'last_login_at',
+        'is_active',
     ];
 
     protected $guarded = [

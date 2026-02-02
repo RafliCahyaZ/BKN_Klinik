@@ -14,13 +14,16 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin User (dari factory)
+        // Admin User
         User::create([
             'username' => 'farhannivta',
             'password' => Hash::make('AdminPassword123!'),
             'fullname' => 'Farhan Naufal Rivta',
             'email' => 'admin@clinic.com',
             'role' => 'admin',
+            'is_active' => true,
+            'failed_login_attempts' => 0,
+            'last_login_at' => null,
         ]);
 
         // Doctor User
@@ -30,6 +33,9 @@ class UserSeeder extends Seeder
             'fullname' => 'Dr. Jane Smith',
             'email' => 'doctor@clinic.com',
             'role' => 'doctor',
+            'is_active' => true,
+            'failed_login_attempts' => 0,
+            'last_login_at' => null,
         ]);
 
         // Inventory Officer User
@@ -39,6 +45,9 @@ class UserSeeder extends Seeder
             'fullname' => 'John Inventory',
             'email' => 'inventory@clinic.com',
             'role' => 'inventory_officer',
+            'is_active' => true,
+            'failed_login_attempts' => 0,
+            'last_login_at' => null,
         ]);
 
         // Additional Doctor
@@ -48,6 +57,9 @@ class UserSeeder extends Seeder
             'fullname' => 'Dr. Ahmad Rahman',
             'email' => 'ahmad@clinic.com',
             'role' => 'doctor',
+            'is_active' => true,
+            'failed_login_attempts' => 0,
+            'last_login_at' => null,
         ]);
 
         // Additional Inventory Officer
@@ -57,6 +69,21 @@ class UserSeeder extends Seeder
             'fullname' => 'Sarah Inventory',
             'email' => 'sarah@clinic.com',
             'role' => 'inventory_officer',
+            'is_active' => true,
+            'failed_login_attempts' => 0,
+            'last_login_at' => null,
+        ]);
+
+        // Officer User
+        User::create([
+            'username' => 'officer_john',
+            'password' => Hash::make('OfficerPassword123!'),
+            'fullname' => 'John Officer',
+            'email' => 'officer@clinic.com',
+            'role' => 'officer',
+            'is_active' => true,
+            'failed_login_attempts' => 0,
+            'last_login_at' => null,
         ]);
     }
 }

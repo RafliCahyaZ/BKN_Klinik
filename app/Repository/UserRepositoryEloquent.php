@@ -6,6 +6,7 @@ use App\DTO\UserDTO;
 use App\Helper\UserRoleHelper;
 use App\Models\User;
 use App\Type\UserRole;
+use Carbon\Carbon;
 
 class UserRepositoryEloquent implements UserRepository
 {
@@ -21,9 +22,20 @@ class UserRepositoryEloquent implements UserRepository
         return $users;
     }
 
-    function getByRole(string $role): array
+    function getByUsername(string $username): ?UserDTO
     {
-        $usersCollections = User::where('role', $role)->get();
+        $user = User::where('username', $username)->first();
+
+        if (!$user) {
+            return null;
+        }
+
+        return $this->mapUserModelToUserDto($user);
+    }
+
+    function getByRole(UserRole $role): array
+    {
+        $usersCollections = User::where('role', $role->value)->get();
 
         $formatedUsers = $usersCollections->map(function ($user) {
             return $this->mapUserModelToUserDto($user);
@@ -33,15 +45,13 @@ class UserRepositoryEloquent implements UserRepository
         return $users;
     }
 
-    function getByEmail(string $email): ?UserDTO
+    function getFailedLoginAttempsById(string $id): int
     {
-        $user = User::where('email', $email)->first();
-
-        if (!$user) {
-            return null;
+        $user = User::find($id);
+        if(!$user) {
+            return 0;
         }
-
-        return $this->mapUserModelToUserDto($user);
+        return $user ? $user->failed_login_attempts : 0;
     }
 
     function insert(UserDTO $userDTO): ?UserDTO
@@ -90,6 +100,63 @@ class UserRepositoryEloquent implements UserRepository
         }
     }
 
+    public function updateLastLoginAt(string $id, Carbon $lastLoginAt): bool
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return false;
+        }
+
+        $user->last_login_at = $lastLoginAt;
+        $user->save();
+
+        return true;
+    }
+
+    function activate(string $id): ?UserDTO
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return null;
+        }
+
+        $user->is_active = true;
+        $user->failed_login_attempts = 0;
+        $user->save();
+
+        return $this->mapUserModelToUserDto($user);
+    }
+
+    function deactivate(string $id): ?UserDTO
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return null;
+        }
+
+        $user->is_active = false;
+        $user->save();
+
+        return $this->mapUserModelToUserDto($user);
+    }
+
+    function resetFailedLoginAttempts(string $id): bool
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return false;
+        }
+
+        $user->failed_login_attempts = 0;
+        $user->save();
+
+        return true;
+    }
+
     function getById(string $id): ?UserDTO
     {
         $user = User::find($id);
@@ -108,6 +175,20 @@ class UserRepositoryEloquent implements UserRepository
             return 0;
         }
         return $latestId;
+    }
+
+    function updateFailedLoginAttemptsById(string $id, int $failedLoginAttempts): bool
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return false;
+        }
+
+        $user->failed_login_attempts = $failedLoginAttempts;
+        $user->save();
+
+        return true;
     }
 
     function delete(string $id): bool
@@ -131,6 +212,9 @@ class UserRepositoryEloquent implements UserRepository
         $formatedUser->email = $user->email;
         $formatedUser->password = $user->password;
         $formatedUser->role = UserRoleHelper::stringToUserRole($user->role);
+        $formatedUser->isActive = $user->is_active;
+        $formatedUser->failedLoginAttempts = $user->failed_login_attempts;
+        $formatedUser->lastLoginAt = $user->last_login_at ? Carbon::parse($user->last_login_at) : null;
         $formatedUser->createdAt = $user->created_at;
         $formatedUser->updatedAt = $user->updated_at;
 
