@@ -1,11 +1,27 @@
-version: '3'
+version: "3"
 
 services:
-  bkn_clinic:
-    container_name: bkn_clinic
-    image: bkn_clinic_image
-    build: .
-    ports:
-      - 8000:80
-    env_file:
-      - .env
+    bkn_clinic:
+        container_name: bkn_clinic
+        image: bkn_clinic_image
+        build: .
+        ports:
+            - 8000:80
+        env_file:
+            - .env
+        depends_on:
+            - mysql
+        volumes:
+            - storage_data:/app/storage
+    mysql:
+        image: mysql:8.0
+        environment:
+            MYSQL_DATABASE: bkn_clinic
+            MYSQL_USER: laravel
+            MYSQL_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - mysql_data:/var/lib/mysql
+volumes:
+    mysql_data:
+    storage_data:
