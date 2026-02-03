@@ -127,7 +127,7 @@ Route::prefix("user")->name("user.")->group(function () {
     Route::get("/", [UserController::class, 'index'])->name("index");
     Route::get("/create", [UserController::class, 'create'])->name("create");
     Route::post("/store", [UserController::class, 'store'])->name("store");
-    Route::post("/activate/{id}", [UserController::class, 'activate'])->name("activate");
+    Route::patch("/activate/{id}", [UserController::class, 'activate'])->name("activate");
     Route::get("/edit/{id}", [UserController::class, 'edit'])->name("edit.view");
     Route::post("/edit/{id}", [UserController::class, 'editAction'])->name("edit.action");
     Route::delete("/destroy/{id}", [UserController::class, 'destroy'])->name("destroy");

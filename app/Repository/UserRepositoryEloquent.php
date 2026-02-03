@@ -10,7 +10,7 @@ use Carbon\Carbon;
 
 class UserRepositoryEloquent implements UserRepository
 {
-    function getAll(): array
+    public function getAll(): array
     {
         $usersCollections = User::all();
 
@@ -22,7 +22,7 @@ class UserRepositoryEloquent implements UserRepository
         return $users;
     }
 
-    function getByUsername(string $username): ?UserDTO
+    public function getByUsername(string $username): ?UserDTO
     {
         $user = User::where('username', $username)->first();
 
@@ -33,7 +33,7 @@ class UserRepositoryEloquent implements UserRepository
         return $this->mapUserModelToUserDto($user);
     }
 
-    function getByRole(UserRole $role): array
+    public function getByRole(UserRole $role): array
     {
         $usersCollections = User::where('role', $role->value)->get();
 
@@ -45,7 +45,7 @@ class UserRepositoryEloquent implements UserRepository
         return $users;
     }
 
-    function getFailedLoginAttempsById(string $id): int
+    public function getFailedLoginAttempsById(string $id): int
     {
         $user = User::find($id);
         if(!$user) {
@@ -54,7 +54,7 @@ class UserRepositoryEloquent implements UserRepository
         return $user ? $user->failed_login_attempts : 0;
     }
 
-    function insert(UserDTO $userDTO): ?UserDTO
+    public function insert(UserDTO $userDTO): ?UserDTO
     {
         $user = new User();
         $user->fill(
@@ -74,7 +74,7 @@ class UserRepositoryEloquent implements UserRepository
         return $userDTO;
     }
 
-    function edit(string $id, UserDTO $userDTO): ?UserDTO
+    public function edit(string $id, UserDTO $userDTO): ?UserDTO
     {
         $updateData = [
             'fullname' => $userDTO->fullname ?? null,
@@ -114,7 +114,7 @@ class UserRepositoryEloquent implements UserRepository
         return true;
     }
 
-    function activate(string $id): ?UserDTO
+    public function activate(string $id): ?UserDTO
     {
         $user = User::find($id);
 

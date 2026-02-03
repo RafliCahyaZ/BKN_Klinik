@@ -46,15 +46,16 @@
                             </td>
                             <td style="text-align:center">
 
-                                <form style="display: inline-block;" action="{{ route('user.activate', $user->id) }}"
-                                    method="POST" onsubmit="return confirm('Yakin ingin mengaktifkan akun ini?')">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button class="btn btn-info btn-sm">
-                                        <i class="fa fa-unlock-alt"></i>
-                                    </button>
-                                </form>
-
+                                @if (!$user->isActive)
+                                    <form style="display: inline-block;" action="{{ route('user.activate', $user->id) }}"
+                                        method="POST" onsubmit="return confirm('Yakin ingin mengaktifkan akun ini?')">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button class="btn btn-info btn-sm">
+                                            <i class="fa fa-unlock-alt"></i>
+                                        </button>
+                                    </form>
+                                @endif
                                 <a href="{{ route('user.edit.view', $user->id) }}" class="btn btn-sm btn-warning"><i
                                         class="glyphicon glyphicon-pencil"></i></a>&nbsp;
                                 <form style="display: inline-block;" action="{{ route('user.destroy', $user->id) }}"

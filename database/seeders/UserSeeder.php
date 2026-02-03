@@ -50,7 +50,6 @@ class UserSeeder extends Seeder
             'last_login_at' => null,
         ]);
 
-        // Additional Doctor
         User::create([
             'username' => 'dr.ahmad',
             'password' => Hash::make('DoctorAhmad123!'),
@@ -59,6 +58,17 @@ class UserSeeder extends Seeder
             'role' => 'doctor',
             'is_active' => true,
             'failed_login_attempts' => 0,
+            'last_login_at' => null,
+        ]);
+
+        User::create([
+            'username' => 'man united menager',
+            'password' => Hash::make('DoctorAhmad123!'),
+            'fullname' => 'Dr. Ahmad Rahman',
+            'email' => 'man@clinic.com',
+            'role' => 'doctor',
+            'is_active' => false,
+            'failed_login_attempts' => 3,
             'last_login_at' => null,
         ]);
 
