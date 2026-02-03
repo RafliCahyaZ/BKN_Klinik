@@ -1,0 +1,13 @@
+version : 3
+
+services:
+    laravel_franken :
+        container_name : bkn_clinic
+        image : bkn_clinic_image
+        build . configs:
+
+        ports :
+            - "8080:80"
+        env_file :
+            - .env
+
