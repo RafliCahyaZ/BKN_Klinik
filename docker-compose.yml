@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  bkn_clinic:
+    container_name: bkn_clinic
+    image: bkn_clinic_image
+    build: .
+    ports:
+      - 8000:80
+    env_file:
+      - .env
