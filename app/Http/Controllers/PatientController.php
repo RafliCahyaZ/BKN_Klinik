@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\DTO\PatientDTO;
-use App\Repository\DiagnosisRepository;
 use App\Repository\PatientRepository;
 use App\Repository\RegistrationRepository;
-use App\Repository\TreatmentRepository;
-use App\Repository\UserRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,10 +14,7 @@ class PatientController extends Controller
 {
     public function __construct(
         private RegistrationRepository $registrationRepository,
-        private UserRepository $userRepository,
-        private DiagnosisRepository $diagnosisRepository,
         private PatientRepository $patientRepository,
-        private TreatmentRepository $treatmentRepository
     ) {}
 
     public function destroy($id, PatientRepository $patientRepository)
@@ -103,8 +97,9 @@ class PatientController extends Controller
             $patient = $registrations[0]->patient;
         }
 
+        $timestamp = Carbon::now()->format('Y-m-d_His');
         $pdf = Pdf::loadView('pdf.patient-history', compact('registrations', 'patient'));
-        return $pdf->download('history_rekam_medis_' . $patient->name . '.pdf');
+        return $pdf->stream("histori_rekam_medis_{$patient->name}_{$timestamp}.pdf");
     }
 
     public function edit(int $id, PatientRepository $patientRepository)
@@ -158,9 +153,10 @@ class PatientController extends Controller
     public function print(PatientRepository $patientRepository)
     {
         $patients = $patientRepository->getAll();
+        $timestamp = Carbon::now()->format('Y-m-d_His');
 
         $pdf = Pdf::loadView('pdf.patients', compact('patients'));
-        return $pdf->download('data_pasien.pdf');
+        return $pdf->stream("data_pasien_{$timestamp}.pdf");
     }
 
     public function store(Request $request, PatientRepository $patientRepository)

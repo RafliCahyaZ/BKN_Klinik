@@ -177,9 +177,10 @@ class MedicineController extends Controller
     public function print()
     {
         $medicines = $this->medicineRepository->getAll();
+        $timestamp = Carbon::now()->format('Y-m-d_His');
 
         $pdf = Pdf::loadView('pdf.medicines', compact('medicines'));
-        return $pdf->download('master_data_obat.pdf');
+        return $pdf->stream("master_data_obat_{$timestamp}.pdf");
     }
 
     public function printHistory($id)
@@ -191,9 +192,10 @@ class MedicineController extends Controller
         }
 
         $medicineStockTransactions = $this->medicineStockTransactionRepository->getByMedicineId($id);
+        $timestamp = Carbon::now()->format('Y-m-d_His');
 
         $pdf = Pdf::loadView('pdf.medicine-history', compact('medicine', 'medicineStockTransactions'));
-        return $pdf->download('histori_transaksi_' . $medicine->name . '.pdf');
+        return $pdf->stream("histori_transaksi_{$medicine->name}_{$timestamp}.pdf");
     }
 
     public function store(Request $request)

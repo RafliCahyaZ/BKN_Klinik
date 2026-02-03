@@ -30,6 +30,8 @@ use App\Repository\UnitRepository;
 use App\Repository\UnitRepositoryEloquent;
 use App\Repository\UnitRepositoryImpl;
 use App\Repository\UserRepositoryEloquent;
+use App\Repository\LoginLogRepository;
+use App\Repository\LoginLogRepositoryEloquent;
 
 class RepositoryProvider extends ServiceProvider
 {
@@ -43,7 +45,8 @@ class RepositoryProvider extends ServiceProvider
         AppointmentRepository::class => AppointmentRepositoryEloquent::class,
         MedicineRepository::class => MedicineRepositoryEloquent::class,
         MedicineStockTransactionRepository::class => MedicineStockTransactionRepositoryEloquent::class,
-        UnitRepository::class => UnitRepositoryEloquent::class
+        UnitRepository::class => UnitRepositoryEloquent::class,
+        LoginLogRepository::class => LoginLogRepositoryEloquent::class
     ];
     /**
      * Register services.

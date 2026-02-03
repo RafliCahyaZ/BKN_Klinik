@@ -161,9 +161,10 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             $patient->createdAt = $registration->patient->created_at;
             $patient->updatedAt = $registration->patient->updated_at;
 
-            $doctor = new UserDTO();
             if ($registration->doctor) {
+                $doctor = new UserDTO();
                 $doctor = UserRepositoryEloquent::mapUserModelToUserDto($registration->doctor);
+                $formated_registration->doctor = $doctor;
             }
 
             $diagnoses = [];
@@ -179,8 +180,6 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     $diagnoses[] = $diagnosisDTO;
                 }
             }
-
-            // dd($diagnoses);
 
             $treatments = [];
 
@@ -231,7 +230,6 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             }
 
             $formated_registration->patient = $patient;
-            $formated_registration->doctor = $doctor;
             $formated_registration->medicineStockTransactions = $medicineStockTransactions;
             $formated_registration->diagnoses = $diagnoses;
             $formated_registration->treatments = $treatments;
@@ -606,10 +604,11 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $patient->history = $registration->patient->history;
                 $patient->createdAt = $registration->patient->created_at;
                 $patient->updatedAt = $registration->patient->updated_at;
-
-                $doctor = new UserDTO();
+                
                 if ($registration->doctor) {
+                    $doctor = new UserDTO();
                     $doctor = UserRepositoryEloquent::mapUserModelToUserDto($registration->doctor);
+                    $formatedRegistration->doctor = $doctor;
                 }
 
                 $medicineStockTransactions = [];
@@ -648,7 +647,6 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 }
 
                 $formatedRegistration->patient = $patient;
-                $formatedRegistration->doctor = $doctor;
                 $formatedRegistration->medicineStockTransactions = $medicineStockTransactions;
                 $formatedRegistration->complaint = $registration->complaint;
                 $formatedRegistration->receipt = $registration->receipt;

@@ -13,6 +13,9 @@ class UserDTO
     public string $fullname;
     public string $email;
     public UserRole $role;
+    public bool $isActive;
+    public int $failedLoginAttempts;
+    public ?CarbonInterface $lastLoginAt = null;
     public CarbonInterface $createdAt;
     public CarbonInterface $updatedAt;
 }

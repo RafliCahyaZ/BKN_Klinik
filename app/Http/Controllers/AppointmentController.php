@@ -17,6 +17,7 @@ use App\Repository\TreatmentRepository;
 use App\Repository\UserRepository;
 use App\Service\PatientExaminationServiceEloquent;
 use App\Type\TransactionType;
+use App\Type\UserRole;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,7 @@ class AppointmentController extends Controller
             abort(404);
         }
 
-        $doctors = $this->userRepository->getByRole("doctor");
+        $doctors = $this->userRepository->getByRole(UserRole::DOCTOR);
         $diagnoses = $this->diagnosisRepository->getAll();
         $treatments = $this->treatmentRepository->getAll();
         $medicines = $this->medicineRepository->getAll();

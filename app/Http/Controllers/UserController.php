@@ -7,6 +7,7 @@ use App\Helper\UserRoleHelper;
 use App\Repository\UserRepository;
 use App\Type\UserRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -14,7 +15,6 @@ class UserController extends Controller
     public function __construct(
         private UserRepository $userRepository
     ) {}
-
 
     public function index()
     {
@@ -139,5 +139,46 @@ class UserController extends Controller
         }
 
         return redirect()->route("user.index")->with("success", "Sukses! Data berhasil dihapus");
+    }
+
+    public function activate($id)
+    {
+        $user = $this->userRepository->getById($id);
+
+        if (!$user) {
+            abort(404);
+        }
+
+        if ($user->isActive) {
+            return redirect()->route("user.index")->with("info", "Info! Akun sudah aktif");
+        }
+
+        if (!$this->userRepository->activate($id)) {
+            return redirect()->route("user.index")->with("failed", "Failed! Akun gagal diaktifkan");
+        }
+
+        if(!$this->userRepository->resetFailedLoginAttempts($id)) {
+            return redirect()->route("user.index")->with("failed", "Failed! Gagal mereset percobaan login gagal");
+        }
+
+        return redirect()->route("user.index")->with("success", "Sukses! Akun berhasil diaktifkan");
+    }
+
+    public function profile()
+    {
+        return view('dashboard.user.profile');
+    }
+
+    public function profileAction(Request $request)
+    {
+        $validated = $request->validate([
+            "password" => ['required', 'min:8', 'confirmed']
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated["password"])
+        ]);
+
+        return back()->with("success", "Password berhasil diubah");
     }
 }
