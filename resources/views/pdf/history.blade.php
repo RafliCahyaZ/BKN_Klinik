@@ -85,19 +85,23 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th width="70%">Nama Obat</th>
-                        <th width="30%">Jumlah</th>
+                        <th width="60%">Nama Obat</th>
+
+                        <th width="20%">Jumlah</th>
+                        <th width="20%">Satuan</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($registration->medicineStockTransactions as $trans)
                     <tr>
                         <td>{{ $trans->medicine->name }}</td>
+
                         <td class="text-center">{{ $trans->quantity }}</td>
+                        <td class="text-center">{{ $trans->medicine->unit->name ?? '-' }}</td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="2" class="no-data">Tidak ada data obat</td>
+                        <td colspan="3" class="no-data">Tidak ada data obat</td>
                     </tr>
                     @endforelse
                 </tbody>

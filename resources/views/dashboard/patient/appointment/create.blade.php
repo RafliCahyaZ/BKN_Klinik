@@ -160,6 +160,7 @@
                                 id="inputStockElement"
                             >
                             </th>
+
                             <th>
                                 <input type="button" name="" value="Tambah" id="submitMedicineButton" class="btn btn-info">
                             </th>
