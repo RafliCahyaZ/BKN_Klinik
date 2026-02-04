@@ -13,34 +13,53 @@
 
         <ul class="nav navbar-nav">
             <li class="active"> <a href="{{ url("/") }}">Home</a></li>
-            @can('is-inventory-officer-or-officer-or-admin')
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Master Data <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                        <li> <a href="{{ url("patient") }}">Data Pasien</a></li>
-                        <li> <a href="{{ url("diagnosis") }}">Data Diagnosa</a></li>
-                        <li> <a href="{{ url("treatment") }}">Data Tindakan</a></li>
-                        <li> <a href="{{ route("medicine.index") }}">Data Obat</a></li>
-                </ul>
+
+            @canany(['get-all-patient', 'get-all-diagnosis', 'get-all-treatment', 'get-all-medicine'])
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Master Data <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        @can('get-all-patient')
+                            <li> <a href="{{ url("patient") }}">Data Pasien</a></li>
+                        @endcan
+
+                        @can('get-all-diagnosis')
+                            <li> <a href="{{ url("diagnosis") }}">Data Diagnosa</a></li>
+                        @endcan
+
+                        @can('get-all-treatment')
+                            <li> <a href="{{ url("treatment") }}">Data Tindakan</a></li>
+                        @endcan
+
+                        @can('get-all-medicine')
+                            <li> <a href="{{ route("medicine.index") }}">Data Obat</a></li>
+                        @endcan
+                    </ul>
                 </li>
-            @endcan
-            @can('is-doctor-or-admin')
+            @endcanany
+
+            @canany(['get-all-appointment', 'get-history-appointment'])
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dokter <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li> <a href="{{ url("patient/queue") }}">Antrian Pasien</a></li>
-                    <li> <a href="{{ url("patient/history") }}">History Pasien</a></li>
+                    @can('get-all-appointment')
+                        <li> <a href="{{ url("patient/queue") }}">Antrian Pasien</a></li>
+                    @endcan
+                    @can('get-history-appointment')
+                        <li> <a href="{{ url("patient/history") }}">History Pasien</a></li>
+                    @endcan
                 </ul>
                 </li>
-            @endcan
-            @can('is-admin')
-                <li class="dropdown">
+            @endcanany
+
+            @can('get-all-user')
+            <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pengguna <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li> <a href="{{ url("user") }}">Data Pengguna</a></li>
                 </ul>
-                </li>
+            </li>
             @endcan
+
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Laporan <b class="caret"></b></a>
               <ul class="dropdown-menu">

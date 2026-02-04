@@ -48,6 +48,7 @@ class RolePermissionSeeder extends Seeder
 
         Permission::create(["name" => "get-all-appointment"]);
         Permission::create(["name" => "create-appointment"]);
+        Permission::create(["name" => "get-history-appointment"]);
 
 
         Permission::create(["name" => "get-all-user"]);
@@ -182,6 +183,7 @@ class RolePermissionSeeder extends Seeder
 
         $doctorRole->givePermissionTo("get-all-appointment");
         $doctorRole->givePermissionTo("create-appointment");
+        $doctorRole->givePermissionTo("get-history-appointment");
 
         $doctorRole->givePermissionTo("create-diagnosis");
         $doctorRole->givePermissionTo("edit-diagnosis");
