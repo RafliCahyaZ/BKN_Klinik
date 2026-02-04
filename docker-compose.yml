@@ -1,18 +1,20 @@
-version: "3"
-
 services:
     bkn_clinic:
         container_name: bkn_clinic
         image: bkn_clinic_image
         build: .
         ports:
-            - 8000:80
+            - "8000:8000"
         env_file:
             - .env
         depends_on:
             - mysql
         volumes:
             - storage_data:/app/storage
+            - ./:/app
+        command: >
+            php artisan serve --host=0.0.0.0 --port=8000
+
     mysql:
         image: mysql:8.0
         environment:
