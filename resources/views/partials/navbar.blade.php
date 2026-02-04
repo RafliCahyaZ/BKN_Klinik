@@ -17,14 +17,10 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Master Data <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    @can('is-officer-or-admin')
-                    <li> <a href="{{ url("patient") }}">Data Pasien</a></li>
-                    <li> <a href="{{ url("diagnosis") }}">Data Diagnosa</a></li>
-                    <li> <a href="{{ url("treatment") }}">Data Tindakan</a></li>
-                    @endcan
-                    @can('is-inventory-officer-or-admin')
-                    <li> <a href="{{ route("medicine.index") }}">Data Obat</a></li>
-                    @endcan
+                        <li> <a href="{{ url("patient") }}">Data Pasien</a></li>
+                        <li> <a href="{{ url("diagnosis") }}">Data Diagnosa</a></li>
+                        <li> <a href="{{ url("treatment") }}">Data Tindakan</a></li>
+                        <li> <a href="{{ route("medicine.index") }}">Data Obat</a></li>
                 </ul>
                 </li>
             @endcan
