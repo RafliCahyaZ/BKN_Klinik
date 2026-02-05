@@ -91,6 +91,10 @@ Route::middleware("auth")->group(function () {
         return view('dashboard.home');
     });
 
+    //charts data routes
+    Route::get('/dashboard/api/patients-status', [ReportController::class, 'patientsStatus']);
+    Route::get('/dashboard/api/weekly-patients', [ReportController::class, 'weeklyPatientsChart']);
+
     Route::get("/print", [PatientController::class, 'print'])->name("print");
 
     Route::post("/store", [PatientController::class, 'store'])->name("store");

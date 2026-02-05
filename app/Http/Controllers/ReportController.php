@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Repository\RegistrationRepository;
+use Illuminate\Support\Facades\Schema;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Medicine;
+use App\Models\Registration;
 
 class ReportController extends Controller
 {
     public function index()
     {
-        return view("dashboard.report.create");
+        return view('dashboard.report.create');
     }
 
     public function print(Request $request, RegistrationRepository $registrationRepository)
@@ -41,4 +44,45 @@ class ReportController extends Controller
     {
         dd($request);
     }
+
+    //create bar chart comparison of checked vs unchecked patients today
+    public function patientsStatus()
+    {
+        $today = Carbon::today();
+        $checkedCount = Registration::whereDate('created_at', $today)
+            ->whereNotNull('check_date')
+            ->count();
+        $uncheckedCount = Registration::whereDate('created_at', $today)
+            ->whereNull('check_date')
+            ->count();
+        return response()->json([
+            'checked' => $checkedCount,
+            'unchecked' => $uncheckedCount
+        ]);
+    }
+
+
+    public function weeklyPatientsChart()
+    {
+        $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY);
+        $days = [];
+
+        for ($i = 0; $i < 5; $i++) {
+            $date = $startOfWeek->copy()->addDays($i);
+
+            $registrations = Registration::whereDate('created_at', $date)->count();
+            $checked = Registration::whereDate('created_at', $date)
+                ->whereNotNull('check_date')
+                ->count();
+
+            $days[] = [
+                'label' => $date->translatedFormat('D, d M'), 
+                'registrations' => $registrations,
+                'checked' => $checked,
+            ];
+        }
+
+        return response()->json($days);
+    }
+
 }
