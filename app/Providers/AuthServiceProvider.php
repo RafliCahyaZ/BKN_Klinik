@@ -22,31 +22,5 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(): void
-    {
-        Gate::define('is-admin', function ($user) {
-            return UserRoleHelper::stringToUserRole($user->role) == UserRole::ADMIN;
-        });
-
-        Gate::define('is-doctor-or-admin', function ($user) {
-            return UserRoleHelper::stringToUserRole($user->role) == UserRole::DOCTOR
-                || UserRoleHelper::stringToUserRole($user->role) == UserRole::ADMIN;
-        });
-
-        Gate::define('is-officer-or-admin', function ($user) {
-            return UserRoleHelper::stringToUserRole($user->role) == UserRole::OFFICER
-                || UserRoleHelper::stringToUserRole($user->role) == UserRole::ADMIN;
-        });
-
-        Gate::define('is-inventory-officer-or-admin', function ($user) {
-            return UserRoleHelper::stringToUserRole($user->role) == UserRole::INVENTORY_OFFICER
-                || UserRoleHelper::stringToUserRole($user->role) == UserRole::ADMIN;
-        });
-
-        Gate::define('is-inventory-officer-or-officer-or-admin', function ($user) {
-            return UserRoleHelper::stringToUserRole($user->role) == UserRole::OFFICER
-                || UserRoleHelper::stringToUserRole($user->role) == UserRole::INVENTORY_OFFICER
-                || UserRoleHelper::stringToUserRole($user->role) == UserRole::ADMIN;
-        });
-    }
+    public function boot(): void {}
 }
