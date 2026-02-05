@@ -365,6 +365,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 'doctor_id' => $registrationDTO->doctor->id ?? null,
                 'receipt' => $registrationDTO->receipt ?? null,
                 'check_date' => $registrationDTO->checkDate ?? null,
+                'cancelled_at' => $registrationDTO->cancelledAt ?? null,
             ];
             $filteredUpdateData = array_filter($updateData);
             $registrationId = $registrationDTO->id;
@@ -383,7 +384,9 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     $patient->id = $updatedData->patient_id;
 
                     $doctor = new UserDTO();
-                    $doctor->id = $updatedData->doctor_id;
+                    if($updatedData->doctor_id) {
+                        $doctor->id = $updatedData->doctor_id;
+                    }
 
                     $formatedUpdatedData->patient = $patient;
                     $formatedUpdatedData->doctor = $doctor;
@@ -410,12 +413,16 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
     {
         try {
             $user = Auth::user();
-            $nullCheckDateRegistrationsCollections = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit'])->when($user->role === 'doctor', function ($query) {
-                return $query->where('created_at', today());
+
+            // dd($user->hasRole('doctor'));
+            $nullCheckDateRegistrationsCollections = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit'])->when($user->hasRole('doctor'), function ($query) {
+                return $query->whereDate('created_at', today());
             })
                 ->whereNull('check_date')
                 ->get();
 
+
+            // dd($nullCheckDateRegistrationsCollections);
             $formatedRegistrations = $nullCheckDateRegistrationsCollections->map(function ($registration) {
                 $formatedRegistration = new RegistrationDTO();
                 $formatedRegistration->id = $registration->id;
@@ -484,6 +491,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $formatedRegistration->complaint = $registration->complaint;
                 $formatedRegistration->receipt = $registration->receipt;
                 $formatedRegistration->checkDate = $registration->check_date ? Carbon::parse($registration->check_date) : null;
+                $formatedRegistration->cancelledAt = $registration->cancelled_at ? Carbon::parse($registration->cancelled_at) : null;
                 $formatedRegistration->createdAt = $registration->created_at;
                 $formatedRegistration->updatedAt = $registration->updated_at;
 
@@ -497,13 +505,20 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
         }
     }
 
-    function getWhereCheckDateIsNotNull(): array
+    function getWhereCheckDateIsNotNull($startDate, $endDate): array
     {
         try {
             $notNullCheckDateRegistrationsCollections = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit'])
                 ->whereNotNull('check_date')
+                ->when($startDate, function ($query) use ($startDate) {
+                    return $query->whereDate('check_date', '>=', $startDate);
+                })
+                ->when($endDate, function ($query) use ($endDate) {
+                    return $query->whereDate('check_date', '<=', $endDate);
+                })
+                ->orderBy('check_date', 'desc')
                 ->get();
-
+                
             $formatedRegistrations = $notNullCheckDateRegistrationsCollections->map(function ($registration) {
                 $formatedRegistration = new RegistrationDTO();
                 $formatedRegistration->id = $registration->id;

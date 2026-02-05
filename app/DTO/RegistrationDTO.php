@@ -15,6 +15,7 @@ class RegistrationDTO
     public array $medicineStockTransactions = [];
     public ?string $receipt = null;
     public ?CarbonInterface $checkDate = null;
+    public ?CarbonInterface $cancelledAt = null;
     public CarbonInterface $updatedAt;
     public CarbonInterface $createdAt;
 }

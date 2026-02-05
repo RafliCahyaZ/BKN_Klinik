@@ -19,7 +19,7 @@ interface RegistrationRepository
 
     public function getWhereCheckDateIsNull(): array;
 
-    public function getWhereCheckDateIsNotNull(): array;
+    public function getWhereCheckDateIsNotNull(CarbonInterface $startDate, CarbonInterface $endDate): array;
 
     public function getByRangeDate(CarbonInterface $startDate, CarbonInterface $endDate): array;
 
