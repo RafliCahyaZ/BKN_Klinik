@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\DTO\MedicineStockTransactionDTO;
 use App\DTO\UserDTO;
 use App\DTO\MedicineDTO;
+use App\Models\Medicine;
 use App\Models\MedicineStockTransaction;
 use App\Repository\MedicineStockTransactionRepository;
 use App\Type\TransactionType;
@@ -13,8 +14,7 @@ use Carbon\Carbon;
 class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransactionRepository
 {
     public function __construct(
-        private MedicineRepository $medicineRepository,
-        private UserRepository $userRepository
+        private MedicineRepository $medicineRepository
     ) {}
 
     protected function getBeginningStock($medicineId)
@@ -47,9 +47,9 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
     function getAll(): array
     {
         try {
-            $transactions_collections = MedicineStockTransaction::with(['inventoryOfficer', 'medicine.unit', 'registration.patient', 'registration.doctor'])->get();
+            $transactionsCollections = MedicineStockTransaction::with(['inventoryOfficer', 'medicine.unit', 'registration.patient', 'registration.doctor'])->get();
 
-            $formatedTransactions = $transactions_collections->map(function ($transaction) {
+            $formatedTransactions = $transactionsCollections->map(function ($transaction) {
                 $formatedTransaction = new MedicineStockTransactionDTO();
                 $formatedTransaction->id = $transaction->id;
 
@@ -148,6 +148,10 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 $quantity = $dto->quantity;
                 $transactionType = $dto->type;
                 $lastStock = $this->calculateLastStock($beginningStock, $quantity, $transactionType);
+
+                if ($lastStock < 0) {
+                    throw new \Exception("Insufficient stock for medicine ID: " . $medicineId);
+                }
                 return [
                     'inventory_officer_id' => $dto->inventoryOfficer->id,
                     'medicine_id' => $dto->medicine->id,
@@ -200,21 +204,18 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                     $formatedUpdatedData = new MedicineStockTransactionDTO();
                     $formatedUpdatedData->id = $updatedData->id;
 
-                    // Map inventory officer to UserDTO
                     $inventoryOfficer = new UserDTO();
                     if ($updatedData->inventoryOfficer) {
                         $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($updatedData->inventoryOfficer);
                     }
                     $formatedUpdatedData->inventoryOfficer = $inventoryOfficer;
 
-                    // Map medicine to MedicineDTO
                     $medicine = new MedicineDTO();
                     if ($updatedData->medicine) {
                         $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($updatedData->medicine);
                     }
                     $formatedUpdatedData->medicine = $medicine;
 
-                    // Map registration to RegistrationDTO
                     $registration = null;
                     if ($updatedData->registration) {
                         $registration = RegistrationRepositoryEloquent::mapRegistrationModelToRegistrationDto($updatedData->registration);
@@ -321,35 +322,32 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
     function getByMedicineId(string $medicineId): array
     {
         try {
-            $transactions_collections = MedicineStockTransaction::with(['inventoryOfficer', 'medicine.unit', 'registration.patient', 'registration.doctor'])
+            $transactionsCollections = MedicineStockTransaction::with(['inventoryOfficer', 'medicine.unit', 'registration.patient', 'registration.doctor'])
                 ->where('medicine_id', $medicineId)
                 ->get();
 
-            $formated_transactions = $transactions_collections->map(function ($transaction) {
+            $formated_transactions = $transactionsCollections->map(function ($transaction) {
                 $formated_transaction = new MedicineStockTransactionDTO();
                 $formated_transaction->id = $transaction->id;
 
-                // Map inventory officer to UserDTO
                 $inventoryOfficer = new UserDTO();
                 if ($transaction->inventoryOfficer) {
                     $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                 }
                 $formated_transaction->inventoryOfficer = $inventoryOfficer;
 
-                // Map medicine to MedicineDTO
                 $medicine = new MedicineDTO();
                 if ($transaction->medicine) {
                     $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                 }
                 $formated_transaction->medicine = $medicine;
 
-                // Map registration to RegistrationDTO
                 $registration = null;
                 if ($transaction->registration) {
                     $registration = RegistrationRepositoryEloquent::mapRegistrationModelToRegistrationDto($transaction->registration);
                 }
-                $formated_transaction->registration = $registration;
 
+                $formated_transaction->registration = $registration;
                 $formated_transaction->type = $transaction->type;
                 $formated_transaction->quantity = $transaction->quantity;
                 $formated_transaction->beginningStock = $transaction->beginning_stock;
@@ -370,49 +368,70 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
     function getByType(TransactionType $type): array
     {
         try {
-            $transactions_collections = MedicineStockTransaction::with(['inventoryOfficer', 'medicine.unit', 'registration.patient', 'registration.doctor'])
+            $transactionsCollections = MedicineStockTransaction::with(['inventoryOfficer', 'medicine.unit', 'registration.patient', 'registration.doctor'])
                 ->where('type', $type->value)
                 ->get();
 
-            $formated_transactions = $transactions_collections->map(function ($transaction) {
-                $formated_transaction = new MedicineStockTransactionDTO();
-                $formated_transaction->id = $transaction->id;
-
-                // Map inventory officer to UserDTO
+            $formatedTransactions = $transactionsCollections->map(function ($transaction) {
+                
                 $inventoryOfficer = new UserDTO();
                 if ($transaction->inventoryOfficer) {
                     $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                 }
-                $formated_transaction->inventoryOfficer = $inventoryOfficer;
-
-                // Map medicine to MedicineDTO
+                
                 $medicine = new MedicineDTO();
                 if ($transaction->medicine) {
                     $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                 }
-                $formated_transaction->medicine = $medicine;
-
-                // Map registration to RegistrationDTO
+                
                 $registration = null;
                 if ($transaction->registration) {
                     $registration = RegistrationRepositoryEloquent::mapRegistrationModelToRegistrationDto($transaction->registration);
                 }
-                $formated_transaction->registration = $registration;
-
-                $formated_transaction->type = $transaction->type;
-                $formated_transaction->quantity = $transaction->quantity;
-                $formated_transaction->beginningStock = $transaction->beginning_stock;
-                $formated_transaction->lastStock = $transaction->last_stock;
-                $formated_transaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
-                $formated_transaction->notes = $transaction->notes;
-                $formated_transaction->createdAt = $transaction->created_at;
-                $formated_transaction->updatedAt = $transaction->updated_at;
-                return $formated_transaction;
+                    
+                $formatedTransaction = new MedicineStockTransactionDTO();
+                $formatedTransaction->id = $transaction->id;
+                $formatedTransaction->inventoryOfficer = $inventoryOfficer;
+                $formatedTransaction->medicine = $medicine;
+                $formatedTransaction->registration = $registration;
+                $formatedTransaction->type = $transaction->type;
+                $formatedTransaction->quantity = $transaction->quantity;
+                $formatedTransaction->beginningStock = $transaction->beginning_stock;
+                $formatedTransaction->lastStock = $transaction->last_stock;
+                $formatedTransaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
+                $formatedTransaction->notes = $transaction->notes;
+                $formatedTransaction->createdAt = $transaction->created_at;
+                $formatedTransaction->updatedAt = $transaction->updated_at;
+                return $formatedTransaction;
             });
 
-            return $formated_transactions->toArray();
+            return $formatedTransactions->toArray();
         } catch (\Exception $e) {
             return [];
         }
+    }
+
+    public function getByPeriod($startDate, $endDate): array
+    {
+
+        $medicineStocks = Medicine::select('id', 'name')
+            ->addSelect([
+                'beginning_stock' => MedicineStockTransaction::selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END)')
+                    ->whereColumn('medicine_id', 'medicines.id')
+                    ->whereDate('created_at', '<', $startDate),
+
+                'last_stock' => MedicineStockTransaction::selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END)')
+                    ->whereColumn('medicine_id', 'medicines.id')
+                    ->whereDate('created_at', '<=', $endDate),
+            ])
+            ->get()
+            ->map(function ($medicine) { 
+                $medicine->beginning_stock = $medicine->beginning_stock ?? 0;
+                $medicine->last_stock = $medicine->last_stock ?? 0;
+                return $medicine;
+            });
+
+            return $medicineStocks->toArray();
+        
     }
 }

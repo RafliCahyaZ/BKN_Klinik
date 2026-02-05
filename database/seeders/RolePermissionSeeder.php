@@ -22,6 +22,7 @@ class RolePermissionSeeder extends Seeder
         Permission::create(["name" => "delete-patient"]);
         Permission::create(["name" => "print-patient"]);
         Permission::create(["name" => "register-patient"]);
+        Permission::create(["name" => "get-report-patient"]);
 
         Permission::create(["name" => "get-all-diagnosis"]);
         Permission::create(["name" => "get-detail-diagnosis"]);
@@ -44,12 +45,16 @@ class RolePermissionSeeder extends Seeder
         Permission::create(["name" => "delete-medicine"]);
         Permission::create(["name" => "print-medicine"]);
 
-        Permission::create(["name" => "transaction-medicine"]);
+        Permission::create(["name" => "get-all-transaction-medicine"]);
+        Permission::create(["name" => "create-transaction-medicine"]);
+        Permission::create(["name" => "print-transaction-medicine"]);
+        Permission::create(["name" => "get-report-transaction-medicine"]);
 
         Permission::create(["name" => "get-all-appointment"]);
         Permission::create(["name" => "create-appointment"]);
         Permission::create(["name" => "get-history-appointment"]);
-
+        Permission::create(["name" => "process-appointment"]);
+        Permission::create(["name" => "cancel-appointment"]);
 
         Permission::create(["name" => "get-all-user"]);
         Permission::create(["name" => "get-detail-user"]);
@@ -124,6 +129,7 @@ class RolePermissionSeeder extends Seeder
         $officerRole->givePermissionTo("delete-patient");
         $officerRole->givePermissionTo("print-patient");
         $officerRole->givePermissionTo("register-patient");
+        $officerRole->givePermissionTo("get-report-patient");
 
         $officerRole->givePermissionTo("get-all-treatment");
         $officerRole->givePermissionTo("get-detail-treatment");
@@ -139,7 +145,12 @@ class RolePermissionSeeder extends Seeder
         $officerRole->givePermissionTo("delete-medicine");
         $officerRole->givePermissionTo("print-medicine");
 
+        $officerRole->givePermissionTo("get-all-transaction-medicine");
+        $officerRole->givePermissionTo("print-transaction-medicine");
+
         $officerRole->givePermissionTo("get-all-appointment");
+        $officerRole->givePermissionTo("create-appointment");
+        $officerRole->givePermissionTo("cancel-appointment");
 
         $officerRole->givePermissionTo("get-all-diagnosis");
         $officerRole->givePermissionTo("get-detail-diagnosis");
@@ -167,7 +178,10 @@ class RolePermissionSeeder extends Seeder
         $inventoryOfficerRole->givePermissionTo("delete-medicine");
         $inventoryOfficerRole->givePermissionTo("print-medicine");
 
-        $inventoryOfficerRole->givePermissionTo("transaction-medicine");
+        $inventoryOfficerRole->givePermissionTo("get-all-transaction-medicine");
+        $inventoryOfficerRole->givePermissionTo("create-transaction-medicine");
+        $inventoryOfficerRole->givePermissionTo("print-transaction-medicine");
+        $inventoryOfficerRole->givePermissionTo("get-report-transaction-medicine");
 
         $users = User::where('role', 'inventory_officer')->get();
 
@@ -183,6 +197,7 @@ class RolePermissionSeeder extends Seeder
 
         $doctorRole->givePermissionTo("get-all-appointment");
         $doctorRole->givePermissionTo("create-appointment");
+        $doctorRole->givePermissionTo("process-appointment");
         $doctorRole->givePermissionTo("get-history-appointment");
 
         $doctorRole->givePermissionTo("create-diagnosis");
@@ -190,6 +205,7 @@ class RolePermissionSeeder extends Seeder
         $doctorRole->givePermissionTo("delete-diagnosis");
         $doctorRole->givePermissionTo("print-diagnosis");
 
+        $doctorRole->givePermissionTo("get-all-medicine");
         $users = User::where('role', 'doctor')->get();
 
         foreach ($users as $user) {

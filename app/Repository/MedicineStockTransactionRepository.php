@@ -25,4 +25,6 @@ interface MedicineStockTransactionRepository
     public function getByMedicineId(string $medicineId): array;
 
     public function getByType(TransactionType $type): array;
+
+    public function getByPeriod($startDate, $endDate): array;
 }

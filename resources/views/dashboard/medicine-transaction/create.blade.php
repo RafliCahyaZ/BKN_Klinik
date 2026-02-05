@@ -3,7 +3,7 @@
 @section('content')
     <x-dashboard-container title="Form Transaksi">
         <form
-            action="{{ route('medicine.transaction.store') }}"
+            action="{{ route('medicine.transaction.store.action') }}"
             method="post"
             accept-charset="utf-8"
             enctype="multipart/form-data"
@@ -77,7 +77,7 @@
                                 class="btn btn-success"
                             >
                             <a
-                                href="{{ route("medicine.edit.view", $medicine->id) }}"
+                                href="{{ route("medicine.transaction.index") }}"
                                 class="btn btn-danger"
                             >
                                 Kembali

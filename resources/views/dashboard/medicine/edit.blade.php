@@ -3,9 +3,9 @@
 @section('content')
     <x-dashboard-container title="Edit Data Master Obat">
 
-        <div style="padding: 12px 0">
+        {{-- <div style="padding: 12px 0">
             <a href="{{ route('medicine.transaction.create.view', $medicine->id) }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Buat Transaksi</a>
-        </div>
+        </div> --}}
 
         <hr/>
 

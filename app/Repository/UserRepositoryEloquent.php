@@ -7,12 +7,13 @@ use App\Helper\UserRoleHelper;
 use App\Models\User;
 use App\Type\UserRole;
 use Carbon\Carbon;
+use Spatie\Permission\Models\Role;
 
 class UserRepositoryEloquent implements UserRepository
 {
     public function getAll(): array
     {
-        $usersCollections = User::all();
+        $usersCollections = User::with('roles')->get();
 
         $formatedUsers = $usersCollections->map(function ($user) {
             return $this->mapUserModelToUserDto($user);
@@ -35,7 +36,7 @@ class UserRepositoryEloquent implements UserRepository
 
     public function getByRole(UserRole $role): array
     {
-        $usersCollections = User::where('role', $role->value)->get();
+        $usersCollections = User::role($role->value)->get();
 
         $formatedUsers = $usersCollections->map(function ($user) {
             return $this->mapUserModelToUserDto($user);
@@ -65,7 +66,12 @@ class UserRepositoryEloquent implements UserRepository
                 'email' => $userDTO->email,
             ]
         );
-        $user->role = $userDTO->role;
+
+        $role = Role::findByName($userDTO->role->value);
+        if (!$role) {
+            return null;
+        }
+        $user->assignRole($role);
         $user->save();
         $userDTO->id = $user->id;
         $userDTO->createdAt = $user->created_at;
@@ -79,8 +85,8 @@ class UserRepositoryEloquent implements UserRepository
         $updateData = [
             'fullname' => $userDTO->fullname ?? null,
             'password' => $userDTO->password ?? null,
-            'role' => $userDTO->role ?? null,
         ];
+
         $filteredUpdateData = array_filter($updateData);
         $userId = $id;
 
@@ -90,7 +96,7 @@ class UserRepositoryEloquent implements UserRepository
 
             if ($edit > 0) {
                 $updatedData = User::find($id);
-
+                $updatedData->syncRoles([$userDTO->role->value]);
                 return $this->mapUserModelToUserDto($updatedData);
             } else {
                 return null;
@@ -211,7 +217,7 @@ class UserRepositoryEloquent implements UserRepository
         $formatedUser->fullname = $user->fullname;
         $formatedUser->email = $user->email;
         $formatedUser->password = $user->password;
-        $formatedUser->role = UserRoleHelper::stringToUserRole($user->role);
+        $formatedUser->role = UserRoleHelper::stringToUserRole($user->roles[0]->name);
         $formatedUser->isActive = $user->is_active;
         $formatedUser->failedLoginAttempts = $user->failed_login_attempts;
         $formatedUser->lastLoginAt = $user->last_login_at ? Carbon::parse($user->last_login_at) : null;

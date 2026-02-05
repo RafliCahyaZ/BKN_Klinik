@@ -25,11 +25,8 @@ Route::middleware("auth")->group(function () {
         Route::post("/profile", [UserController::class, 'profileAction'])->name("profile.action");
     });
 
-    Route::post("/report", [ReportController::class, 'create'])->name("report.create");
-
     Route::prefix('report')->name('report.')->group(function () {
-        Route::get('/', [ReportController::class, 'index'])->name('index');
-        Route::get('/print', [ReportController::class, 'print'])->name('print');
+       
     });
 
     Route::prefix("patient")->name("patient.")->group(function () {
@@ -81,12 +78,17 @@ Route::middleware("auth")->group(function () {
         Route::post("/appointment/{id}", [AppointmentController::class, 'createAction'])
             ->middleware("can:create-appointment")
             ->name("appointment.action");
+
+        Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+        Route::get('/report/print', [ReportController::class, 'print'])->name('report.print');
+        Route::post("/report", [ReportController::class, 'create'])->name("report.create");
     });
 
     Route::prefix("registration")->middleware("can:register-patient")->name("registration.")->group(function () {
         Route::get("/create/{patientId}", [RegistrationController::class, 'create'])->name("create");
         Route::post("/create/{patientId}", [RegistrationController::class, 'store'])->name("store");
         Route::get("/{id}/print", [HistoryController::class, 'show'])->name("print");
+        Route::post("/{id}/cancel", [AppointmentController::class, 'cancel'])->name("cancel");
     });
 
     Route::prefix("medicine")->name("medicine.")->group(function () {
@@ -117,12 +119,29 @@ Route::middleware("auth")->group(function () {
             ->middleware("can:delete-medicine")
             ->name("destroy");
 
-        Route::middleware("can:transaction-medicine")->group(function () {
-            Route::get("/{id}/history", [MedicineController::class, 'history'])->name("history");
-            Route::get("/{id}/history/print", [MedicineController::class, 'printHistory'])->name("history.print");
-            Route::get("/{id}/transaction", [MedicineController::class, 'transaction'])->name("transaction.create.view");
-            Route::post("/{id}/transaction", [MedicineController::class, 'transactionAction'])->name("transaction.create.action");
-        });
+        Route::get("/transaction", [MedicineController::class, 'getAllTransaction'])
+            ->middleware("can:get-all-transaction-medicine")
+            ->name("transaction.index");
+
+        Route::get("/transaction/print", [MedicineController::class, 'printAllTransaction'])
+            ->middleware("can:print-transaction-medicine")
+            ->name("transaction.print");
+        
+        Route::get('/transaction/create', [MedicineController::class, 'createTransaction'])
+            ->middleware("can:create-transaction-medicine")
+            ->name("transaction.create.view");
+
+        Route::post('/transaction/create', [MedicineController::class, 'storeTransaction'])
+            ->middleware("can:create-transaction-medicine")
+            ->name("transaction.store.action");
+
+        Route::get('/transaction/report', [MedicineController::class, 'createTransactionReport'])
+            ->middleware("can:get-report-transaction-medicine")
+            ->name("transaction.report");
+
+        Route::get('/transaction/report/print', [MedicineController::class, 'printTransactionReport'])
+            ->middleware("can:get-report-transaction-medicine")
+            ->name("transaction.report.print");
     });
 
     Route::prefix("diagnosis")->name("diagnosis.")->group(function () {

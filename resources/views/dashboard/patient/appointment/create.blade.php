@@ -2,11 +2,8 @@
 
 @section('content')
     <x-dashboard-container title="Pemeriksaan Pasien">
-        <form
-            method="post"
-            action="{{ route('patient.appointment.action', $registration->id) }}"
-        >
-        @csrf
+        <form method="post" action="{{ route('patient.appointment.action', $registration->id) }}">
+            @csrf
             <table class="table table-striped">
                 <tbody>
                     <tr>
@@ -38,18 +35,11 @@
                         <th>Diperiksa Oleh</th>
                         <th>:</th>
                         <th>
-                            <div class="form-group">
-                                <select name="doctor" class="form-control">
-                                @foreach($doctors as $index => $doctor)
-                                    <option value="{{ $doctor->id }}">{{ $doctor->fullname }}</option>
-                                @endforeach
-                                </select>
-                            </div>
+                            {{ $doctor->fullname }}
                         </th>
                     </tr>
                 </tbody>
             </table>
-
             <h4>Data Medik Pasien</h4>
             <hr>
             <div role="tabpanel">
@@ -72,22 +62,24 @@
                 <div role="tabpanel" class="tab-pane active" id="diagnosa">
                     <table class="table">
                         <tbody>
-                        <tr>
-                            <th colspan="2">Input Diagnosa</th>
-                        </tr>
+                            <tr>
+                                <th colspan="2">Input Diagnosa</th>
+                            </tr>
 
-                        <tr>
-                            <th>
-                                <select name="diagnosa" id="selectDiagnosisElement" class="form-control select2">
-                                    @foreach($diagnoses as $index => $diagnosis)
-                                        <option data-icd="{{ $diagnosis->icdCode }}" value="{{ $diagnosis->id }}">{{ $diagnosis->diseaseName }}</option>
-                                    @endforeach
-                                </select>
-                            </th>
-                            <th>
-                                <input type="button" name="" value="Tambah" id="submitDiagnosisButton" class="btn btn-info">
-                            </th>
-                        </tr>
+                            <tr>
+                                <th>
+                                    <select name="diagnosa" id="selectDiagnosisElement" class="form-control select2">
+                                        @foreach ($diagnoses as $index => $diagnosis)
+                                            <option data-icd="{{ $diagnosis->icdCode }}" value="{{ $diagnosis->id }}">
+                                                {{ $diagnosis->diseaseName }}</option>
+                                        @endforeach
+                                    </select>
+                                </th>
+                                <th>
+                                    <input type="button" name="" value="Tambah" id="submitDiagnosisButton"
+                                        class="btn btn-info">
+                                </th>
+                            </tr>
                     </table>
                     <table class="table table-striped">
                         <tbody id="diagnosisTable">
@@ -97,22 +89,25 @@
                 <div role="tabpanel" class="tab-pane" id="tindakan">
                     <table class="table">
                         <tbody>
-                        <tr>
-                            <th colspan="2">Input Tindakan</th>
-                        </tr>
+                            <tr>
+                                <th colspan="2">Input Tindakan</th>
+                            </tr>
 
-                        <tr>
-                            <th>
-                                <select name="diagnosa" id="selectTreatmentElement" class="form-control select2">
-                                    @foreach($treatments as $index => $treatment)
-                                        <option data-icd="{{ $treatment->treatmentCode }}" value="{{ $treatment->id }}">{{ $treatment->treatmentName }}</option>
-                                    @endforeach
-                                </select>
-                            </th>
-                            <th>
-                                <input type="button" name="" value="Tambah" id="submitTreatmentButton" class="btn btn-info">
-                            </th>
-                        </tr>
+                            <tr>
+                                <th>
+                                    <select name="diagnosa" id="selectTreatmentElement" class="form-control select2">
+                                        @foreach ($treatments as $index => $treatment)
+                                            <option data-icd="{{ $treatment->treatmentCode }}"
+                                                value="{{ $treatment->id }}">{{ $treatment->treatmentName }}</option>
+                                        @endforeach
+                                    </select>
+
+                                </th>
+                                <th>
+                                    <input type="button" name="" value="Tambah" id="submitTreatmentButton"
+                                        class="btn btn-info">
+                                </th>
+                            </tr>
                     </table>
                     <table class="table table-striped">
                         <tbody id="treatmentTable">
@@ -121,52 +116,53 @@
                 </div>
 
                 <div role="tabpanel" class="tab-pane" id="terapi">
-                <table class="table">
-                    <tr>
-                        <th>
-                            Resep Dokter
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>
-                            <textarea name="receipt" style="min-height: 100px; width: 100%" rows="" cols=""></textarea>
-                        </th>
-                    </tr>
-                </table>
+                    <table class="table">
+                        <tr>
+                            <th>
+                                Resep Dokter
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <textarea name="receipt" style="min-height: 100px; width: 100%" rows="" cols=""></textarea>
+                            </th>
+                        </tr>
+                    </table>
                 </div>
 
                 <div role="tabpanel" class="tab-pane" id="medicine">
                     <table class="table">
                         <tbody>
-                        <tr>
-                            <th colspan="2">Input Obat</th>
-                        </tr>
+                            <tr>
+                                <th colspan="2">Input Obat</th>
+                            </tr>
+                            <tr>
+                                <th>Nama Obat :</th>
+                                <th>
+                                    <select name="medicine" id="selectMedicineElement" class="form-control select2">
+                                        @foreach ($medicines as $index => $medicine)
+                                            <option data-quantity="{{ $medicine->unit->name }}"
+                                                data-icd="{{ $medicine->id }}" value="{{ $medicine->id }}">
+                                                {{ $medicine->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Jumlah :</th>
+                                <th>
+                                    <input type="number" name="quantity" value="1" min="1" class="form-control"
+                                        id="inputQuantityElement" placeholder="Jumlah Obat" required="required" >
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <input type="button" name="" value="Tambah" id="submitMedicineButton"
+                                        class="btn btn-info">
+                                </th>
+                            </tr>
 
-                        <tr>
-                            <th>
-                                <select name="medicine" id="selectMedicineElement" class="form-control select2">
-                                    @foreach($medicines as $index => $medicine)
-                                        <option data-quantity="{{ $medicine->unit->name }}" data-icd="{{ $medicine->id }}" value="{{ $medicine->id }}">{{ $medicine->name }}</option>
-                                    @endforeach
-                                </select>
-                            </th>
-                            <th>
-                            <input
-                                type="number"
-                                name="stock"
-                                value="1"
-                                min="1"
-                                class="form-control"
-                                id="inputStockElement"
-                            >
-                            </th>
-
-                            <th>
-                                <input type="button" name="" value="Tambah" id="submitMedicineButton" class="btn btn-info">
-                            </th>
-                        </tr>
                     </table>
-
                     <table class="table table-striped">
                         <tbody id="medicineTable">
                         </tbody>
@@ -179,82 +175,78 @@
             </div>
 
             <div class="well">
-                <input type="submit" disabled="true" name="submit" value="Selesai Pemeriksaan" id="submit" class="btn btn-success">
+                <input type="submit" disabled="true" name="submit" value="Selesai Pemeriksaan" id="submit"
+                    class="btn btn-success">
                 <a class="btn btn-info" href="{{ route('patient.queue') }}">Kembali</a>
-                </div>
-            </form>
+            </div>
+        </form>
     </x-dashboard-container>
 @endsection
 
-@push("scripts")
-<script>
-    class AttachManager {
-        constructor(
-            submitButton,
-            tableElement,
-            selectElement,
-            inputName
-        ) {
-            this.submitButton = submitButton
-            this.tableElement = tableElement
-            this.selectElement = selectElement
-            this.inputName = inputName
-            this.dynamicDataContainer = document.getElementById("dynamic-data");
-            this.selected = null;
-            this.counter = 0;
-            this.observer = null;
+@push('scripts')
+    <script>
+        class AttachManager {
+            constructor(
+                submitButton,
+                tableElement,
+                selectElement,
+                inputName
+            ) {
+                this.submitButton = submitButton
+                this.tableElement = tableElement
+                this.selectElement = selectElement
+                this.inputName = inputName
+                this.dynamicDataContainer = document.getElementById("dynamic-data");
+                this.selected = null;
+                this.counter = 0;
+                this.observer = null;
 
-            this.submitButton.addEventListener("click", () => {
-                this.submitButtonEventListener();
+                this.submitButton.addEventListener("click", () => {
+                    this.submitButtonEventListener();
 
-                console.log("haihai");
-                if(this.observer) {
+                    console.log("haihai");
+                    if (this.observer) {
                         console.log("ada")
-                    this.observer.eventCallback()
-                } else {
+                        this.observer.eventCallback()
+                    } else {
                         console.log("tidak ada")
                     }
-            })
-        }
+                })
+            }
 
-        subscribeTo(observer) {
-            this.observer = observer
-            this.observer.subscribe(this)
-        }
+            subscribeTo(observer) {
+                this.observer = observer
+                this.observer.subscribe(this)
+            }
 
-        submitButtonEventListener()
-        {
-            this.selected = this.getSelected();
-            this.appendData();
-            this.appendInputElement();
+            submitButtonEventListener() {
+                this.selected = this.getSelected();
+                this.appendData();
+                this.appendInputElement();
 
-            this.counter++;
-        }
+                this.counter++;
+            }
 
-        getSelected()
-        {
-            const selected = {
-                value: this.selectElement.value,
-                text: this.selectElement.options[this.selectElement.selectedIndex].text,
-                icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd
-            };
+            getSelected() {
+                const selected = {
+                    value: this.selectElement.value,
+                    text: this.selectElement.options[this.selectElement.selectedIndex].text,
+                    icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd
+                };
 
-            return selected
-        }
+                return selected
+            }
 
-        createInputElement(name, value)
-        {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = name;
-            input.value = value;
+            createInputElement(name, value) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                return input;
+            }
 
-            return input;
-        }
-
-        createAppendElement()
-        {
-            const appendedElement = `
+            createAppendElement() {
+                const appendedElement = `
                 <tr>
                     <td>${this.selected.icd} - ${this.selected.text}</td>
                     <td>
@@ -263,137 +255,133 @@
                 </tr>
             `
 
-            return appendedElement;
+                return appendedElement;
+            }
+
+            appendInputElement() {
+                this.dynamicDataContainer.appendChild(this.createInputElement(`${this.inputName}[]`, this.selected
+                    .value));
+            }
+
+            appendData() {
+                this.tableElement.insertAdjacentHTML("beforeend", this.createAppendElement());
+            }
+
+            isAny() {
+                return this.counter > 0;
+            }
         }
 
-        appendInputElement()
-        {
-            this.dynamicDataContainer.appendChild(this.createInputElement(`${this.inputName}[]`, this.selected.value));
-        }
+        class MedicineAttachManager extends AttachManager {
+            constructor(
+                submitButton,
+                tableElement,
+                selectElement,
+                inputName,
+                inputQuantity
+            ) {
+                super(submitButton, tableElement, selectElement, inputName)
+                this.inputQuantity = inputQuantity
+            }
 
-        appendData() {
-            this.tableElement.insertAdjacentHTML("beforeend", this.createAppendElement());
-        }
+            getSelected() {
+                const selected = {
+                    value: this.selectElement.value,
+                    text: this.selectElement.options[this.selectElement.selectedIndex].text,
+                    icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd,
+                    quantity: this.inputQuantity.value
+                };
+                return selected
+            }
 
-        isAny() {
-            return this.counter > 0;
-        }
-    }
+            submitButtonEventListener() {
+                this.selected = this.getSelected();
+                this.appendData();
+                this.appendInputElement();
+                this.counter++;
+                this.inputQuantity.value = 1;
+            }
 
-    class MedicineAttachManager extends AttachManager
-    {
-        constructor(
-            submitButton,
-            tableElement,
-            selectElement,
-            inputName,
-            inputStock
-        ) {
-            super(submitButton, tableElement, selectElement, inputName)
-            this.inputStock = inputStock
-        }
+            appendInputElement() {
+                this.dynamicDataContainer.appendChild(this.createInputElement(
+                    `${this.inputName}[${this.counter}]['id']`, this.selected.value));
+                this.dynamicDataContainer.appendChild(this.createInputElement(
+                    `${this.inputName}[${this.counter}]['quantity']`, this.selected.quantity));
+            }
 
-        getSelected()
-        {
-            const selected = {
-                value: this.selectElement.value,
-                text: this.selectElement.options[this.selectElement.selectedIndex].text,
-                icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd,
-                quantity: this.selectElement.options[this.selectElement.selectedIndex].dataset.quantity,
-                stock: this.inputStock.value
-            };
-            return selected
-        }
-
-        submitButtonEventListener()
-        {
-            this.selected = this.getSelected();
-            this.appendData();
-            this.appendInputElement();
-            this.counter++;
-
-            this.inputStock.value = ""
-        }
-
-        appendInputElement()
-        {
-            this.dynamicDataContainer.appendChild(this.createInputElement(`${this.inputName}[${this.counter}]['id']`, this.selected.value));
-            this.dynamicDataContainer.appendChild(this.createInputElement(`${this.inputName}[${this.counter}]['stock']`, this.selected.stock));
-        }
-
-        createAppendElement()
-        {
-            console.log(this.selected);
-            const appendedElement = `
+            createAppendElement() {
+                console.log(this.selected);
+                const appendedElement = `
                 <tr>
-                    <td>${this.selected.icd} - ${this.selected.text} | kuantitas: ${this.selected.stock} ${this.selected.quantity}</td>
+                    <td>${this.selected.icd} - ${this.selected.text} | kuantitas: ${this.selected.quantity}</td>
                     <td>
                         <a href="#" onclick="hapus('11','000044','10467','2026-01-14')" title="Hapus Data Diagnosa" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i></a>
                     </td>
                 </tr>
             `
 
-            return appendedElement;
-        }
-    }
-
-    class StatusButtonObserver
-    {
-        constructor(buttonElement) {
-            this.buttonElement = buttonElement
-            this.subscribers = []
+                return appendedElement;
+            }
         }
 
-        subscribe(subscriber){
-            this.subscribers.push(subscriber)
-        }
+        class StatusButtonObserver {
+            constructor(buttonElement) {
+                this.buttonElement = buttonElement
+                this.subscribers = []
+            }
 
-        eventCallback()
-        {
-            let isAllAny = true;
+            subscribe(subscriber) {
+                this.subscribers.push(subscriber)
+            }
 
-            for(const subscriber of this.subscribers) {
-                console.log("aman ", isAllAny);
-                if(!subscriber.isAny()) {
-                    isAllAny = false;
-                    break;
+            eventCallback() {
+                let isAllAny = true;
+
+                for (const subscriber of this.subscribers) {
+                    console.log("aman ", isAllAny);
+                    if (!subscriber.isAny()) {
+                        isAllAny = false;
+                        break;
+                    }
+                }
+
+                console.log("Is Any: ", isAllAny);
+
+                if (!isAllAny) {
+                    this.buttonElement.disabled = true;
+                } else {
+                    this.buttonElement.disabled = false;
                 }
             }
-
-            console.log("Is Any: ", isAllAny);
-
-            if(!isAllAny) {
-                this.buttonElement.disabled = true;
-            } else {
-                this.buttonElement.disabled = false;
-            }
         }
-    }
 
 
-    const diagnosisTable = document.getElementById("diagnosisTable");
-    const submitDiagnosisButton = document.getElementById('submitDiagnosisButton');
-    const selectDiagnosisElement = document.getElementById("selectDiagnosisElement");
+        const diagnosisTable = document.getElementById("diagnosisTable");
+        const submitDiagnosisButton = document.getElementById('submitDiagnosisButton');
+        const selectDiagnosisElement = document.getElementById("selectDiagnosisElement");
 
-    const diagnosisAttachManager = new AttachManager(submitDiagnosisButton, diagnosisTable, selectDiagnosisElement, 'diagnosis_ids');
+        const diagnosisAttachManager = new AttachManager(submitDiagnosisButton, diagnosisTable, selectDiagnosisElement,
+            'diagnosis_ids');
 
-    const treatmentTable = document.getElementById("treatmentTable");
-    const submitTreatmentButton = document.getElementById('submitTreatmentButton');
-    const selectTreatmentElement = document.getElementById("selectTreatmentElement");
+        const treatmentTable = document.getElementById("treatmentTable");
+        const submitTreatmentButton = document.getElementById('submitTreatmentButton');
+        const selectTreatmentElement = document.getElementById("selectTreatmentElement");
 
-    const treatmentAttachManager = new AttachManager(submitTreatmentButton, treatmentTable, selectTreatmentElement, 'treatment_ids');
+        const treatmentAttachManager = new AttachManager(submitTreatmentButton, treatmentTable, selectTreatmentElement,
+            'treatment_ids');
 
-    const medicineTable = document.getElementById("medicineTable");
-    const submitMedicineButton = document.getElementById("submitMedicineButton");
-    const selectMedicineElement = document.getElementById("selectMedicineElement");
-    const inputStockElement = document.getElementById("inputStockElement");
+        const medicineTable = document.getElementById("medicineTable");
+        const submitMedicineButton = document.getElementById("submitMedicineButton");
+        const selectMedicineElement = document.getElementById("selectMedicineElement");
+        const inputQuantityElement = document.getElementById("inputQuantityElement");
 
-    const medicineAttachManager = new MedicineAttachManager(submitMedicineButton, medicineTable, selectMedicineElement, 'medicine_ids', inputStockElement);
+        const medicineAttachManager = new MedicineAttachManager(submitMedicineButton, medicineTable, selectMedicineElement,
+            'medicine_ids', inputQuantityElement);
 
-    const statusButtonObserver = new StatusButtonObserver(document.getElementById("submit"))
+        const statusButtonObserver = new StatusButtonObserver(document.getElementById("submit"))
 
-    diagnosisAttachManager.subscribeTo(statusButtonObserver)
-    treatmentAttachManager.subscribeTo(statusButtonObserver)
-    medicineAttachManager.subscribeTo(statusButtonObserver)
-</script>
+        diagnosisAttachManager.subscribeTo(statusButtonObserver)
+        treatmentAttachManager.subscribeTo(statusButtonObserver)
+        medicineAttachManager.subscribeTo(statusButtonObserver)
+    </script>
 @endpush

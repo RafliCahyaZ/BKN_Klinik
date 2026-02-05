@@ -7,6 +7,31 @@
                 class="glyphicon glyphicon-print"></i> Cetak Data</a>
         <hr>
 
+        <form action="" method="GET" >
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Dari Tanggal</label>
+                        <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Sampai Tanggal</label>
+                        <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label>&nbsp;</label>
+                    <div class="btn-group" style="display: block;">
+                        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-filter"></i>
+                            Filter</button>
+                        <a href="" class="btn btn-default">Reset</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
         <div class="unseen">
             <table class="table table-bordered table-hover table-condensed data-table order-table ">
                 <thead>

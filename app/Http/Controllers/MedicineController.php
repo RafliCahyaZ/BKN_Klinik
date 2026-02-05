@@ -118,6 +118,38 @@ class MedicineController extends Controller
         return redirect()->route("medicine.transaction.index")->with("success", "Success Create Transaction");
     }
 
+    public function createTransactionReport()
+    {
+         return view("dashboard.medicine-transaction.report.create");
+    }
+
+    public function printTransactionReport(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'start-date' => [
+                    'required',
+                    'date',
+                ],
+                'end-date' => [
+                    'required',
+                    'date',
+                    'after_or_equal:start-date',
+                ],
+            ]);
+    
+            $startDate = Carbon::parse($validated['start-date'])->startOfDay();
+            $endDate = Carbon::parse($validated['end-date'])->endOfDay();
+    
+            $medicineStockTransactions = $this->medicineStockTransactionRepository->getByPeriod($startDate, $endDate);
+            $timestamp = Carbon::now()->format('Y-m-d_His');
+            $pdf = Pdf::loadView('pdf.medicine-transaction-report', compact('medicineStockTransactions', 'startDate', 'endDate'));
+            return $pdf->stream("laporan_periode_transaksi_obat_{$timestamp}.pdf");
+        } catch (\Throwable $th) {
+            dd( $th);
+        }
+    }
+
     public function transactionAction($id, Request $request)
     {
         $validated = $request->validate([

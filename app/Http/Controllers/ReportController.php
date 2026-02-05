@@ -11,7 +11,7 @@ class ReportController extends Controller
 {
     public function index()
     {
-        return view("dashboard.report.create");
+        return view("dashboard.patient.report.create");
     }
 
     public function print(Request $request, RegistrationRepository $registrationRepository)

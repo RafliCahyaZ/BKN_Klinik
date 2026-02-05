@@ -58,9 +58,12 @@ class PatientController extends Controller
         );
     }
 
-    public function history()
+    public function history(Request $request)
     {
-        $histories = $this->registrationRepository->getWhereCheckDateIsNotNull();
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $histories = $this->registrationRepository->getWhereCheckDateIsNotNull($startDate, $endDate);
+
 
         return view(
             "dashboard.patient.history",
