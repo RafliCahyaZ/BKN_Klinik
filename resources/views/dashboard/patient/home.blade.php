@@ -2,8 +2,13 @@
 
 @section('content')
 <x-dashboard-container title="Data Pasien">
-                    <a href="{{ route('patient.create') }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Tambah Pasien</a>
-                    <a href="{{ route('patient.print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Data Pasien</a>
+            @can('create-patient')
+                <a href="{{ route('patient.create') }}" class="btn btn-primary btn-md"><i class="glyphicon glyphicon-ok"></i> Tambah Pasien</a>
+            @endcan
+
+            @can('print-patient')
+                <a href="{{ route('patient.print') }}" class="btn btn-primary btn-md" target="_blank"><i class="glyphicon glyphicon-print"></i> Cetak Data Pasien</a>
+            @endcan
                     <hr>
 
                     @if (session('success'))
@@ -33,7 +38,9 @@
                                 <th>Alamat</th>
                                 <th>Telp</th>
                                 <th>Tgl. Register</th>
-                                <th>Kelola</th>
+                                @canany(['delete-patient', 'edit-patient', 'create-patient','get-history-appointment'])
+                                    <th>Kelola</th>
+                                @endcanany
                                 </tr>
                             </thead>
                             <tbody>
@@ -49,8 +56,13 @@
                                 <td>{{ $patient->address }}</td>
                                 <td>{{ $patient->telpNumber }}</td>
                                 <td>{{ $patient->createdAt->format('Y-m-d'); }}</td>
+                                @canany(['delete-patient', 'edit-patient', 'create-patient','get-history-appointment'])
                                 <td width="15%" class="d-flex">
-                                <a href="{{ route("patient.edit.view", $patient->id) }}" class="btn btn-sm btn-info" title="Ubah Pasien"><i class="glyphicon glyphicon-pencil"></i></a>
+                                @can('edit-patient')
+                                    <a href="{{ route("patient.edit.view", $patient->id) }}" class="btn btn-sm btn-info" title="Ubah Pasien"><i class="glyphicon glyphicon-pencil"></i></a>
+                                @endcan
+
+                                @can('edit-patient')
                                 <form
                                     style="display: inline-block;"
                                     action="{{ route('patient.destroy', $patient->id) }}"
@@ -63,9 +75,17 @@
                                         <i class="glyphicon glyphicon-trash"></i>
                                     </button>
                                 </form>
+                                @endcan
+
+                                @can('register-patient')
                                 <a href="{{ route("registration.create", $patient->id) }}" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i></a>
-                                <a class="btn btn-sm btn-warning" href="{{ route("patient.user.history", $patient->id) }}"><i class="fa fa-history"></i></a>
+                                @endcan
+
+                                @can('get-history-appointment')
+                                    <a class="btn btn-sm btn-warning" href="{{ route("patient.user.history", $patient->id) }}"><i class="fa fa-history"></i></a>
+                                @endcan
                                 </td>
+                                @endcanany
 
                             </tr>
                             @endforeach

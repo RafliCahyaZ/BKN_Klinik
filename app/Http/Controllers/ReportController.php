@@ -70,14 +70,14 @@ class ReportController extends Controller
         for ($i = 0; $i < 5; $i++) {
             $date = $startOfWeek->copy()->addDays($i);
 
-            $registrations = Registration::whereDate('created_at', $date)->count();
+            $registrations = Registration::whereDate('created_at', $date);
             $checked = Registration::whereDate('created_at', $date)
                 ->whereNotNull('check_date')
                 ->count();
 
             $days[] = [
-                'label' => $date->translatedFormat('D, d M'), 
-                'registrations' => $registrations,
+                'label' => $date->translatedFormat('D, d M'),
+                'registrations' => $registrations->count(),
                 'checked' => $checked,
             ];
         }
