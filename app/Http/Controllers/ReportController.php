@@ -22,7 +22,7 @@ class ReportController extends Controller
 
         $registrations = $registrationRepository->getByRangeDate($start, $end);
         $timestamp = Carbon::now()->format('Y-m-d_His');
-        
+
         $pdf = Pdf::loadView('pdf.report', compact('registrations', 'start', 'end'));
         return $pdf->stream("laporan_{$timestamp}.pdf");
     }
