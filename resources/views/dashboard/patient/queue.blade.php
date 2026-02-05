@@ -9,7 +9,9 @@
                 <th>Nama Pasien</th>
                 <th>Alamat</th>
                 <th>Umur</th>
-                <th>Aksi</th>
+                @can('create-appointment')
+                    <th>Aksi</th>
+                @endcan
                 </tr>
             </thead>
             <tbody>
@@ -19,12 +21,14 @@
                     <td>{{ $registration->patient->name }}</td>
                     <td>{{ $registration->patient->address }}</td>
                     <td>{{ $registration->patient->dateOfBirth->age }} Tahun</td>
-                    <td>
-                        <a href="{{ route("patient.appointment.view", $registration->id) }}" class="btn btn-sm btn-success">
-                            <i class="glyphicon glyphicon-search"></i>
-                            Mulai Periksa
-                        </a>
-                    </td>
+                    @can('create-appointment')
+                        <td>
+                            <a href="{{ route("patient.appointment.view", $registration->id) }}" class="btn btn-sm btn-success">
+                                <i class="glyphicon glyphicon-search"></i>
+                                Mulai Periksa
+                            </a>
+                        </td>
+                    @endcan
                 </tr>
             @endforeach
             </tbody>
