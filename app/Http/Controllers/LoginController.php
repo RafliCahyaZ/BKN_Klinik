@@ -27,7 +27,7 @@ class LoginController extends Controller
     {
         $validated = $request->validate([
             'username' => ['required', 'string', 'min:3', 'max:20'],
-            'password' => ['required', 'string', 'min:15', 'max:64'],
+            'password' => ['required', 'string', 'min:8', 'max:64'],
         ]);
         
         $user = $this->userRepository->getByUsername($validated['username']);

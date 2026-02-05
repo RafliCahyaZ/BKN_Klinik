@@ -55,7 +55,7 @@
                     <input type="text" name="username" value="" id="username" placeholder="Masukkan Username" class="form-control input-lg" autofocus="autofocus">
                     <br>
 		    		<label>Password</label>
-                    <input type="password" name="password" value="" id="password" placeholder="Masukkan Password" class="form-control input-lg" minlength="15" maxlength="64">
+                    <input type="password" name="password" value="" id="password" placeholder="Masukkan Password" class="form-control input-lg" minlength="8" maxlength="64">
                     <br>
                     <input type="submit" name="submit" value="Login" class="btn btn-primary btn-lg">
                     <input type="reset" name="reset" value="Ulangi" class="btn btn-danger btn-lg">
