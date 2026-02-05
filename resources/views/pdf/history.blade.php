@@ -4,10 +4,10 @@
     <title>History Rekam Medis</title>
     <style>
         body { font-family: sans-serif; font-size: 12px; }
-        .header { text-align: center; margin-bottom: 20px; }
+        table th { background-color: #f2f2f2; text-align: center; }
+        .header { margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         table, th, td { border: 1px solid black; padding: 8px; }
-        th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
@@ -52,6 +52,18 @@
                     </tr>
                 </table>
             </div>
+        </div>
+
+        <!-- Complaint Section -->
+        <div class="section">
+            <h3>Keluhan</h3>
+            <table class="data-table">
+                <tbody>
+                    <tr>
+                        <td>{{ $registration->complaint }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- Diagnoses Section -->
@@ -107,6 +119,34 @@
                 </tbody>
             </table>
         </div>
+
+         <!-- Treatment History Section -->
+        <div class="section">
+            <h3>Tindakan</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th width="20%">Kode Tindakan</th>
+                        <th width="60%">Nama Tindakan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($registration->treatments as $treatment)
+                    <tr>
+                        <td>{{ $treatment->treatmentCode }}</td>
+                        <td>{{ $treatment->treatmentName }}</td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="3" class="no-data">Tidak ada data obat</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+      
+
     </div>
 
     <style>
@@ -144,7 +184,7 @@
             max-width: 100%;
             margin: 0 auto;
         }
-        .data-table th { text-align: left; font-weight: bold; }
+        .data-table th { text-align: center; font-weight: bold; }
         .text-center { text-align: center; }
         .no-data { text-align: center; color: #666; font-style: italic; }
     </style>

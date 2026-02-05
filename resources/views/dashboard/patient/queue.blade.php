@@ -10,6 +10,7 @@
                 <th>Alamat</th>
                 <th>Umur</th>
                 <th>Aksi</th>
+                <th>Waktu Registrasi</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,6 +26,7 @@
                             Mulai Periksa
                         </a>
                     </td>
+                    <td>{{ $registration->createdAt }}</td>
                 </tr>
             @endforeach
             </tbody>

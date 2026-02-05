@@ -40,7 +40,9 @@
                         <th>
                         <select id="transactionTypeInput" name="transactionType">
                             @foreach($transactionTypes as $index => $transactionType)
+                                @if ($transactionType->value !== 'out')
                                 <option value="{{ $transactionType }}">{{ $transactionType }}</option>
+                                @endif
                             @endforeach
                         </select>
                         </th>

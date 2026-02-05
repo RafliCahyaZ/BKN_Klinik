@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('doctor_id')->nullable()->constrained('users')->onDelete('cascade');
+            $table->foreignId('patient_id')->constrained()->onDelete('cascade');
             $table->text('complaint');
             $table->text('receipt')->nullable();
             $table->timestamp('check_date')->nullable();
+            $table->timestamp('cancelled_at')->nullable();
             $table->timestamps();
         });
     }

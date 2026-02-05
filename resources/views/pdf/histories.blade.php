@@ -40,6 +40,9 @@
 @endphp
 
 @foreach ($registrations as $registration)
+    @if ($registration->checkDate == null)
+        @continue
+    @endif
 
     {{-- JIKA PASIEN BERUBAH --}}
     @if ($currentPatientId !== $registration->patient->id)
@@ -103,23 +106,28 @@
 
         <hr>
 
-        <strong>Diagnosis:</strong>
-        <ol>
-            @forelse ($registration->diagnoses as $diagnosis)
-                <li>{{ $diagnosis->name }}</li>
-            @empty
-                <li>Belum Ada Diagnosa</li>
-            @endforelse
-        </ol>
+        
+        @if ($registration->diagnoses)
+            <strong>Diagnosis:</strong>
+            <ol>
+                @forelse ($registration->diagnoses as $diagnosis)
+                    <li>{{ $diagnosis->name }}</li>
+                @empty
+                    <li>Belum Ada Diagnosa</li>
+                @endforelse
+            </ol>
+        @endif
 
-        <strong>Treatment:</strong>
-        <ol>
-            @forelse ($registration->treatments as $treatment)
+        @if ($registration->treatments)
+            <strong>Treatment:</strong>
+            <ol>
+                @forelse ($registration->treatments as $treatment)
                 <li>{{ $treatment->name }}</li>
-            @empty
-                <li>Belum Ada Tindakan</li>
-            @endforelse
-        </ol>
+                @empty
+                    <li>Belum Ada Tindakan</li>
+                @endforelse
+            </ol>
+        @endif
 
         <strong>Obat:</strong>
         <ol>

@@ -52,9 +52,8 @@ Route::middleware("auth")->group(function () {
         Route::get("/history/print", [HistoryController::class, 'printAll'])->name("all-history.print");
         Route::get("/history/{id}", [HistoryController::class, 'show'])->name("history.show");
         Route::get("/history/print/{id}", [HistoryController::class, 'print'])->name("history.print");
-
+        
         Route::get("/print", [PatientController::class, 'print'])->name("print");
-
         Route::post("/store", [PatientController::class, 'store'])->name("store");
         Route::get("//edit/{id}", [PatientController::class, 'edit'])->name("edit.view");
         Route::post("/edit/{id}", [PatientController::class, 'editAction'])->name("edit.action");
@@ -68,7 +67,6 @@ Route::middleware("auth")->group(function () {
         Route::get("/create/{patientId}", [RegistrationController::class, 'create'])->name("create");
         Route::post("/create/{patientId}", [RegistrationController::class, 'store'])->name("store");
         Route::get("/{id}/print", [HistoryController::class, 'show'])->name("print");
-        // Route::get("/print", [RegistrationController::class, 'print'])->name("print");
     });
 
     Route::prefix("medicine")->name("medicine.")->group(function () {
@@ -82,8 +80,13 @@ Route::middleware("auth")->group(function () {
 
         Route::get("/{id}/history", [MedicineController::class, 'history'])->name("history");
         Route::get("/{id}/history/print", [MedicineController::class, 'printHistory'])->name("history.print");
-        Route::get("/{id}/transaction", [MedicineController::class, 'transaction'])->name("transaction.create.view");
+        Route::get("/{id}/transaction", [MedicineController::class, 'getTransaction'])->name("transaction.create.view");
         Route::post("/{id}/transaction", [MedicineController::class, 'transactionAction'])->name("transaction.create.action");
+
+        Route::get("/transaction", [MedicineController::class, 'getAllTransaction'])->name("transaction.index");
+        Route::get("/transaction/create", [MedicineController::class, 'createTransaction'])->name("transaction.create.view");
+        Route::post("/transaction/store", [MedicineController::class, 'storeTransaction'])->name("transaction.store");
+        Route::get("/transaction/print", [MedicineController::class, 'printAllTransaction'])->name("transaction.print");
     });
 
 

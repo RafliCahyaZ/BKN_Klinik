@@ -34,8 +34,11 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
 
             if ($transactionType == TransactionType::IN) {
                 return $beginningStock + $quantity;
+            } else if ($transactionType == TransactionType::OUT || $transactionType == TransactionType::EXPIRED) {
+                return $beginningStock - $quantity;
+            } else if ($transactionType == TransactionType::ADJUSTMENT) {
+                return $quantity;
             }
-            return $beginningStock - $quantity;
         } catch (\Exception $e) {
             throw $e;
         }
@@ -46,43 +49,41 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
         try {
             $transactions_collections = MedicineStockTransaction::with(['inventoryOfficer', 'medicine.unit', 'registration.patient', 'registration.doctor'])->get();
 
-            $formated_transactions = $transactions_collections->map(function ($transaction) {
-                $formated_transaction = new MedicineStockTransactionDTO();
-                $formated_transaction->id = $transaction->id;
+            $formatedTransactions = $transactions_collections->map(function ($transaction) {
+                $formatedTransaction = new MedicineStockTransactionDTO();
+                $formatedTransaction->id = $transaction->id;
 
-                // Map inventory officer to UserDTO
                 $inventoryOfficer = new UserDTO();
                 if ($transaction->inventoryOfficer) {
                     $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                 }
-                $formated_transaction->inventoryOfficer = $inventoryOfficer;
+                $formatedTransaction->inventoryOfficer = $inventoryOfficer;
 
-                // Map medicine to MedicineDTO
                 $medicine = new MedicineDTO();
                 if ($transaction->medicine) {
                     $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                 }
-                $formated_transaction->medicine = $medicine;
+                $formatedTransaction->medicine = $medicine;
 
-                // Map registration to RegistrationDTO
                 $registration = null;
                 if ($transaction->registration) {
                     $registration = RegistrationRepositoryEloquent::mapRegistrationModelToRegistrationDto($transaction->registration);
                 }
-                $formated_transaction->registration = $registration;
 
-                $formated_transaction->type = $transaction->type;
-                $formated_transaction->quantity = $transaction->quantity;
-                $formated_transaction->beginningStock = $transaction->beginning_stock;
-                $formated_transaction->lastStock = $transaction->last_stock;
-                $formated_transaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
-                $formated_transaction->notes = $transaction->notes;
-                $formated_transaction->createdAt = Carbon::parse($transaction->created_at);
-                $formated_transaction->updatedAt = Carbon::parse($transaction->updated_at);
-                return $formated_transaction;
+                $formatedTransaction->registration = $registration;
+
+                $formatedTransaction->type = $transaction->type;
+                $formatedTransaction->quantity = $transaction->quantity;
+                $formatedTransaction->beginningStock = $transaction->beginning_stock;
+                $formatedTransaction->lastStock = $transaction->last_stock;
+                $formatedTransaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
+                $formatedTransaction->notes = $transaction->notes;
+                $formatedTransaction->createdAt = Carbon::parse($transaction->created_at);
+                $formatedTransaction->updatedAt = Carbon::parse($transaction->updated_at);
+                return $formatedTransaction;
             });
 
-            $transactions = $formated_transactions->toArray();
+            $transactions = $formatedTransactions->toArray();
 
             return $transactions;
         } catch (\Exception $e) {
@@ -95,9 +96,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
     {
         try {
             $medicine = $this->medicineRepository->getById($medicineStockTransactionDTO->medicine->id);
-
             $medicineId = $medicineStockTransactionDTO->medicine->id;
-
             $beginningStock = $medicine->stock;
             $quantity = $medicineStockTransactionDTO->quantity;
             $transactionType = $medicineStockTransactionDTO->type;
@@ -105,7 +104,10 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
 
             if ($medicineStockTransactionDTO->type == TransactionType::IN) {
                 $medicine->stock += $medicineStockTransactionDTO->quantity;
-            } else  if ($medicineStockTransactionDTO->type == TransactionType::IN) {
+            } else  if ($medicineStockTransactionDTO->type == TransactionType::OUT) {
+                if ($medicine->stock < $medicineStockTransactionDTO->quantity) {
+                    return null;
+                }
                 $medicine->stock -= $medicineStockTransactionDTO->quantity;
             } else if ($medicineStockTransactionDTO->type == TransactionType::ADJUSTMENT) {
                 $medicine->stock = $medicineStockTransactionDTO->quantity;

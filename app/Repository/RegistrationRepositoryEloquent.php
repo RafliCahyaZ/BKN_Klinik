@@ -10,11 +10,10 @@ use App\DTO\MedicineDTO;
 use App\DTO\MedicineStockTransactionDTO;
 use App\DTO\TreatmentDTO;
 use App\Helper\UserRoleHelper;
-use App\Models\Diagnosis;
 use App\Models\Registration;
-use App\Models\Treatment;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
+use Illuminate\Support\Facades\Auth;
 
 class RegistrationRepositoryEloquent implements RegistrationRepository
 {
@@ -410,7 +409,10 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
     function getWhereCheckDateIsNull(): array
     {
         try {
-            $nullCheckDateRegistrationsCollections = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit'])
+            $user = Auth::user();
+            $nullCheckDateRegistrationsCollections = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit'])->when($user->role === 'doctor', function ($query) {
+                return $query->where('created_at', today());
+            })
                 ->whereNull('check_date')
                 ->get();
 

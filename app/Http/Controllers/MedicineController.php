@@ -10,7 +10,6 @@ use App\Helper\TransactionTypeHelper;
 use App\Repository\MedicineRepository;
 use App\Repository\MedicineStockTransactionRepository;
 use App\Repository\UnitRepository;
-use App\Type\TransactionType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,7 +40,7 @@ class MedicineController extends Controller
         ]);
     }
 
-    public function transaction($id)
+    public function getTransaction($id)
     {
         $medicine = $this->medicineRepository->getById($id);
 
@@ -54,6 +53,69 @@ class MedicineController extends Controller
             'transactionTypes' => $transactionTypes,
             "medicine" => $medicine
         ]);
+    }
+
+    public function getAllTransaction()
+    {
+        $transactions = $this->medicineStockTransactionRepository->getAll();
+        $transactionTypes = TransactionTypeHelper::getArrayOptions();
+        return view("dashboard.medicine-transaction.index", [
+            'transactions' => $transactions,
+            'transactionTypes' => $transactionTypes
+        ]);
+    }
+
+    public function createTransaction()
+    {
+        $transactionTypes = TransactionTypeHelper::getArrayOptions();
+        $medicines = $this->medicineRepository->getAll();
+        return view("dashboard.medicine-transaction.create", [
+            'transactionTypes' => $transactionTypes,
+            'medicines' => $medicines
+        ]);
+    }
+
+    public function storeTransaction(Request $request)
+    {
+        $validated = $request->validate([
+            "medicineId" => [
+                'required',
+            ],
+            "transactionType" => [
+                'required',
+                Rule::in(TransactionTypeHelper::getArrayOptions()),
+            ],
+            'quantity' => [
+                'required',
+                'integer',
+                'min:1'
+            ],
+        ]);
+
+        $medicineStockTransaction = new MedicineStockTransactionDTO();
+
+        $medicineStockTransaction->inventoryOfficer = new UserDTO();
+        $medicineStockTransaction->inventoryOfficer->id = Auth::id();
+
+        $medicineStockTransaction->medicine = new MedicineDTO();
+        $medicineStockTransaction->medicine->id = $validated["medicineId"];
+
+        $medicineStockTransaction->type = TransactionTypeHelper::stringToTransactionRole($validated["transactionType"]);
+        $medicineStockTransaction->quantity = $validated["quantity"];
+
+        $medicineStockTransaction->expiredDate = null;
+        $medicineStockTransaction->createdAt = Carbon::now();
+        $medicineStockTransaction->updatedAt = Carbon::now();
+
+        if ($request["notes"]) {
+            $medicineStockTransaction->notes = $request["notes"];
+        }
+
+        if (!$this->medicineStockTransactionRepository->insert($medicineStockTransaction)) {
+            return redirect()->route('medicine.index')->with("failed", "Insert medicine failed");
+        }
+
+        return redirect()->route("medicine.transaction.index")->with("success", "Success Create Transaction");
     }
 
     public function transactionAction($id, Request $request)
@@ -94,6 +156,15 @@ class MedicineController extends Controller
         }
 
         return redirect()->route("medicine.history", $id)->with("success", "Success Create Transaction");
+    }
+
+    public function printAllTransaction()
+    {
+        $medicineStockTransactions = $this->medicineStockTransactionRepository->getAll();
+        $timestamp = Carbon::now()->format('Y-m-d_His');
+
+        $pdf = Pdf::loadView('pdf.medicine-transactions', compact('medicineStockTransactions'));
+        return $pdf->stream("laporan_transaksi_obat_{$timestamp}.pdf");
     }
 
     public function index()
