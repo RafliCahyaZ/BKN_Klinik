@@ -25,10 +25,6 @@ Route::middleware("auth")->group(function () {
         Route::post("/profile", [UserController::class, 'profileAction'])->name("profile.action");
     });
 
-    Route::prefix('report')->name('report.')->group(function () {
-       
-    });
-
     Route::prefix("patient")->name("patient.")->group(function () {
         Route::get("/", [PatientController::class, 'index'])
             ->middleware("can:get-all-patient")

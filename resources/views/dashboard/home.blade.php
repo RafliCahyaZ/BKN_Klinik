@@ -54,7 +54,8 @@
         <div style="position:relative; z-index:1; height:100%; display:flex; align-items:center; justify-content:center">
             <div style="text-align:center; color:#fff;">
                 <h2 style="margin:0; font-weight:600; font-size:40px;" class="glow-text">
-                    Selamat Datang, <a href="{{ url('/user/profile') }}" class="username-link">{{ auth()->user()->username ?? '' }}</a>
+                    Selamat Datang, <a href="{{ url('/user/profile') }}"
+                        class="username-link">{{ auth()->user()->username ?? '' }}</a>
                 </h2>
                 <p class="glow-text" style="margin:6px 0 0; font-size:20px;">Sistem Informasi Klinik Kantor</p>
             </div>

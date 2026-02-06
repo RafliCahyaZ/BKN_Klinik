@@ -8,17 +8,12 @@ use App\DTO\MedicineStockTransactionDTO;
 use App\DTO\RegistrationDTO;
 use App\DTO\TreatmentDTO;
 use App\DTO\UserDTO;
-use App\Models\Medicine;
-use App\Repository\AppointmentRepository;
 use App\Repository\DiagnosisRepository;
 use App\Repository\MedicineRepository;
-use App\Repository\MedicineStockTransactionRepository;
 use App\Repository\RegistrationRepository;
 use App\Repository\TreatmentRepository;
-use App\Repository\UserRepository;
 use App\Service\PatientExaminationServiceEloquent;
 use App\Type\TransactionType;
-use App\Type\UserRole;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,7 +55,6 @@ class AppointmentController extends Controller
 
     public function createAction($id, Request $request)
     {
-        // dd($request->all());
         try {            
             $registration = $this->registrationRepository->getById($id);
     
@@ -91,8 +85,10 @@ class AppointmentController extends Controller
                 return $treatmentDto;
             });
 
+            $aggregatedmedicineIds = $this->aggregateMedicineIds($request["medicine_ids"]);
+
             $medicineAvailables = [];
-            foreach ($request["medicine_ids"] as $medicine) {
+            foreach ($aggregatedmedicineIds as $medicine) {
                 $medicineAvailable = $this->isMedicineStockAvailable(
                     $medicine["'id'"],
                     $medicine["'quantity'"]
@@ -103,13 +99,13 @@ class AppointmentController extends Controller
                 $medicineAvailables[] = $medicineAvailable;
             }
 
-            $medicineInputs = $request["medicine_ids"];
+            $medicineInputs = $aggregatedmedicineIds;
             foreach ($medicineAvailables as $index => $medicineAvailable) {
                 $medicineInputs[$index]["'stock'"] = $medicineAvailables[$index]->stock;
             }
     
             $medicinesTransaction = $this->mapInputToMedicineStockTransactionDTO($id, $medicineInputs);
-    
+
             if (!$this->patientExaminationService->execute(
                 $registration,
                 $diagnoses->toArray(),
@@ -122,6 +118,22 @@ class AppointmentController extends Controller
         } catch (\Throwable $th) {
             dd($th);
         }
+    }
+
+    private function aggregateMedicineIds(array $medicineIds)
+    {
+        $idMap = [];
+        $aggregatedmedicineIds = [];
+        foreach ($medicineIds as $index => $medicineId) {
+           if (array_key_exists($medicineId["'id'"], $idMap)) {
+                $existingIndex = $idMap[$medicineId["'id'"]];
+                $aggregatedmedicineIds[$existingIndex]["'quantity'"] += $medicineId["'quantity'"];
+           } else {
+                $idMap[$medicineId["'id'"]] = $index;
+                $aggregatedmedicineIds[] = $medicineId;
+           }
+        }
+        return $aggregatedmedicineIds;
     }
 
     private function isMedicineStockAvailable(string $medicineId, int $requestedQuantity)
@@ -137,7 +149,7 @@ class AppointmentController extends Controller
         }
     }
 
-    public function cancel($id, Request $request)
+    public function cancel($id)
     {
         $registration = $this->registrationRepository->getById($id);
 

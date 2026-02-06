@@ -8,7 +8,6 @@ use App\Repository\MedicineRepositoryEloquent;
 use App\Repository\MedicineStockTransactionRepositoryEloquent;
 use App\Repository\RegistrationRepositoryEloquent;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\TryCatch;
 
 class PatientExaminationServiceEloquent implements PatientExaminationService
 {
@@ -42,26 +41,53 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
                 if (!$this->registrationRepository->edit($registrationDto)) {
                     $editResult = false;
                 }
-    
-                if (!$this->medicineStockTransactionRepository->insertMany($medicineTransactions)) {
-                    $editResult = false;
-                }
 
+                $medicineUpdates = [];
                 
                 foreach ($medicineTransactions as $medicineStockTransactionDto) {
-                    $medicineDto = $medicineStockTransactionDto->medicine;
-                    $medicineDto->stock -= $medicineStockTransactionDto->quantity;
-                    $updatedMedicineDto = $this->medicineRepository->edit($medicineDto->id, $medicineDto);
-    
-                    if (!$updatedMedicineDto) {
+                    if (is_null($this->medicineStockTransactionRepository->insert($medicineStockTransactionDto))) {
                         $editResult = false;
                         break;
                     }
+
+                    $medicineId = $medicineStockTransactionDto->medicine->id;
+                    if (!isset($medicineUpdates[$medicineId])) {
+                        $medicineUpdates[$medicineId] = [
+                            'medicine' => $medicineStockTransactionDto->medicine,
+                            'totalQuantity' => 0
+                        ];
+                    }
+                    $medicineUpdates[$medicineId]['totalQuantity'] += $medicineStockTransactionDto->quantity;
                 }
+
+                if ($editResult) {
+                    foreach ($medicineUpdates as $medicineId => $updateData) {
+                        $currentMedicine = $this->medicineRepository->getById($medicineId);
+                        if (!$currentMedicine) {
+                            $editResult = false;
+                            break;
+                        }
+
+                        $newStock = $currentMedicine->stock - $updateData['totalQuantity'];
+                        
+                        if ($newStock < 0) {
+                            $editResult = false;
+                            break;
+                        }
+                        
+                        $currentMedicine->stock = $newStock;
+                        $updatedMedicineDto = $this->medicineRepository->edit($medicineId, $currentMedicine);
+                        
+                        if (!$updatedMedicineDto) {
+                            $editResult = false;
+                            break;
+                        }
+                    }
+                }
+
                 return $editResult;
             });
         } catch (\Throwable $th) {
-            dd($th);
             return false;
         }
 

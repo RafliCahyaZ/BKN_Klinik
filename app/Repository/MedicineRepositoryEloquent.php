@@ -83,7 +83,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
 
                 if ($edit > 0) {
                     $updatedData = Medicine::with(['unit'])->find($id);
-
+                    
                     $unitDTO = new UnitDTO();
                     $unitDTO->id = $updatedData->unit->id;
                     $unitDTO->name = $updatedData->unit->name;
@@ -94,15 +94,19 @@ class MedicineRepositoryEloquent implements MedicineRepository
                     $formatedUpdatedData->unit = $unitDTO;
                     $formatedUpdatedData->createdAt = $updatedData->created_at;
                     $formatedUpdatedData->updatedAt = $updatedData->updated_at;
-
+                    
+                    // dd($formatedUpdatedData);
                     return $formatedUpdatedData;
-                } else {
+                    } else {
+
                     return null;
                 }
             } else {
+                dd("no data to update");
                 return null;
             }
         } catch (\Exception $e) {
+            dd($e);
             return null;
         }
     }
