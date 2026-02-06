@@ -23,9 +23,9 @@
             height: 100% !important;
         }
 
-        .glow-text {
-            color: white;
-            text-shadow: 0 0 5px #7fccff;
+        .shadow {
+            text-shadow:
+                4px 4px 2px rgba(0,0,0,0.3);
         }
 
         .username-link {
@@ -40,6 +40,24 @@
             /* biru lebih gelap */
             text-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
         }
+
+        .hero-title,
+        .hero-subtitle {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: fadeUp 0.9s ease-out forwards;
+        }
+
+        .hero-subtitle {
+            animation-delay: 0.30s;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 
     <div
@@ -47,17 +65,17 @@
     background-image:
       linear-gradient(to bottom, #3498db, #3498db 10%, rgba(30,144,255,0.15) 40%, rgba(30,144,255,0) 55%),
       linear-gradient(to top, rgba(255,255,255,0.95), rgba(255,255,255,0.95) 10%, rgba(255,255,255,0) 35%),
-      url('{{ url('assets/img/kantor.webp') }}');
+      url('{{ url('assets/img/front.webp') }}');
     background-size: cover, cover, cover;
     background-position: center;
     background-repeat: no-repeat;">
         <div style="position:relative; z-index:1; height:100%; display:flex; align-items:center; justify-content:center">
             <div style="text-align:center; color:#fff;">
-                <h2 style="margin:0; font-weight:600; font-size:40px;" class="glow-text">
+                <h2 style="margin:0; font-weight:600; font-size:40px;" class="shadow hero-title">
                     Selamat Datang, <a href="{{ url('/user/profile') }}"
                         class="username-link">{{ auth()->user()->username ?? '' }}</a>
                 </h2>
-                <p class="glow-text" style="margin:6px 0 0; font-size:20px;">Sistem Informasi Klinik Kantor</p>
+                <p class="shadow hero-subtitle" style="margin:6px 0 0; font-size:20px;">Sistem Informasi Klinik Kantor</p>
             </div>
         </div>
     </div>
@@ -70,23 +88,23 @@
             <div class="row">
 
                 <div class="col-md-6">
-                    <h5 style="text-align:center">Pasien Hari Ini</h5>
+                    <h5 style="text-align:center; font-weight:bolder; font-size:24px">Pasien Hari Ini</h5>
 
                     <div style="display:flex; gap:16px;">
-                        <div style="flex:1; background:#f7fcff; border-radius:8px; padding:24px; text-align:center;">
-                            <div id="patients-checked" style="font-size:56px; font-weight:700; color:#3498db;">0</div>
-                            <div style="color:#666;">Sudah Diperiksa</div>
+                        <div style="flex:1; background:#44baff; border-radius:8px; padding:24px; text-align:center;">
+                            <div id="patients-checked" style="font-size:56px; font-weight:700; color:#ffffff;">0</div>
+                            <div style="color:#ffffff; font-weight:bolder">Sudah Diperiksa</div>
                         </div>
 
-                        <div style="flex:1; background:#fff7f7; border-radius:8px; padding:24px; text-align:center;">
-                            <div id="patients-unchecked" style="font-size:56px; font-weight:700; color:#e74c3c;">0</div>
-                            <div style="color:#666;">Belum Diperiksa</div>
+                        <div style="flex:1; background:#ff2222; border-radius:8px; padding:24px; text-align:center;">
+                            <div id="patients-unchecked" style="font-size:56px; font-weight:700; color:#ffffff;">0</div>
+                            <div style="color:#ffffff; font-weight:bolder">Belum Diperiksa</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-6">
-                    <h5 style="text-align:center">Pasien per Minggu</h5>
+                    <h5 style="text-align:center; font-weight:bolder; font-size:24px">Pasien per Minggu</h5>
                     <div class="chart-container">
                         <canvas id="weeklyPatientsChart"></canvas>
                     </div>

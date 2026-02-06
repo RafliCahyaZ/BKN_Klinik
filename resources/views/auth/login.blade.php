@@ -1,73 +1,137 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Sistem Informasi Praktik Dokter</title>
-		<link rel="shortcut icon" href="<?= url('assets/img/web.png');?>">
-		<link rel="stylesheet" type="text/css" href="<?= url('assets/css/bootstrap.min.css');?>">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-	</head>
-	<body>
-		<nav class="navbar navbar-inverse" role="navigation">
-	      <div class="container">
-	        <div class="navbar-header">
-	          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	            <span class="sr-only">Toggle navigation</span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	          </button>
-	          <a class="navbar-brand" href="login"><i class="glyphicon glyphicon-plus"></i>Sistem Informasi Praktik Dokter</a>
-	        </div>
-	        <div id="navbar" class="collapse navbar-collapse">
-	          <ul class="nav navbar-nav navbar-right">
-	            <li class="active"><a href=""><?php echo date('d F Y')?></a></li>
-	          </ul>
-	        </div><!--/.nav-collapse -->
-	      </div>
-	    </nav>
-	    <div class="container">
-                    @if (session('success'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('success') }}
-                        </div>
-                    @endif
 
-                    @if (session('failed'))
-                        <div class="alert alert-danger" role="alert">
-                            {{ session('failed') }}
-                        </div>
-                    @endif
-	    	<div class="row">
-		    	<div class="col-lg-4 col-sm-4 col-xs-4 col-md-offset-4">
-                <form method="POST" action={{ route('login.post') }}>
+<head>
+    <title>Sistem Informasi Praktik Dokter</title>
+    <link rel="shortcut icon" href="<?= url('assets/img/web.png') ?>">
+    <link rel="stylesheet" type="text/css" href="<?= url('assets/css/bootstrap.min.css') ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .login-wrapper {
+            height: 100%;
+            display: flex;
+            border: none
+        }
+
+        .login-left {
+            width: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* geser ke kiri */
+            padding-left: 80px;          /* jarak dari sisi kiri */
+            background-color: #ffffff;
+            height: 100vh;
+            border-radius: 8px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 550px;
+            padding: 30px;
+            background: #ffffff;
+        }
+
+        .login-right {
+            width: 40%;
+            background: #dbecff;
+            border-radius: 8px;
+            margin : 8px 8px 8px 0px;
+            display:flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden
+        }
+
+        @media (max-width: 768px) {
+            .login-wrapper {
+                flex-direction: column;
+            }
+
+            .login-left,
+            .login-right {
+                width: 100%;
+            }
+
+            .login-right {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="login-wrapper">
+
+    <div class="login-left">
+        <div class="login-card">
+
+            <h3 class="text-left" style="font-weight:bolder;">
+                <i></i><br>
+                Login BKN Clinic
+
+            </h3>
+
+            <p style="color:rgb(152, 152, 152)">
+                <i class="glyphicon glyphicon-info-sign"></i> Jika <span style="font-weight:bold">belum memiliki akun</span>, silahkan menghubungi <span style="font-weight:bold">Admin</span>.</p>
+            <hr>
+
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if (session('failed'))
+                <div class="alert alert-danger">
+                    {{ session('failed') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    @foreach ($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('login.post') }}">
                 @csrf
-		    		<fieldset>
-		    			<legend align="center">Form Login</legend>
-		    		</fieldset>
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            @foreach ($errors->all() as $error)
-                                <div>{{ $error }}</div>
-                            @endforeach
-                        </div>
-                    @endif
-		    		<label>Username</label>
-                    <input type="text" name="username" value="" id="username" placeholder="Masukkan Username" class="form-control input-lg" autofocus="autofocus">
-                    <br>
-		    		<label>Password</label>
-                    <input type="password" name="password" value="" id="password" placeholder="Masukkan Password" class="form-control input-lg" minlength="8" maxlength="64">
-                    <br>
-                    <input type="submit" name="submit" value="Login" class="btn btn-primary btn-lg">
-                    <input type="reset" name="reset" value="Ulangi" class="btn btn-danger btn-lg">
-                </form>
-		    	<hr>
-		    	<footer>
-		    		<p>&nbsp;</p>
-		    	</footer>
-		    	</div>
-	    	</div>
-	    </div>
 
-	</body>
+                <label>Username</label>
+                <input type="text" name="username" class="form-control input-lg" placeholder="Masukkan Username"
+                    autofocus>
+                <br>
+
+                <label>Password</label>
+                <input type="password" name="password" class="form-control input-lg" placeholder="Masukkan Password"
+                    minlength="15" maxlength="64">
+                <br>
+
+                <button type="submit" class="btn btn-primary btn-lg btn-block">
+                    Login
+                </button>
+                <br>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="login-right">
+        <img src="{{ url("/assets/img/login.png") }}" alt="" style="width:85%;">
+    </div>
+
+
+</div>
+
+
+</body>
+
 </html>
-
