@@ -39,7 +39,7 @@ Route::middleware("auth")->group(function () {
             ->name("create");
 
         Route::get("/queue", [PatientController::class, 'queue'])
-            ->middleware('can:get-all-appointment')
+            ->middleware('permission:get-all-appointment|register-patient')
             ->name("queue");
 
         Route::middleware("can:get-history-appointment")->group(function () {
@@ -218,4 +218,9 @@ Route::middleware("auth")->group(function () {
     Route::get('/', function () {
         return view('dashboard.home');
     });
+
+    Route::get('/dashboard/api/patients-status', [ReportController::class, 'patientsStatus']);
+    Route::get('/dashboard/api/weekly-patients', [ReportController::class, 'weeklyPatientsChart']);
+
+
 });

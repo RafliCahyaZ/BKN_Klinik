@@ -77,7 +77,7 @@
                                 </form>
                                 @endcan
 
-                                @can('create-appointment')
+                                @can('register-patient')
                                 <a href="{{ route("registration.create", $patient->id) }}" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i></a>
                                 @endcan
 
