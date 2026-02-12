@@ -3,12 +3,12 @@
 @section('content')
     <x-dashboard-container title="Data Transaksi Obat">
         @can('create-transaction-medicine')
-        <a href="{{ route('medicine.transaction.create.view') }}" class="btn btn-primary btn-md"><i
-            class="glyphicon glyphicon-ok"></i> Tambah Transaksi Obat</a>
+            <a href="{{ route('medicine.transaction.create.view') }}" class="btn btn-primary btn-md"><i
+                    class="glyphicon glyphicon-ok"></i> Tambah Transaksi Obat</a>
         @endcan
-        @can('print-transaction-medicine')
-        <a href="{{ route('medicine.transaction.print') }}" class="btn btn-primary btn-md" target="_blank"><i
-                class="glyphicon glyphicon-print"></i> Cetak Data Transaksi Obat</a>
+        @can('print-all-transaction-medicine')
+            <a href="{{ route('medicine.all.transaction.print') }}" class="btn btn-primary btn-md" target="_blank"><i
+                    class="glyphicon glyphicon-print"></i> Cetak Data Transaksi Obat</a>
         @endcan
         <hr>
 
@@ -42,7 +42,7 @@
                     @foreach ($transactions as $index => $transaction)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $transaction->createdAt->format('Y-m-d') }}</td>
+                            <td>{{ $transaction->createdAt->timezone('Asia/Jakarta')->format('H:i:s d-m-Y') }}</td>
                             <td>{{ $transaction->type }}</td>
                             <td>{{ $transaction->medicine->name }}</td>
                             <td>{{ $transaction->quantity }}</td>

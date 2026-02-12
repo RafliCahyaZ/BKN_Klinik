@@ -39,13 +39,14 @@ Route::middleware("auth")->group(function () {
             ->name("queue");
 
         Route::middleware("can:get-history-appointment")->group(function () {
-            Route::get("/{id}/history", [PatientController::class, 'userHistory'])->name("user.history");
-            Route::get("/{id}/history/print", [PatientController::class, 'userHistoryPrint'])->name("user.history.print");
             Route::get("/history", [PatientController::class, 'history'])->name("history");
             Route::get("/history/print", [HistoryController::class, 'printAll'])->name("all-history.print");
-            Route::get("/history/{id}", [HistoryController::class, 'show'])->name("history.show");
+            Route::get("/{id}/history/print", [PatientController::class, 'userHistoryPrint'])->name("user.history.print");
             Route::get("/history/print/{id}", [HistoryController::class, 'print'])->name("history.print");
         });
+
+        Route::get("/{id}/history", [PatientController::class, 'userHistory'])->name("user.history");
+        Route::get("/history/{id}", [HistoryController::class, 'show'])->name("history.show");
 
         Route::get("/print", [PatientController::class, 'print'])
             ->middleware("can:print-patient")
@@ -80,7 +81,7 @@ Route::middleware("auth")->group(function () {
         Route::post("/report", [ReportController::class, 'create'])->name("report.create");
     });
 
-    Route::prefix("registration")->middleware("can:register-patient")->name("registration.")->group(function () {
+    Route::prefix("registration")->middleware("can:create-appointment")->name("registration.")->group(function () {
         Route::get("/create/{patientId}", [RegistrationController::class, 'create'])->name("create");
         Route::post("/create/{patientId}", [RegistrationController::class, 'store'])->name("store");
         Route::get("/{id}/print", [HistoryController::class, 'show'])->name("print");
@@ -114,14 +115,14 @@ Route::middleware("auth")->group(function () {
         Route::delete("/destroy/{id}", [MedicineController::class, 'destroy'])
             ->middleware("can:delete-medicine")
             ->name("destroy");
-
+        
         Route::get("/transaction", [MedicineController::class, 'getAllTransaction'])
             ->middleware("can:get-all-transaction-medicine")
             ->name("transaction.index");
 
         Route::get("/transaction/print", [MedicineController::class, 'printAllTransaction'])
-            ->middleware("can:print-transaction-medicine")
-            ->name("transaction.print");
+            ->middleware("can:print-all-transaction-medicine")
+            ->name("all.transaction.print");
         
         Route::get('/transaction/create', [MedicineController::class, 'createTransaction'])
             ->middleware("can:create-transaction-medicine")
@@ -138,6 +139,10 @@ Route::middleware("auth")->group(function () {
         Route::get('/transaction/report/print', [MedicineController::class, 'printTransactionReport'])
             ->middleware("can:get-report-transaction-medicine")
             ->name("transaction.report.print");
+
+        Route::get("/transaction/{id}", [MedicineController::class, 'history'])->middleware("can:get-transaction-medicine")->name("transaction");
+
+        Route::get("/transaction/{id}/print", [MedicineController::class, 'printHistory'])->middleware("can:print-transaction-medicine")->name("transaction.print");
     });
 
     Route::prefix("diagnosis")->name("diagnosis.")->group(function () {

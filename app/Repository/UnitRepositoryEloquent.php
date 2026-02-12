@@ -25,7 +25,7 @@ class UnitRepositoryEloquent implements UnitRepository
             $units = $formated_units->toArray();
 
             return $units;
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return [];
         }
     }
@@ -112,7 +112,7 @@ class UnitRepositoryEloquent implements UnitRepository
                 return 0;
             }
             return $latestId;
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return 0;
         }
     }
@@ -128,7 +128,7 @@ class UnitRepositoryEloquent implements UnitRepository
             }
 
             return false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return false;
         }
     }

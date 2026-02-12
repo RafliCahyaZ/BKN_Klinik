@@ -64,14 +64,14 @@
                 </li>
             @endcan
 
-            @canany(['get-report-patient', 'print-transaction-medicine'])
+            @canany(['get-report-patient', 'print-all-transaction-medicine'])
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Laporan <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     @can('get-report-patient')
-                        <li> <a href="{{ route('patient.report.index') }}">Laporan Pasien Per Periode</a></li>
+                        <li> <a href="{{ route('patient.report.index') }}">Laporan Registrasi Pasien Per Periode</a></li>
                     @endcan
-                    @can('print-transaction-medicine')
+                    @can('print-all-transaction-medicine')
                         <li> <a href="{{ route('medicine.transaction.report') }}">Laporan Periode Transaksi Obat</a></li>
                     @endcan
                 </ul>

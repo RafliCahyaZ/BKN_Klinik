@@ -23,8 +23,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             $medicine = $this->medicineRepository->getById($medicineId);
             $beginningStock = $medicine->stock;
             return $beginningStock;
-        } catch (\Exception $e) {
-            throw $e;
+        } catch (\Throwable $th) {
+            return null;
         }
     }
 
@@ -39,8 +39,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             } else if ($transactionType == TransactionType::ADJUSTMENT) {
                 return $quantity;
             }
-        } catch (\Exception $e) {
-            throw $e;
+        } catch (\Throwable $th) {
+            return null;
         }
     }
 
@@ -86,7 +86,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             $transactions = $formatedTransactions->toArray();
 
             return $transactions;
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return [];
         }
     }
@@ -169,7 +169,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             $newDataArray = $newData->toArray();
             MedicineStockTransaction::insert($newDataArray);
             return true;
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return false;
         }
     }
@@ -298,7 +298,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 return 0;
             }
             return $latestId;
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return 0;
         }
     }
@@ -314,7 +314,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             }
 
             return false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return false;
         }
     }
@@ -360,7 +360,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             });
 
             return $formated_transactions->toArray();
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return [];
         }
     }
@@ -406,32 +406,34 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             });
 
             return $formatedTransactions->toArray();
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return [];
         }
     }
 
     public function getByPeriod($startDate, $endDate): array
     {
+        try {
+            $medicineStocks = Medicine::select('id', 'name')
+                ->addSelect([
+                    'beginning_stock' => MedicineStockTransaction::selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END)')
+                        ->whereColumn('medicine_id', 'medicines.id')
+                        ->whereDate('created_at', '<', $startDate),
 
-        $medicineStocks = Medicine::select('id', 'name')
-            ->addSelect([
-                'beginning_stock' => MedicineStockTransaction::selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END)')
-                    ->whereColumn('medicine_id', 'medicines.id')
-                    ->whereDate('created_at', '<', $startDate),
+                    'last_stock' => MedicineStockTransaction::selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END)')
+                        ->whereColumn('medicine_id', 'medicines.id')
+                        ->whereDate('created_at', '<=', $endDate),
+                ])
+                ->get()
+                ->map(function ($medicine) { 
+                    $medicine->beginning_stock = $medicine->beginning_stock ?? 0;
+                    $medicine->last_stock = $medicine->last_stock ?? 0;
+                    return $medicine;
+                });
 
-                'last_stock' => MedicineStockTransaction::selectRaw('SUM(CASE WHEN type = "in" THEN quantity ELSE -quantity END)')
-                    ->whereColumn('medicine_id', 'medicines.id')
-                    ->whereDate('created_at', '<=', $endDate),
-            ])
-            ->get()
-            ->map(function ($medicine) { 
-                $medicine->beginning_stock = $medicine->beginning_stock ?? 0;
-                $medicine->last_stock = $medicine->last_stock ?? 0;
-                return $medicine;
-            });
-
-            return $medicineStocks->toArray();
-        
+                return $medicineStocks->toArray();
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 }

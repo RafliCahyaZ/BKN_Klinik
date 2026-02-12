@@ -195,7 +195,7 @@ class MedicineController extends Controller
         $medicineStockTransactions = $this->medicineStockTransactionRepository->getAll();
         $timestamp = Carbon::now()->format('Y-m-d_His');
 
-        $pdf = Pdf::loadView('pdf.medicine-transactions', compact('medicineStockTransactions'));
+        $pdf = Pdf::loadView('pdf.all-medicine-transactions', compact('medicineStockTransactions'));
         return $pdf->stream("laporan_transaksi_obat_{$timestamp}.pdf");
     }
 
@@ -205,9 +205,6 @@ class MedicineController extends Controller
         return view("dashboard.medicine.home", [
             "medicines" => $medicines
         ]);
-        /* return view("dashboard.treatment.home", [ */
-        /*     "treatments" => $treatmentRepository->getAll() */
-        /* ]); */
     }
 
     public function edit($id)
@@ -297,7 +294,7 @@ class MedicineController extends Controller
         $medicineStockTransactions = $this->medicineStockTransactionRepository->getByMedicineId($id);
         $timestamp = Carbon::now()->format('Y-m-d_His');
 
-        $pdf = Pdf::loadView('pdf.medicine-history', compact('medicine', 'medicineStockTransactions'));
+        $pdf = Pdf::loadView('pdf.medicine-transaction', compact('medicine', 'medicineStockTransactions'));
         return $pdf->stream("histori_transaksi_{$medicine->name}_{$timestamp}.pdf");
     }
 

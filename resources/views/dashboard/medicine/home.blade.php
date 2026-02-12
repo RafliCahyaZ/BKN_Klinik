@@ -43,13 +43,13 @@
                                     <td>{{ $medicine->id }}</td>
                                     <td>{{ $medicine->name }}</td>
                                     <td>{{ $medicine->stock }} {{ $medicine->unit->name }}</td>
-                                @canany(['delete-medicine', 'edit-medicine', 'transaction-medicine'])
+                                @canany(['delete-medicine', 'edit-medicine', 'get-transaction-medicine'])
                                     <td>
                                         @can('edit-medicine')
                                             <a href="{{ route("medicine.edit.view", $medicine->id) }}" class="btn btn-sm btn-info" title="Ubah Data"><i class="glyphicon glyphicon-pencil"></i></a>
                                         @endcan
-                                        @can('transaction-medicine')
-                                            <a class="btn btn-sm btn-warning" href="{{ route('medicine.history', $medicine->id) }}"  class="btn btn-sm btn-info" title="Lihat Data History"><i class="fa fa-history"></i></a>
+                                        @can('get-transaction-medicine')
+                                            <a class="btn btn-sm btn-warning" href="{{ route('medicine.transaction', $medicine->id) }}"  class="btn btn-sm btn-info" title="Lihat Data History"><i class="fa fa-history"></i></a>
                                         @endcan
                                         @can('delete-medicine')
                                         <form

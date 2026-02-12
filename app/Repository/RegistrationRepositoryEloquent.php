@@ -87,14 +87,12 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                         $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
                         $medicineStockTransactionDTO->id = $transaction->id;
 
-                        // Map inventory officer to UserDTO
                         $inventoryOfficer = new UserDTO();
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
 
-                        // Map medicine to MedicineDTO
                         $medicine = new MedicineDTO();
                         
                         if ($transaction->medicine) {
@@ -214,8 +212,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                     }
                     $medicineStockTransactionDTO->medicine = $medicine;
 
-                    // Map registration to RegistrationDTO (without transactions to avoid circular reference)
-                    $medicineStockTransactionDTO->registration = null; // Will be set to parent registration
+                    $medicineStockTransactionDTO->registration = null; 
                     $medicineStockTransactionDTO->type = $transaction->type;
                     $medicineStockTransactionDTO->quantity = $transaction->quantity;
                     $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
@@ -403,8 +400,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             } else {
                 return null;
             }
-        } catch (\Exception $e) {
-            dd($e);
+        } catch (\Throwable $th) {
             return null;
         }
     }
@@ -634,14 +630,12 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                         $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
                         $medicineStockTransactionDTO->id = $transaction->id;
 
-                        // Map inventory officer to UserDTO
                         $inventoryOfficer = new UserDTO();
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
 
-                        // Map medicine to MedicineDTO
                         $medicine = new MedicineDTO();
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
@@ -683,6 +677,10 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
 
     public function getByUserId(): array
     {
-        return $this->getAll();
+        try {
+            return $this->getAll();
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 }

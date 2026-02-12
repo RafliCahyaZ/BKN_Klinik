@@ -99,7 +99,7 @@
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td>{{ $patient->name }}</td>
-                    <td class="text-center">{{ $patient->gender }}</td>
+                    <td class="text-center">{{ $patient->gender == 'M' ? 'Laki-laki' : 'Perempuan' }}</td>
                     <td class="text-center">{{ $patient->age }} Tahun</td>
                     <td>{{ $patient->address }}</td>
                     <td>{{ $patient->telpNumber }}</td>

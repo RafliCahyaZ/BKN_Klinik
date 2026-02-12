@@ -101,6 +101,7 @@ class AppointmentController extends Controller
 
             $medicineInputs = $aggregatedmedicineIds;
             foreach ($medicineAvailables as $index => $medicineAvailable) {
+
                 $medicineInputs[$index]["'stock'"] = $medicineAvailables[$index]->stock;
             }
     

@@ -37,7 +37,7 @@
                                 <th>Berkas RM</th>
                                 <th>Alamat</th>
                                 <th>Telp</th>
-                                <th>Tgl. Register</th>
+                                <th>Tanggal Register</th>
                                 @canany(['delete-patient', 'edit-patient', 'create-patient','get-history-appointment'])
                                     <th>Kelola</th>
                                 @endcanany
@@ -55,7 +55,7 @@
                                 <td><img style="max-width: 80px; max-height: 80px;" src="{{ $patient->medicalRecordFileUrl }}" alt="RM File" /></td>
                                 <td>{{ $patient->address }}</td>
                                 <td>{{ $patient->telpNumber }}</td>
-                                <td>{{ $patient->createdAt->format('Y-m-d'); }}</td>
+                                <td>{{ $patient->createdAt->timezone('Asia/Jakarta')->format('d-m-Y H:i:s') }}</td>
                                 @canany(['delete-patient', 'edit-patient', 'create-patient','get-history-appointment'])
                                 <td width="15%" class="d-flex">
                                 @can('edit-patient')
@@ -77,13 +77,13 @@
                                 </form>
                                 @endcan
 
-                                @can('register-patient')
+                                @can('create-appointment')
                                 <a href="{{ route("registration.create", $patient->id) }}" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i></a>
                                 @endcan
 
-                                @can('get-history-appointment')
+                                
                                     <a class="btn btn-sm btn-warning" href="{{ route("patient.user.history", $patient->id) }}"><i class="fa fa-history"></i></a>
-                                @endcan
+
                                 </td>
                                 @endcanany
 

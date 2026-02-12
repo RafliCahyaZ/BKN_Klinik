@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Repository\RegistrationRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Request;
 
 class HistoryController extends Controller
 {

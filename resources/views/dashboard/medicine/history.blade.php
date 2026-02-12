@@ -18,10 +18,12 @@
         </table>
     </x-dashboard-container>
 
-    <div style="margin-left: 15px; padding: 12px 0">
-        <a href="{{ route('medicine.history.print', $medicine->id) }}" class="btn btn-primary btn-md"><i
-                class="glyphicon glyphicon-print"></i> Cetak Histori Transaksi</a>
-    </div>
+    @can('print-transaction-medicine')
+        <div style="margin-left: 15px; padding: 12px 0">
+            <a href="{{ route('medicine.transaction.print', $medicine->id) }}" class="btn btn-primary btn-md" target="_blank"><i
+                    class="glyphicon glyphicon-print"></i> Cetak Histori Transaksi</a>
+        </div>
+    @endcan
 
 
     <x-dashboard-container title="Tabel Transaksi {{ $medicine->name }}">
@@ -52,7 +54,7 @@
                             <td>{{ $medicineStockTransaction->beginningStock }}</td>
                             <td>{{ $medicineStockTransaction->lastStock }}</td>
                             <td>{{ $medicineStockTransaction->notes }}</td>
-                            <td>{{ $medicineStockTransaction->createdAt }}</td>
+                            <td>{{ $medicineStockTransaction->createdAt->format('d-m-Y H:i:s') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

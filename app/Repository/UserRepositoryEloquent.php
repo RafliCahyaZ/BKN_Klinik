@@ -13,217 +13,277 @@ class UserRepositoryEloquent implements UserRepository
 {
     public function getAll(): array
     {
-        $usersCollections = User::with('roles')->get();
+        try {
+            $usersCollections = User::with('roles')->get();
 
-        $formatedUsers = $usersCollections->map(function ($user) {
-            return $this->mapUserModelToUserDto($user);
-        });
+            $formatedUsers = $usersCollections->map(function ($user) {
+                return $this->mapUserModelToUserDto($user);
+            });
 
-        $users = $formatedUsers->toArray();
-        return $users;
+            $users = $formatedUsers->toArray();
+            return $users;
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 
     public function getByUsername(string $username): ?UserDTO
     {
-        $user = User::where('username', $username)->first();
+        try {
+            $user = User::where('username', $username)->first();
 
-        if (!$user) {
+            if (!$user) {
+                return null;
+            }
+
+            return $this->mapUserModelToUserDto($user);
+        } catch (\Throwable $th) {
             return null;
         }
-
-        return $this->mapUserModelToUserDto($user);
     }
 
     public function getByRole(UserRole $role): array
     {
-        $usersCollections = User::role($role->value)->get();
+        try {
+            $usersCollections = User::role($role->value)->get();
 
-        $formatedUsers = $usersCollections->map(function ($user) {
-            return $this->mapUserModelToUserDto($user);
-        });
+            $formatedUsers = $usersCollections->map(function ($user) {
+                return $this->mapUserModelToUserDto($user);
+            });
 
-        $users = $formatedUsers->toArray();
-        return $users;
+            $users = $formatedUsers->toArray();
+            return $users;
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 
     public function getFailedLoginAttempsById(string $id): int
     {
-        $user = User::find($id);
-        if(!$user) {
+        try {
+            $user = User::find($id);
+            if(!$user) {
+                return 0;
+            }
+            return $user ? $user->failed_login_attempts : 0;
+        } catch (\Throwable $th) {
             return 0;
         }
-        return $user ? $user->failed_login_attempts : 0;
     }
 
     public function insert(UserDTO $userDTO): ?UserDTO
     {
-        $user = new User();
-        $user->fill(
-            [
-                'username' => $userDTO->username,
-                'password' => $userDTO->password,
-                'fullname' => $userDTO->fullname,
-                'email' => $userDTO->email,
-            ]
-        );
+        try {
+            $user = new User();
+            $user->fill(
+                [
+                    'username' => $userDTO->username,
+                    'password' => $userDTO->password,
+                    'fullname' => $userDTO->fullname,
+                    'email' => $userDTO->email,
+                ]
+            );
 
-        $role = Role::findByName($userDTO->role->value);
-        if (!$role) {
+            $role = Role::findByName($userDTO->role->value);
+            if (!$role) {
+                return null;
+            }
+            $user->assignRole($role);
+            $user->save();
+            $userDTO->id = $user->id;
+            $userDTO->createdAt = $user->created_at;
+            $userDTO->updatedAt = $user->updated_at;
+
+            return $userDTO;
+        } catch (\Throwable $th) {
             return null;
         }
-        $user->assignRole($role);
-        $user->save();
-        $userDTO->id = $user->id;
-        $userDTO->createdAt = $user->created_at;
-        $userDTO->updatedAt = $user->updated_at;
-
-        return $userDTO;
     }
 
     public function edit(string $id, UserDTO $userDTO): ?UserDTO
     {
-        $updateData = [
-            'fullname' => $userDTO->fullname ?? null,
-            'password' => $userDTO->password ?? null,
-        ];
+        try {
+            $updateData = [
+                'fullname' => $userDTO->fullname ?? null,
+                'password' => $userDTO->password ?? null,
+            ];
 
-        $filteredUpdateData = array_filter($updateData);
-        $userId = $id;
+            $filteredUpdateData = array_filter($updateData);
+            $userId = $id;
 
-        if (!empty($filteredUpdateData)) {
-            $edit = User::where('id', $userId)
-                ->update($filteredUpdateData);
+            if (!empty($filteredUpdateData)) {
+                $edit = User::where('id', $userId)
+                    ->update($filteredUpdateData);
 
-            if ($edit > 0) {
-                $updatedData = User::find($id);
-                $updatedData->syncRoles([$userDTO->role->value]);
-                return $this->mapUserModelToUserDto($updatedData);
+                if ($edit > 0) {
+                    $updatedData = User::find($id);
+                    $updatedData->syncRoles([$userDTO->role->value]);
+                    return $this->mapUserModelToUserDto($updatedData);
+                } else {
+                    return null;
+                }
             } else {
                 return null;
             }
-        } else {
+        } catch (\Throwable $th) {
             return null;
         }
     }
 
     public function updateLastLoginAt(string $id, Carbon $lastLoginAt): bool
     {
-        $user = User::find($id);
+        try {
+            $user = User::find($id);
 
-        if (!$user) {
+            if (!$user) {
+                return false;
+            }
+
+            $user->last_login_at = $lastLoginAt;
+            $user->save();
+
+            return true;
+        } catch (\Throwable $th) {
             return false;
         }
-
-        $user->last_login_at = $lastLoginAt;
-        $user->save();
-
-        return true;
     }
 
     public function activate(string $id): ?UserDTO
     {
-        $user = User::find($id);
+        try {
+            $user = User::find($id);
 
-        if (!$user) {
+            if (!$user) {
+                return null;
+            }
+
+            $user->is_active = true;
+            $user->failed_login_attempts = 0;
+            $user->save();
+
+            return $this->mapUserModelToUserDto($user);
+        } catch (\Throwable $th) {
             return null;
         }
-
-        $user->is_active = true;
-        $user->failed_login_attempts = 0;
-        $user->save();
-
-        return $this->mapUserModelToUserDto($user);
     }
 
     function deactivate(string $id): ?UserDTO
     {
-        $user = User::find($id);
+        try {
+            $user = User::find($id);
 
-        if (!$user) {
+            if (!$user) {
+                return null;
+            }
+
+            $user->is_active = false;
+            $user->save();
+
+            return $this->mapUserModelToUserDto($user);
+        } catch (\Throwable $th) {
             return null;
         }
-
-        $user->is_active = false;
-        $user->save();
-
-        return $this->mapUserModelToUserDto($user);
     }
 
     function resetFailedLoginAttempts(string $id): bool
     {
-        $user = User::find($id);
+        try {
+            $user = User::find($id);
 
-        if (!$user) {
+            if (!$user) {
+                return false;
+            }
+
+            $user->failed_login_attempts = 0;
+            $user->save();
+
+            return true;
+        } catch (\Throwable $th) {
             return false;
         }
-
-        $user->failed_login_attempts = 0;
-        $user->save();
-
-        return true;
     }
 
     function getById(string $id): ?UserDTO
     {
-        $user = User::find($id);
+        try {
+            $user = User::find($id);
 
-        if (!$user) {
+            if (!$user) {
+                return null;
+            }
+
+            return $this->mapUserModelToUserDto($user);
+        } catch (\Throwable $th) {
             return null;
         }
-
-        return $this->mapUserModelToUserDto($user);
     }
 
     function getLatestId(): int
     {
-        $latestId = User::max('id');
-        if (!$latestId) {
+        try {
+            $latestId = User::max('id');
+            if (!$latestId) {
+                return 0;
+            }
+            return $latestId;
+        } catch (\Throwable $th) {
             return 0;
         }
-        return $latestId;
     }
 
     function updateFailedLoginAttemptsById(string $id, int $failedLoginAttempts): bool
     {
-        $user = User::find($id);
+        try {
+            $user = User::find($id);
 
-        if (!$user) {
+            if (!$user) {
+                return false;
+            }
+
+            $user->failed_login_attempts = $failedLoginAttempts;
+            $user->save();
+
+            return true;
+        } catch (\Throwable $th) {
             return false;
         }
-
-        $user->failed_login_attempts = $failedLoginAttempts;
-        $user->save();
-
-        return true;
     }
 
     function delete(string $id): bool
     {
-        $user = User::find($id);
+        try {
+            $user = User::find($id);
 
-        if ($user) {
-            $result = $user->delete();
-            return $result;
+            if ($user) {
+                $result = $user->delete();
+                return $result;
+            }
+
+            return false;
+        } catch (\Throwable $th) {
+            return false;
         }
-
-        return false;
     }
 
     public static function mapUserModelToUserDto(User $user): UserDTO
     {
-        $formatedUser = new UserDTO();
-        $formatedUser->id = $user->id;
-        $formatedUser->username = $user->username;
-        $formatedUser->fullname = $user->fullname;
-        $formatedUser->email = $user->email;
-        $formatedUser->password = $user->password;
-        $formatedUser->role = UserRoleHelper::stringToUserRole($user->roles[0]->name);
-        $formatedUser->isActive = $user->is_active;
-        $formatedUser->failedLoginAttempts = $user->failed_login_attempts;
-        $formatedUser->lastLoginAt = $user->last_login_at ? Carbon::parse($user->last_login_at) : null;
-        $formatedUser->createdAt = $user->created_at;
-        $formatedUser->updatedAt = $user->updated_at;
+        try {
+            $formatedUser = new UserDTO();
+            $formatedUser->id = $user->id;
+            $formatedUser->username = $user->username;
+            $formatedUser->fullname = $user->fullname;
+            $formatedUser->email = $user->email;
+            $formatedUser->password = $user->password;
+            $formatedUser->role = UserRoleHelper::stringToUserRole($user->roles[0]->name);
+            $formatedUser->isActive = $user->is_active;
+            $formatedUser->failedLoginAttempts = $user->failed_login_attempts;
+            $formatedUser->lastLoginAt = $user->last_login_at ? Carbon::parse($user->last_login_at) : null;
+            $formatedUser->createdAt = $user->created_at;
+            $formatedUser->updatedAt = $user->updated_at;
 
-        return $formatedUser;
+            return $formatedUser;
+        } catch (\Throwable $th) {
+            return new UserDTO();
+        }
     }
 }

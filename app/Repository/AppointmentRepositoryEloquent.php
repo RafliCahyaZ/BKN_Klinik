@@ -21,7 +21,7 @@ class AppointmentRepositoryEloquent implements AppointmentRepository
             return false;
         }
 
-        return false;
+        return false; 
     }
 
 
@@ -34,7 +34,7 @@ class AppointmentRepositoryEloquent implements AppointmentRepository
         } catch (QueryException $e) {
             return false;
         }
-        return false;
+        return false; 
     }
     
     public function attachManyDiagnosesToRegistration(RegistrationDTO $registrationDTO, array $diagnoses): bool

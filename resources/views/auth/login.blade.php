@@ -112,7 +112,7 @@
 
                 <label>Password</label>
                 <input type="password" name="password" class="form-control input-lg" placeholder="Masukkan Password"
-                    minlength="15" maxlength="64">
+                    minlength="8" maxlength="64">
                 <br>
 
                 <button type="submit" class="btn btn-primary btn-lg btn-block">

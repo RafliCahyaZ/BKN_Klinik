@@ -11,9 +11,7 @@
                         <th>Umur</th>
                         <th>Waktu Registrasi</th>
                         <th>Status</th>
-                        @can('create-appointment')
-                            <th>Aksi</th>
-                        @endcan
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,7 +21,7 @@
                             <td>{{ $registration->patient->name }}</td>
                             <td>{{ $registration->patient->address }}</td>
                             <td>{{ $registration->patient->dateOfBirth->age }} Tahun</td>
-                            <td>{{ $registration->createdAt }}</td>
+                            <td>{{ $registration->createdAt->format('d-m-Y H:i') }}</td>
                             <td>{{ $registration->cancelledAt ? 'Dibatalkan' : 'Aktif' }}</td>
                             <td>
                                 @can('process-appointment')

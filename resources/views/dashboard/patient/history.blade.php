@@ -4,7 +4,7 @@
     <x-dashboard-container title="Daftar History Pasien">
 
         <a href="{{ route('patient.all-history.print') }}" class="btn btn-info" target="_blank"><i
-                class="glyphicon glyphicon-print"></i> Cetak Data</a>
+                class="glyphicon glyphicon-print"></i> Cetak Data Semua Registrasi Pasien</a>
         <hr>
 
         <form action="" method="GET" >
@@ -26,7 +26,8 @@
                     <div class="btn-group" style="display: block;">
                         <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-filter"></i>
                             Filter</button>
-                        <a href="" class="btn btn-default">Reset</a>
+                        <a href="{{ route('patient.history') }}" class="btn btn-default">Reset</a>
+                        
                     </div>
                 </div>
             </div>
@@ -37,12 +38,13 @@
                 <thead>
                     <tr>
                         <th>No. Registrasi</th>
+                        <th>ID Pasien</th>
                         <th>Nama Pasien</th>
                         <th>Jenis Kelamin</th>
                         <th>Umur</th>
                         <th>Alamat</th>
                         <th>No. Telp</th>
-                        <th>Tgl Periksa Terakhir</th>
+                        <th>Tanggal Periksa Terakhir</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -50,12 +52,13 @@
                     @foreach ($histories as $index => $history)
                         <tr>
                             <td>{{ $history->id }}</td>
+                            <td>{{ $history->patient->id }}</td>
                             <td>{{ $history->patient->name }}</td>
-                            <td>{{ $history->patient->gender }}</td>
+                            <td>{{ $history->patient->gender == 'male' ? 'Laki-laki' : 'Perempuan' }}</td>
                             <td>{{ $history->patient->age }} Tahun</td>
                             <td>{{ $history->patient->address }}</td>
                             <td>{{ $history->patient->telpNumber }}</td>
-                            <td>{{ $history->checkDate->diffForHumans() }}</td>
+                            <td>{{ $history->checkDate->locale('id')->diffForHumans() }}</td>
                             <td>
                                 <a href="{{ route('patient.history.show', $history->id) }}" class="btn btn-sm btn-info">
                                     <i class="glyphicon glyphicon-search"></i>

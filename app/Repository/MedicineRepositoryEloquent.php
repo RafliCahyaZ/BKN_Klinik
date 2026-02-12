@@ -40,8 +40,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
             $medicines = $formated_medicines->toArray();
 
             return $medicines;
-        } catch (\Exception $e) {
-            dd($e);
+        } catch (\Throwable $th) {
             return [];
         }
     }
@@ -105,8 +104,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
                 dd("no data to update");
                 return null;
             }
-        } catch (\Exception $e) {
-            dd($e);
+        } catch (\Throwable $th) {
             return null;
         }
     }
@@ -134,7 +132,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
                 return 0;
             }
             return $latestId;
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return 0;
         }
     }
@@ -150,7 +148,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
             }
 
             return false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
             return false;
         }
     }
