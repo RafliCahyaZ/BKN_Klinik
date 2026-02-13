@@ -66,6 +66,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
 
     public function insert(MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO
     {
+
         try {
 
             $transaction = MedicineStockTransaction::create([
@@ -87,6 +88,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
 
             return $medicineStockTransactionDTO;
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return null;
         }
     }

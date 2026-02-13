@@ -1,6 +1,11 @@
 @extends('layouts.dashboard')
 @section('content')
     <x-dashboard-container title="Daftar Antrian Pasien">
+        @if(session('failed'))
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <strong>Gagal!</strong> {{ session('failed') }}
+        </div>
+        @endif
         <div class="unseen">
             <table class="table table-bordered table-hover table-condensed data-table order-table ">
                 <thead>

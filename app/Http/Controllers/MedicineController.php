@@ -174,7 +174,7 @@ class MedicineController extends Controller
             $pdf = Pdf::loadView('pdf.medicine-transaction-report', compact('medicineStockTransactions', 'startDate', 'endDate'));
             return $pdf->stream("laporan_periode_transaksi_obat_{$timestamp}.pdf");
         } catch (\Throwable $th) {
-            dd($th);
+            return back()->with("failed", "Terjadi kesalahan saat membuat laporan");
         }
     }
 

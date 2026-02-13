@@ -70,6 +70,7 @@ class AppointmentController extends Controller
             $registration->checkDate = Carbon::now();
             $registration->doctor = $doctor;
             $registration->receipt = $request["receipt"];
+            $registration->complaint = $request["keluhan"];
 
             $diagnoses = collect($request["diagnosis_ids"])->map(function ($item) {
                 $diagnosisDto = new DiagnosisDTO();
@@ -82,6 +83,7 @@ class AppointmentController extends Controller
                 $treatmentDto->id = $item;
                 return $treatmentDto;
             });
+
 
             $aggregatedmedicineIds = $this->aggregateMedicineIds($request["medicine_ids"]);
 
@@ -106,19 +108,24 @@ class AppointmentController extends Controller
             }
 
             $medicinesTransaction = $this->mapInputToMedicineStockTransactionDTO($id, $medicineInputs);
-            dd($medicinesTransaction);
 
-            if (!$this->patientExaminationService->execute(
+            $patientExaminationResult = $this->patientExaminationService->execute(
                 $registration,
+
                 $diagnoses->toArray(),
                 $treatments->toArray(),
                 $medicinesTransaction
-            )) {
+            );
+
+            
+            if (!$patientExaminationResult) {
                 return back()->with("failed", "Failed make appointment");
             }
+
+
             return redirect()->route("patient.history.show", $id)->with("success", "Berhasil melakukan pemeriksaan");
         } catch (\Throwable $th) {
-            dd($th);
+            return back()->with("failed", "Terjadi kesalahan saat melakukan pemeriksaan");
         }
     }
 
@@ -186,6 +193,8 @@ class AppointmentController extends Controller
             $medicineStockTransactionDto->medicine = new MedicineDTO();
             $medicineStockTransactionDto->medicine->id = $medicineInput["'id'"];
             $medicineStockTransactionDto->medicine->stock = $medicineInput["'stock'"];
+            $medicineStockTransactionDto->beginningStock = $medicineInput["'stock'"];
+            $medicineStockTransactionDto->lastStock = $medicineInput["'stock'"] - $medicineInput["'quantity'"];
             $medicineStockTransactionDto->registration = new RegistrationDTO();
             $medicineStockTransactionDto->registration->id = $registrationId;
             $medicineStockTransactionDto->type = TransactionType::OUT;

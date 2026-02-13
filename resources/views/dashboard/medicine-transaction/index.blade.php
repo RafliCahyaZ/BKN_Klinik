@@ -2,6 +2,11 @@
 
 @section('content')
     <x-dashboard-container title="Data Transaksi Obat">
+        @if(session('failed'))
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <strong>Gagal!</strong> {{ session('failed') }}
+        </div>
+        @endif
         @can('create-transaction-medicine')
             <a href="{{ route('medicine.transaction.create.view') }}" class="btn btn-primary btn-md"><i
                     class="glyphicon glyphicon-ok"></i> Tambah Transaksi Obat</a>

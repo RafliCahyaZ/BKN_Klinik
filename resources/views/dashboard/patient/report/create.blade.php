@@ -8,7 +8,12 @@
           <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> <b>Laporan Pasien</b></h3>
         </div>
         <div class="panel-body">
-        <form action="{{ route("patient.report.print") }}" method="get" accept-charset="utf-8" name="adminForm" id="adminForm" class="form-horizontal">                  <div class="form-group">
+        @if(session('failed'))
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <strong>Gagal!</strong> {{ session('failed') }}
+        </div>
+        @endif
+        <form action="{{ route("patient.report.print") }}" method="get" accept-charset="utf-8" name="adminForm" id="adminForm" class="form-horizontal" target="_blank">                  <div class="form-group">
             @csrf
               <label for="inputkode" class="col-md-2 control-label">Periode Laporan</label><br>
               <div class="col-lg-4">

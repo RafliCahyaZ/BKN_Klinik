@@ -42,7 +42,10 @@
             <hr>
             <div role="tabpanel">
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="periksa" class="active">
+                    <li role="keluhan" class="active">
+                        <a href="#keluhan" aria-controls="keluhan" role="tab" data-toggle="tab">Keluhan</a>
+                    </li>
+                    <li role="periksa">
                         <a href="#diagnosa" aria-controls="diagnosa" role="tab" data-toggle="tab">Diagnosa</a>
                     </li>
                     <li role="periksa">
@@ -110,6 +113,21 @@
                     <table class="table table-striped">
                         <tbody id="treatmentTable">
                         </tbody>
+                    </table>
+                </div>
+
+                <div role="tabpanel" class="tab-pane" id="keluhan">
+                    <table class="table">
+                        <tr>
+                            <th>
+                                Keluhan Pasien
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <textarea name="keluhan" style="min-height: 100px; width: 100%" rows="" cols="">{{ $registration->complaint }}</textarea>
+                            </th>
+                        </tr>
                     </table>
                 </div>
 

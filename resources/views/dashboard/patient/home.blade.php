@@ -29,6 +29,7 @@
                                 <tr>
                                 <th>No</th>
                                 <th>No. Rekam</th>
+                                <th>ID Pasien</th>
                                 <th>Nama Pasien</th>
                                 <th>JK</th>
                                 <th>Umur</th>
@@ -47,6 +48,7 @@
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $patient->medicalRecordNumber }}</td>
+                                <td>{{ $patient->id }}</td>
                                 <td>{{ $patient->name }}</td>
                                 <td>{{ ($patient->gender === "F") ? "Perempuan" : "Laki-laki" }}</td>
                                 <td>{{ $patient->age }}</td>

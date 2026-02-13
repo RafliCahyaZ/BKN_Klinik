@@ -39,10 +39,13 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
                     $editResult = false;
                 }
                 if (!$this->registrationRepository->edit($registrationDto)) {
+                    dd('failed edit registration in patient examination service');
                     $editResult = false;
                 }
 
                 $medicineUpdates = [];
+
+                // dd($editResult)
                 
                 foreach ($medicineTransactions as $medicineStockTransactionDto) {
                     if (is_null($this->medicineStockTransactionRepository->insert($medicineStockTransactionDto))) {
@@ -59,6 +62,8 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
                     }
                     $medicineUpdates[$medicineId]['totalQuantity'] += $medicineStockTransactionDto->quantity;
                 }
+
+                
 
                 if ($editResult) {
                     foreach ($medicineUpdates as $medicineId => $updateData) {
@@ -88,6 +93,7 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
                 return $editResult;
             });
         } catch (\Throwable $th) {
+            dd($th);
             return false;
         }
 
