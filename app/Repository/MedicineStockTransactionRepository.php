@@ -12,7 +12,7 @@ interface MedicineStockTransactionRepository
 
     public function insert(MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO;
 
-    public function insertMany(array $medicineStockTransactionDTOs): bool;
+    // public function insertMany(array $medicineStockTransactionDTOs): bool;
 
     public function edit(string $id, MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO;
 

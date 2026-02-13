@@ -17,10 +17,9 @@ return new class extends Migration
             $table->foreignId('medicine_id')->constrained()->onDelete('cascade');
             $table->foreignId('registration_id')->nullable()->constrained()->onDelete('cascade');
             $table->enum('type', ['in', 'out', 'adjustment', 'return', 'expired']);
-            $table->integer('quantity');
             $table->integer('beginning_stock');
+            $table->integer('quantity');
             $table->integer('last_stock');
-            $table->date('expired_date')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });

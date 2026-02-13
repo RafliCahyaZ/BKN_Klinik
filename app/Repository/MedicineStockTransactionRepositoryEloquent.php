@@ -17,34 +17,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
         private MedicineRepository $medicineRepository
     ) {}
 
-    protected function getBeginningStock($medicineId)
-    {
-        try {
-            $medicine = $this->medicineRepository->getById($medicineId);
-            $beginningStock = $medicine->stock;
-            return $beginningStock;
-        } catch (\Throwable $th) {
-            return null;
-        }
-    }
-
-    protected function calculateLastStock($beginningStock, $quantity, $transactionType)
-    {
-        try {
-
-            if ($transactionType == TransactionType::IN) {
-                return $beginningStock + $quantity;
-            } else if ($transactionType == TransactionType::OUT || $transactionType == TransactionType::EXPIRED) {
-                return $beginningStock - $quantity;
-            } else if ($transactionType == TransactionType::ADJUSTMENT) {
-                return $quantity;
-            }
-        } catch (\Throwable $th) {
-            return null;
-        }
-    }
-
-    function getAll(): array
+    public function getAll(): array
     {
         try {
             $transactionsCollections = MedicineStockTransaction::with(['inventoryOfficer', 'medicine.unit', 'registration.patient', 'registration.doctor'])->get();
@@ -75,8 +48,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 $formatedTransaction->type = $transaction->type;
                 $formatedTransaction->quantity = $transaction->quantity;
                 $formatedTransaction->beginningStock = $transaction->beginning_stock;
-                $formatedTransaction->lastStock = $transaction->last_stock;
-                $formatedTransaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
+                $formatedTransaction->lastStock = $transaction->last_stock;null;
                 $formatedTransaction->notes = $transaction->notes;
                 $formatedTransaction->createdAt = Carbon::parse($transaction->created_at);
                 $formatedTransaction->updatedAt = Carbon::parse($transaction->updated_at);
@@ -92,26 +64,9 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
     }
 
 
-    function insert(MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO
+    public function insert(MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO
     {
         try {
-            $medicine = $this->medicineRepository->getById($medicineStockTransactionDTO->medicine->id);
-            $medicineId = $medicineStockTransactionDTO->medicine->id;
-            $beginningStock = $medicine->stock;
-            $quantity = $medicineStockTransactionDTO->quantity;
-            $transactionType = $medicineStockTransactionDTO->type;
-            $lastStock = $this->calculateLastStock($beginningStock, $quantity, $transactionType);
-
-            if ($medicineStockTransactionDTO->type == TransactionType::IN) {
-                $medicine->stock += $medicineStockTransactionDTO->quantity;
-            } else  if ($medicineStockTransactionDTO->type == TransactionType::OUT) {
-                if ($medicine->stock < $medicineStockTransactionDTO->quantity) {
-                    return null;
-                }
-                $medicine->stock -= $medicineStockTransactionDTO->quantity;
-            } else if ($medicineStockTransactionDTO->type == TransactionType::ADJUSTMENT) {
-                $medicine->stock = $medicineStockTransactionDTO->quantity;
-            }
 
             $transaction = MedicineStockTransaction::create([
                 'inventory_officer_id' => $medicineStockTransactionDTO->inventoryOfficer->id,
@@ -119,13 +74,10 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 'registration_id' => $medicineStockTransactionDTO->registration ? $medicineStockTransactionDTO->registration->id : null,
                 'type' => $medicineStockTransactionDTO->type,
                 'quantity' => $medicineStockTransactionDTO->quantity,
-                'beginning_stock' => $beginningStock,
-                'last_stock' => $lastStock,
-                'expired_date' => $medicineStockTransactionDTO->expiredDate ? $medicineStockTransactionDTO->expiredDate->toDateString() : null,
+                'beginning_stock' => $medicineStockTransactionDTO->beginningStock,
+                'last_stock' => $medicineStockTransactionDTO->lastStock,
                 'notes' => $medicineStockTransactionDTO->notes,
             ]);
-
-            $this->medicineRepository->edit($medicineId, $medicine);
 
             $medicineStockTransactionDTO->id = $transaction->id;
             $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
@@ -139,40 +91,40 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
         }
     }
 
-    function insertMany(array $medicineStockTransactionDTOs): bool
-    {
-        try {
-            $newData = collect($medicineStockTransactionDTOs)->map(function ($dto) {
-                $medicineId = $dto->medicine->id;
-                $beginningStock = $this->getBeginningStock($medicineId);
-                $quantity = $dto->quantity;
-                $transactionType = $dto->type;
-                $lastStock = $this->calculateLastStock($beginningStock, $quantity, $transactionType);
+    // function insertMany(array $medicineStockTransactionDTOs): bool
+    // {
+    //     try {
+    //         $newData = collect($medicineStockTransactionDTOs)->map(function ($dto) {
+    //             $medicineId = $dto->medicine->id;
+    //             $beginningStock = $this->getBeginningStock($medicineId);
+    //             $quantity = $dto->quantity;
+    //             $transactionType = $dto->type;
+    //             $lastStock = $this->calculateLastStock($beginningStock, $quantity, $transactionType);
 
-                if ($lastStock < 0) {
-                    throw new \Exception("Insufficient stock for medicine ID: " . $medicineId);
-                }
-                return [
-                    'inventory_officer_id' => $dto->inventoryOfficer->id,
-                    'medicine_id' => $dto->medicine->id,
-                    'registration_id' => $dto->registration ? $dto->registration->id : null,
-                    'type' => $dto->type,
-                    'quantity' => $dto->quantity,
-                    'beginning_stock' => $beginningStock,
-                    'last_stock' => $lastStock,
-                    'expired_date' => $dto->expiredDate ? $dto->expiredDate->toDateString() : null,
-                    'notes' => $dto->notes,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ];
-            });
-            $newDataArray = $newData->toArray();
-            MedicineStockTransaction::insert($newDataArray);
-            return true;
-        } catch (\Throwable $th) {
-            return false;
-        }
-    }
+    //             if ($lastStock < 0) {
+    //                 throw new \Exception("Insufficient stock for medicine ID: " . $medicineId);
+    //             }
+    //             return [
+    //                 'inventory_officer_id' => $dto->inventoryOfficer->id,
+    //                 'medicine_id' => $dto->medicine->id,
+    //                 'registration_id' => $dto->registration ? $dto->registration->id : null,
+    //                 'type' => $dto->type,
+    //                 'quantity' => $dto->quantity,
+    //                 'beginning_stock' => $beginningStock,
+    //                 'last_stock' => $lastStock,
+    //                 'expired_date' => $dto->expiredDate ? $dto->expiredDate->toDateString() : null,
+    //                 'notes' => $dto->notes,
+    //                 'created_at' => Carbon::now(),
+    //                 'updated_at' => Carbon::now()
+    //             ];
+    //         });
+    //         $newDataArray = $newData->toArray();
+    //         MedicineStockTransaction::insert($newDataArray);
+    //         return true;
+    //     } catch (\Throwable $th) {
+    //         return false;
+    //     }
+    // }
 
     function edit(string $id, MedicineStockTransactionDTO $medicineStockTransactionDTO): ?MedicineStockTransactionDTO
     {
@@ -226,7 +178,6 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                     $formatedUpdatedData->quantity = $updatedData->quantity;
                     $formatedUpdatedData->beginningStock = $updatedData->beginning_stock;
                     $formatedUpdatedData->lastStock = $updatedData->last_stock;
-                    $formatedUpdatedData->expiredDate = $updatedData->expired_date ? Carbon::parse($updatedData->expired_date) : null;
                     $formatedUpdatedData->notes = $updatedData->notes;
                     $formatedUpdatedData->createdAt = $updatedData->created_at;
                     $formatedUpdatedData->updatedAt = $updatedData->updated_at;
@@ -255,32 +206,27 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             $formatedTransaction = new MedicineStockTransactionDTO();
             $formatedTransaction->id = $transaction->id;
 
-            // Map inventory officer to UserDTO
             $inventoryOfficer = new UserDTO();
             if ($transaction->inventoryOfficer) {
                 $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
             }
             $formatedTransaction->inventoryOfficer = $inventoryOfficer;
 
-            // Map medicine to MedicineDTO
             $medicine = new MedicineDTO();
             if ($transaction->medicine) {
                 $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
             }
             $formatedTransaction->medicine = $medicine;
 
-            // Map registration to RegistrationDTO
             $registration = null;
             if ($transaction->registration) {
                 $registration = RegistrationRepositoryEloquent::mapRegistrationModelToRegistrationDto($transaction->registration);
             }
             $formatedTransaction->registration = $registration;
-
             $formatedTransaction->type = $transaction->type;
             $formatedTransaction->quantity = $transaction->quantity;
             $formatedTransaction->beginningStock = $transaction->beginning_stock;
             $formatedTransaction->lastStock = $transaction->last_stock;
-            $formatedTransaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
             $formatedTransaction->notes = $transaction->notes;
             $formatedTransaction->createdAt = $transaction->created_at;
             $formatedTransaction->updatedAt = $transaction->updated_at;
@@ -351,8 +297,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 $formated_transaction->type = $transaction->type;
                 $formated_transaction->quantity = $transaction->quantity;
                 $formated_transaction->beginningStock = $transaction->beginning_stock;
-                $formated_transaction->lastStock = $transaction->last_stock;
-                $formated_transaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
+                $formated_transaction->lastStock = $transaction->last_stock;null;
                 $formated_transaction->notes = $transaction->notes;
                 $formated_transaction->createdAt = $transaction->created_at;
                 $formated_transaction->updatedAt = $transaction->updated_at;
@@ -397,8 +342,7 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 $formatedTransaction->type = $transaction->type;
                 $formatedTransaction->quantity = $transaction->quantity;
                 $formatedTransaction->beginningStock = $transaction->beginning_stock;
-                $formatedTransaction->lastStock = $transaction->last_stock;
-                $formatedTransaction->expiredDate = $transaction->expired_date ? Carbon::parse($transaction->expired_date) : null;
+                $formatedTransaction->lastStock = $transaction->last_stock;null;
                 $formatedTransaction->notes = $transaction->notes;
                 $formatedTransaction->createdAt = $transaction->created_at;
                 $formatedTransaction->updatedAt = $transaction->updated_at;

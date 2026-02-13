@@ -23,7 +23,6 @@
                         </div>
                     @endif
 
-
                     <div class="unseen">
                         <table class="table table-bordered table-hover table-condensed data-table order-table ">
                             <thead>

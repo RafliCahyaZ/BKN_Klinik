@@ -10,6 +10,7 @@ use App\Helper\TransactionTypeHelper;
 use App\Repository\MedicineRepository;
 use App\Repository\MedicineStockTransactionRepository;
 use App\Repository\UnitRepository;
+use App\Type\TransactionType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,50 +78,77 @@ class MedicineController extends Controller
 
     public function storeTransaction(Request $request)
     {
-        $validated = $request->validate([
-            "medicineId" => [
-                'required',
-            ],
-            "transactionType" => [
-                'required',
-                Rule::in(TransactionTypeHelper::getArrayOptions()),
-            ],
-            'quantity' => [
-                'required',
-                'integer',
-                'min:1'
-            ],
-        ]);
 
-        $medicineStockTransaction = new MedicineStockTransactionDTO();
+        try {
+            $validated = $request->validate([
+                "medicineId" => [
+                    'required',
+                ],
+                "transactionType" => [
+                    'required',
+                    Rule::in(TransactionTypeHelper::getArrayOptions()),
+                ],
+                'quantity' => [
+                    'required',
+                    'integer',
+                    'min:1'
+                ]
+            ]);
 
-        $medicineStockTransaction->inventoryOfficer = new UserDTO();
-        $medicineStockTransaction->inventoryOfficer->id = Auth::id();
+            $medicineStockTransaction = new MedicineStockTransactionDTO();
 
-        $medicineStockTransaction->medicine = new MedicineDTO();
-        $medicineStockTransaction->medicine->id = $validated["medicineId"];
+            $medicineStockTransaction->inventoryOfficer = new UserDTO();
+            $medicineStockTransaction->inventoryOfficer->id = Auth::id();
 
-        $medicineStockTransaction->type = TransactionTypeHelper::stringToTransactionRole($validated["transactionType"]);
-        $medicineStockTransaction->quantity = $validated["quantity"];
+            $medicineStockTransaction->type = TransactionTypeHelper::stringToTransactionRole($validated["transactionType"]);
+            $medicineStockTransaction->quantity = $validated["quantity"];
+            $medicineStockTransaction->createdAt = Carbon::now();
+            $medicineStockTransaction->updatedAt = Carbon::now();
 
-        $medicineStockTransaction->expiredDate = null;
-        $medicineStockTransaction->createdAt = Carbon::now();
-        $medicineStockTransaction->updatedAt = Carbon::now();
+            if ($request["notes"]) {
+                $medicineStockTransaction->notes = $request["notes"];
+            }
 
-        if ($request["notes"]) {
-            $medicineStockTransaction->notes = $request["notes"];
+            $medicine = $this->medicineRepository->getById($validated["medicineId"]);
+
+            if (!$medicine) {
+                abort(404);
+            }
+
+            $medicineStockTransaction->medicine = new MedicineDTO();
+            $medicineStockTransaction->medicine->id = $validated["medicineId"];
+            $medicineStockTransaction->beginningStock = $medicine->stock;
+
+            if ($medicine->stock + ($medicineStockTransaction->type === TransactionType::IN ? $medicineStockTransaction->quantity : -$medicineStockTransaction->quantity) < 0) {
+                return redirect()->route('medicine.index')->with("failed", "Stock medicine cannot be negative");
+            }
+
+            if ($medicineStockTransaction->type !== TransactionType::ADJUSTMENT) {
+                $medicine->stock = $medicine->stock + ($medicineStockTransaction->type === TransactionType::IN ? $medicineStockTransaction->quantity : -$medicineStockTransaction->quantity);
+            } else {
+                $medicine->stock = $medicineStockTransaction->quantity;
+            }
+
+            $updatedMedicine = $this->medicineRepository->edit($medicine->id, $medicine);
+            $medicineStockTransaction->lastStock = $medicine->stock;
+
+            if (!$updatedMedicine) {
+                return redirect()->route('medicine.index')->with("failed", "Update medicine stock failed");
+            }
+
+            if (!$this->medicineStockTransactionRepository->insert($medicineStockTransaction)) {
+                return redirect()->route('medicine.index')->with("failed", "Insert medicine failed");
+            }
+
+            return redirect()->route("medicine.transaction.index")->with("success", "Success Create Transaction");
+        } catch (\Throwable $th) {
+            //throw $th;
         }
-
-        if (!$this->medicineStockTransactionRepository->insert($medicineStockTransaction)) {
-            return redirect()->route('medicine.index')->with("failed", "Insert medicine failed");
-        }
-
-        return redirect()->route("medicine.transaction.index")->with("success", "Success Create Transaction");
     }
 
     public function createTransactionReport()
     {
-         return view("dashboard.medicine-transaction.report.create");
+        return view("dashboard.medicine-transaction.report.create");
     }
 
     public function printTransactionReport(Request $request)
@@ -137,16 +165,16 @@ class MedicineController extends Controller
                     'after_or_equal:start-date',
                 ],
             ]);
-    
+
             $startDate = Carbon::parse($validated['start-date'])->startOfDay();
             $endDate = Carbon::parse($validated['end-date'])->endOfDay();
-    
+
             $medicineStockTransactions = $this->medicineStockTransactionRepository->getByPeriod($startDate, $endDate);
             $timestamp = Carbon::now()->format('Y-m-d_His');
             $pdf = Pdf::loadView('pdf.medicine-transaction-report', compact('medicineStockTransactions', 'startDate', 'endDate'));
             return $pdf->stream("laporan_periode_transaksi_obat_{$timestamp}.pdf");
         } catch (\Throwable $th) {
-            dd( $th);
+            dd($th);
         }
     }
 
@@ -175,7 +203,6 @@ class MedicineController extends Controller
         $medicineStockTransaction->type = TransactionTypeHelper::stringToTransactionRole($validated["transactionType"]);
         $medicineStockTransaction->quantity = $validated["quantity"];
 
-        $medicineStockTransaction->expiredDate = null;
         $medicineStockTransaction->createdAt = Carbon::now();
         $medicineStockTransaction->updatedAt = Carbon::now();
 

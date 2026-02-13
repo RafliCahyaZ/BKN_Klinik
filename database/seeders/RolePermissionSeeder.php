@@ -202,7 +202,6 @@ class RolePermissionSeeder extends Seeder
         $doctorRole = Role::findByName("doctor");
 
         $doctorRole->givePermissionTo("get-all-appointment");
-        $doctorRole->givePermissionTo("create-appointment");
         $doctorRole->givePermissionTo("process-appointment");
         $doctorRole->givePermissionTo("get-history-appointment");
 

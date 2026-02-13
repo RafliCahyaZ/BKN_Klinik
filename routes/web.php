@@ -69,11 +69,11 @@ Route::middleware("auth")->group(function () {
             ->name("destroy");
 
         Route::get("/appointment/{id}", [AppointmentController::class, 'create'])
-            ->middleware("can:create-appointment")
+            ->middleware("can:process-appointment")
             ->name("appointment.view");
 
         Route::post("/appointment/{id}", [AppointmentController::class, 'createAction'])
-            ->middleware("can:create-appointment")
+            ->middleware("can:process-appointment")
             ->name("appointment.action");
 
         Route::get('/report', [ReportController::class, 'index'])->name('report.index');

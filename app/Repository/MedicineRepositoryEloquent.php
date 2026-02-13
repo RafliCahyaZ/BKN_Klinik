@@ -5,18 +5,16 @@ namespace App\Repository;
 use App\DTO\MedicineDTO;
 use App\DTO\UnitDTO;
 use App\Models\Medicine;
-use App\Models\Unit;
 use App\Repository\MedicineRepository;
 
 class MedicineRepositoryEloquent implements MedicineRepository
 {
-    // Static helper method to map Medicine model to MedicineDTO
     public static function mapMedicineModelToMedicineDto($medicine): MedicineDTO
     {
         $unitDTO = new UnitDTO();
         $unitDTO->id = $medicine->unit->id;
         $unitDTO->name = $medicine->unit->name;
-        
+
         $medicineDTO = new MedicineDTO();
         $medicineDTO->id = $medicine->id;
         $medicineDTO->name = $medicine->name;
@@ -24,11 +22,11 @@ class MedicineRepositoryEloquent implements MedicineRepository
         $medicineDTO->unit = $unitDTO;
         $medicineDTO->createdAt = $medicine->created_at;
         $medicineDTO->updatedAt = $medicine->updated_at;
-        
+
         return $medicineDTO;
     }
 
-    function getAll(): array
+    public function getAll(): array
     {
         try {
             $medicines_collections = Medicine::with(['unit'])->get();
@@ -45,7 +43,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
         }
     }
 
-    function insert(MedicineDTO $medicineDTO): ?MedicineDTO
+    public function insert(MedicineDTO $medicineDTO): ?MedicineDTO
     {
         try {
             $medicine = Medicine::create([
@@ -64,7 +62,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
         }
     }
 
-    function edit(string $id, MedicineDTO $medicineDTO): ?MedicineDTO
+    public function edit(string $id, MedicineDTO $medicineDTO): ?MedicineDTO
     {
         try {
             $updateData = [
@@ -72,6 +70,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
                 'stock' => $medicineDTO->stock ?? null,
                 'unit_id' => $medicineDTO->unit->id ?? null,
             ];
+            
             $filteredUpdateData = array_filter($updateData);
             $medicineId = $id;
 
@@ -82,7 +81,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
 
                 if ($edit > 0) {
                     $updatedData = Medicine::with(['unit'])->find($id);
-                    
+
                     $unitDTO = new UnitDTO();
                     $unitDTO->id = $updatedData->unit->id;
                     $unitDTO->name = $updatedData->unit->name;
@@ -93,11 +92,9 @@ class MedicineRepositoryEloquent implements MedicineRepository
                     $formatedUpdatedData->unit = $unitDTO;
                     $formatedUpdatedData->createdAt = $updatedData->created_at;
                     $formatedUpdatedData->updatedAt = $updatedData->updated_at;
-                    
-                    // dd($formatedUpdatedData);
-                    return $formatedUpdatedData;
-                    } else {
 
+                    return $formatedUpdatedData;
+                } else {
                     return null;
                 }
             } else {
@@ -109,7 +106,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
         }
     }
 
-    function getById(string $id): ?MedicineDTO
+    public function getById(string $id): ?MedicineDTO
     {
         try {
             $medicine = Medicine::with(['unit'])->find($id);
@@ -124,7 +121,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
         }
     }
 
-    function getLatestId(): int
+    public function getLatestId(): int
     {
         try {
             $latestId = Medicine::max('id');
@@ -137,7 +134,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
         }
     }
 
-    function delete(string $id): bool
+    public function delete(string $id): bool
     {
         try {
             $medicine = Medicine::find($id);
@@ -146,7 +143,6 @@ class MedicineRepositoryEloquent implements MedicineRepository
                 $result = $medicine->delete();
                 return $result;
             }
-
             return false;
         } catch (\Throwable $th) {
             return false;

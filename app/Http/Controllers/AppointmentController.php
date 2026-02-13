@@ -37,6 +37,7 @@ class AppointmentController extends Controller
         }
 
         $user = Auth::user();
+
         $doctor = new UserDTO();
         $doctor->id = $user->id;
         $doctor->fullname = $user->fullname;
@@ -55,30 +56,27 @@ class AppointmentController extends Controller
 
     public function createAction($id, Request $request)
     {
-        try {            
+        try {
             $registration = $this->registrationRepository->getById($id);
-    
+
             if (!$registration) {
                 abort(404);
             }
-    
+
             $user = Auth::user();
-            if (!$user->hasRole('doctor')) {
-                abort(403);
-            }
 
             $doctor = new UserDTO();
             $doctor->id = $user->id;
             $registration->checkDate = Carbon::now();
             $registration->doctor = $doctor;
             $registration->receipt = $request["receipt"];
-    
+
             $diagnoses = collect($request["diagnosis_ids"])->map(function ($item) {
                 $diagnosisDto = new DiagnosisDTO();
                 $diagnosisDto->id = $item;
                 return $diagnosisDto;
             });
-    
+
             $treatments = collect($request["treatment_ids"])->map(function ($item) {
                 $treatmentDto = new TreatmentDTO();
                 $treatmentDto->id = $item;
@@ -88,24 +86,27 @@ class AppointmentController extends Controller
             $aggregatedmedicineIds = $this->aggregateMedicineIds($request["medicine_ids"]);
 
             $medicineAvailables = [];
+
+
             foreach ($aggregatedmedicineIds as $medicine) {
                 $medicineAvailable = $this->isMedicineStockAvailable(
                     $medicine["'id'"],
                     $medicine["'quantity'"]
                 );
                 if (is_null($medicineAvailable)) {
-                    return redirect()->back()->with('error_alert', 'Maaf, obat tidak ditemukan!')->withInput(); 
+                    return redirect()->back()->with('error_alert', 'Maaf, obat tidak ditemukan!')->withInput();
                 }
                 $medicineAvailables[] = $medicineAvailable;
             }
 
+           
             $medicineInputs = $aggregatedmedicineIds;
             foreach ($medicineAvailables as $index => $medicineAvailable) {
-
                 $medicineInputs[$index]["'stock'"] = $medicineAvailables[$index]->stock;
             }
-    
+
             $medicinesTransaction = $this->mapInputToMedicineStockTransactionDTO($id, $medicineInputs);
+            dd($medicinesTransaction);
 
             if (!$this->patientExaminationService->execute(
                 $registration,
@@ -126,13 +127,13 @@ class AppointmentController extends Controller
         $idMap = [];
         $aggregatedmedicineIds = [];
         foreach ($medicineIds as $index => $medicineId) {
-           if (array_key_exists($medicineId["'id'"], $idMap)) {
+            if (array_key_exists($medicineId["'id'"], $idMap)) {
                 $existingIndex = $idMap[$medicineId["'id'"]];
                 $aggregatedmedicineIds[$existingIndex]["'quantity'"] += $medicineId["'quantity'"];
-           } else {
+            } else {
                 $idMap[$medicineId["'id'"]] = $index;
                 $aggregatedmedicineIds[] = $medicineId;
-           }
+            }
         }
         return $aggregatedmedicineIds;
     }
@@ -152,28 +153,32 @@ class AppointmentController extends Controller
 
     public function cancel($id)
     {
-        $registration = $this->registrationRepository->getById($id);
+        try {
+            $registration = $this->registrationRepository->getById($id);
 
-        if (!$registration) {
-            abort(404);
+            if (!$registration) {
+                abort(404);
+            }
+
+            $registration->cancelledAt = Carbon::now();
+
+            $cancelResult = $this->registrationRepository->edit($registration);
+
+            if (!$cancelResult) {
+                return back()->with("failed", "Gagal membatalkan janji");
+            }
+
+            return redirect()->route("patient.queue")->with("success", "Berhasil membatalkan janji");
+        } catch (\Throwable $th) {
+            //throw $th;
         }
-
-        $registration->cancelledAt = Carbon::now();
-
-        $cancelResult = $this->registrationRepository->edit($registration);
-
-        if (!$cancelResult) {
-            return back()->with("failed", "Gagal membatalkan janji");
-        }
-
-        return redirect()->route("patient.queue")->with("success", "Berhasil membatalkan janji");
     }
 
     private function mapInputToMedicineStockTransactionDTO($registrationId, $medicineInputs)
     {
         $medicineStocks = [];
 
-        
+
         foreach ($medicineInputs as $medicineInput) {
             $medicineStockTransactionDto = new MedicineStockTransactionDTO();
             $medicineStockTransactionDto->inventoryOfficer = new UserDTO();
@@ -185,13 +190,12 @@ class AppointmentController extends Controller
             $medicineStockTransactionDto->registration->id = $registrationId;
             $medicineStockTransactionDto->type = TransactionType::OUT;
             $medicineStockTransactionDto->quantity = $medicineInput["'quantity'"];
-            $medicineStockTransactionDto->expiredDate = Carbon::now();
             $medicineStockTransactionDto->createdAt = Carbon::now();
             $medicineStockTransactionDto->updatedAt = Carbon::now();
-            
+
             $medicineStocks[] = $medicineStockTransactionDto;
-            }
-        
+        }
+
         return $medicineStocks;
     }
 }

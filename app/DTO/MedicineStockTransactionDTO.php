@@ -15,7 +15,6 @@ class MedicineStockTransactionDTO
     public int $quantity;
     public int $beginningStock;
     public int $lastStock;
-    public ?CarbonInterface $expiredDate = null;
     public ?string $notes = null;
     public CarbonInterface $createdAt;
     public CarbonInterface $updatedAt;

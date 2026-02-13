@@ -36,13 +36,6 @@
                         <th>:</th>
                         <th>{{ $registration->complaint }}</th>
                     </tr>
-                    <tr>
-                        <th>Diperiksa Oleh</th>
-                        <th>:</th>
-                        <th>
-                            {{ $doctor->fullname }}
-                        </th>
-                    </tr>
                 </tbody>
             </table>
             <h4>Data Medis Pasien</h4>
