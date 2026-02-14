@@ -13,7 +13,7 @@ class UserRoleHelper
             UserRole::DOCTOR->value => UserRole::DOCTOR,
             UserRole::INVENTORY_OFFICER->value => UserRole::INVENTORY_OFFICER,
             UserRole::OFFICER->value => UserRole::OFFICER,
-            'default' => throw new \Exception("User role is not valid")
+            'default' => throw new \Exception('User role is not valid')
         };
     }
 

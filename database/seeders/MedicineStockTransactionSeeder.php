@@ -2,14 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\MedicineStockTransaction;
 use App\Models\Medicine;
-use App\Models\User;
+use App\Models\MedicineStockTransaction;
 use App\Models\Registration;
+use App\Models\User;
 use App\Type\TransactionType;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class MedicineStockTransactionSeeder extends Seeder
 {
@@ -20,14 +19,14 @@ class MedicineStockTransactionSeeder extends Seeder
     {
         // Get inventory officer
         $inventoryOfficer = User::where('role', 'inventory_officer')->first();
-        
+
         // Get medicines
         $paracetamol = Medicine::where('name', 'Paracetamol')->first();
         $amoxicillin = Medicine::where('name', 'Amoxicillin')->first();
         $obhCombi = Medicine::where('name', 'OBH Combi')->first();
         $vitaminB = Medicine::where('name', 'Vitamin B Complex')->first();
         $insulin = Medicine::where('name', 'Insulin')->first();
-        
+
         // Get registrations
         $registration1 = Registration::where('complaint', 'Pusing dan mual')->first();
         $registration3 = Registration::where('complaint', 'Kontrol gula darah')->first();

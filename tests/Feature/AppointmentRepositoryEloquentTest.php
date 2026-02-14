@@ -301,9 +301,8 @@ class AppointmentRepositoryEloquentTest extends TestCase
         $this->assertEquals(false, $canAttachmentAgain);
     }
 
-
     // test untuk attach array id kosong
-    public function testAttachManyDiagnosesToRegistrationWithEmptyArray(): void
+    public function test_attach_many_diagnoses_to_registration_with_empty_array(): void
     {
         $registrationDTO = new RegistrationDTO;
         $registrationDTO->patient = $this->patientDTO;
@@ -323,7 +322,7 @@ class AppointmentRepositoryEloquentTest extends TestCase
         $this->assertEquals(false, $canAttachment);
     }
 
-    public function testAttachManyTreatmentToRegistrationWithEmptyArray(): void
+    public function test_attach_many_treatment_to_registration_with_empty_array(): void
     {
         $registrationDTO = new RegistrationDTO;
         $registrationDTO->patient = $this->patientDTO;

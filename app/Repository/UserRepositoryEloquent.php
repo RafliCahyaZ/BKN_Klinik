@@ -21,6 +21,7 @@ class UserRepositoryEloquent implements UserRepository
             });
 
             $users = $formatedUsers->toArray();
+
             return $users;
         } catch (\Throwable $th) {
             return [];
@@ -32,7 +33,7 @@ class UserRepositoryEloquent implements UserRepository
         try {
             $user = User::where('username', $username)->first();
 
-            if (!$user) {
+            if (! $user) {
                 return null;
             }
 
@@ -52,6 +53,7 @@ class UserRepositoryEloquent implements UserRepository
             });
 
             $users = $formatedUsers->toArray();
+
             return $users;
         } catch (\Throwable $th) {
             return [];
@@ -62,9 +64,10 @@ class UserRepositoryEloquent implements UserRepository
     {
         try {
             $user = User::find($id);
-            if(!$user) {
+            if (! $user) {
                 return 0;
             }
+
             return $user ? $user->failed_login_attempts : 0;
         } catch (\Throwable $th) {
             return 0;
@@ -74,7 +77,7 @@ class UserRepositoryEloquent implements UserRepository
     public function insert(UserDTO $userDTO): ?UserDTO
     {
         try {
-            $user = new User();
+            $user = new User;
             $user->fill(
                 [
                     'username' => $userDTO->username,
@@ -85,7 +88,7 @@ class UserRepositoryEloquent implements UserRepository
             );
 
             $role = Role::findByName($userDTO->role->value);
-            if (!$role) {
+            if (! $role) {
                 return null;
             }
             $user->assignRole($role);
@@ -111,13 +114,14 @@ class UserRepositoryEloquent implements UserRepository
             $filteredUpdateData = array_filter($updateData);
             $userId = $id;
 
-            if (!empty($filteredUpdateData)) {
+            if (! empty($filteredUpdateData)) {
                 $edit = User::where('id', $userId)
                     ->update($filteredUpdateData);
 
                 if ($edit > 0) {
                     $updatedData = User::find($id);
                     $updatedData->syncRoles([$userDTO->role->value]);
+
                     return $this->mapUserModelToUserDto($updatedData);
                 } else {
                     return null;
@@ -135,7 +139,7 @@ class UserRepositoryEloquent implements UserRepository
         try {
             $user = User::find($id);
 
-            if (!$user) {
+            if (! $user) {
                 return false;
             }
 
@@ -153,7 +157,7 @@ class UserRepositoryEloquent implements UserRepository
         try {
             $user = User::find($id);
 
-            if (!$user) {
+            if (! $user) {
                 return null;
             }
 
@@ -167,12 +171,12 @@ class UserRepositoryEloquent implements UserRepository
         }
     }
 
-    function deactivate(string $id): ?UserDTO
+    public function deactivate(string $id): ?UserDTO
     {
         try {
             $user = User::find($id);
 
-            if (!$user) {
+            if (! $user) {
                 return null;
             }
 
@@ -185,12 +189,12 @@ class UserRepositoryEloquent implements UserRepository
         }
     }
 
-    function resetFailedLoginAttempts(string $id): bool
+    public function resetFailedLoginAttempts(string $id): bool
     {
         try {
             $user = User::find($id);
 
-            if (!$user) {
+            if (! $user) {
                 return false;
             }
 
@@ -203,12 +207,12 @@ class UserRepositoryEloquent implements UserRepository
         }
     }
 
-    function getById(string $id): ?UserDTO
+    public function getById(string $id): ?UserDTO
     {
         try {
             $user = User::find($id);
 
-            if (!$user) {
+            if (! $user) {
                 return null;
             }
 
@@ -218,25 +222,26 @@ class UserRepositoryEloquent implements UserRepository
         }
     }
 
-    function getLatestId(): int
+    public function getLatestId(): int
     {
         try {
             $latestId = User::max('id');
-            if (!$latestId) {
+            if (! $latestId) {
                 return 0;
             }
+
             return $latestId;
         } catch (\Throwable $th) {
             return 0;
         }
     }
 
-    function updateFailedLoginAttemptsById(string $id, int $failedLoginAttempts): bool
+    public function updateFailedLoginAttemptsById(string $id, int $failedLoginAttempts): bool
     {
         try {
             $user = User::find($id);
 
-            if (!$user) {
+            if (! $user) {
                 return false;
             }
 
@@ -249,13 +254,14 @@ class UserRepositoryEloquent implements UserRepository
         }
     }
 
-    function delete(string $id): bool
+    public function delete(string $id): bool
     {
         try {
             $user = User::find($id);
 
             if ($user) {
                 $result = $user->delete();
+
                 return $result;
             }
 
@@ -268,7 +274,7 @@ class UserRepositoryEloquent implements UserRepository
     public static function mapUserModelToUserDto(User $user): UserDTO
     {
         try {
-            $formatedUser = new UserDTO();
+            $formatedUser = new UserDTO;
             $formatedUser->id = $user->id;
             $formatedUser->username = $user->username;
             $formatedUser->fullname = $user->fullname;
@@ -283,7 +289,7 @@ class UserRepositoryEloquent implements UserRepository
 
             return $formatedUser;
         } catch (\Throwable $th) {
-            return new UserDTO();
+            return new UserDTO;
         }
     }
 }

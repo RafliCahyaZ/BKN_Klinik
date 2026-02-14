@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Patient;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class PatientSeeder extends Seeder
 {
@@ -31,7 +30,7 @@ class PatientSeeder extends Seeder
             'address' => 'Jl. Kaliurang Km 7, Sleman',
             'date_of_birth' => Carbon::now()->subYears(28)->toDateString(),
             'telp_number' => '082198765432',
-            'history' => "Riwayat hipertensi",
+            'history' => 'Riwayat hipertensi',
             'medical_record_file_url' => 'medical-records/siti-aminah.pdf',
             'medical_record_number' => 'MR-002',
         ]);

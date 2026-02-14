@@ -21,20 +21,20 @@ class PatientController extends Controller
     {
         try {
             $patient = $patientRepository->getById($id);
-    
-            if (!$patient) {
+
+            if (! $patient) {
                 abort(404);
             }
-    
+
             $deleteResult = $patientRepository->delete($id);
-    
-            if (!$deleteResult) {
-                return redirect()->route("patient.index")->with("failed", "Gagal! Gagal hapus data");
+
+            if (! $deleteResult) {
+                return redirect()->route('patient.index')->with('failed', 'Gagal! Gagal hapus data');
             }
-    
-            return redirect()->route("patient.index")->with("success", "Sukses! Berhasil hapus data");
+
+            return redirect()->route('patient.index')->with('success', 'Sukses! Berhasil hapus data');
         } catch (\Throwable $th) {
-            return redirect()->route("patient.index")->with("failed", "Gagal! Gagal hapus data");
+            return redirect()->route('patient.index')->with('failed', 'Gagal! Gagal hapus data');
         }
     }
 
@@ -42,26 +42,29 @@ class PatientController extends Controller
     {
         try {
             $patients = collect($patientRepository->getAll());
-    
+
             $patients = $patients->map(function ($patient) {
-                $patient->medicalRecordFileUrl = Storage::disk("public")->url($patient->medicalRecordFileUrl);
+                $patient->medicalRecordFileUrl = Storage::disk('public')->url($patient->medicalRecordFileUrl);
+
                 return $patient;
             });
-            return view("dashboard.patient.home", [
-                "patients" => $patientRepository->getAll()
+
+            return view('dashboard.patient.home', [
+                'patients' => $patientRepository->getAll(),
             ]);
         } catch (\Throwable $th) {
-            return redirect()->route("dashboard")->with("failed", "Terjadi kesalahan saat mengambil data pasien");
+            return redirect()->route('dashboard')->with('failed', 'Terjadi kesalahan saat mengambil data pasien');
         }
     }
 
     public function queue()
     {
         $registrations = $this->registrationRepository->getWhereCheckDateIsNull();
+
         return view(
-            "dashboard.patient.queue",
+            'dashboard.patient.queue',
             [
-                "registrations" => $registrations
+                'registrations' => $registrations,
             ]
         );
     }
@@ -72,18 +75,17 @@ class PatientController extends Controller
         $endDate = $request->input('end_date');
         $histories = $this->registrationRepository->getWhereCheckDateIsNotNull($startDate, $endDate);
 
-
         return view(
-            "dashboard.patient.history",
+            'dashboard.patient.history',
             [
-                "histories" => $histories
+                'histories' => $histories,
             ]
         );
     }
 
     public function create()
     {
-        return view("dashboard.patient.create");
+        return view('dashboard.patient.create');
     }
 
     public function userHistory($id)
@@ -91,9 +93,9 @@ class PatientController extends Controller
         $patient = $this->patientRepository->getById($id);
         $registrations = $this->registrationRepository->getByPatientId($patient->id);
 
-        return view("dashboard.patient.history.user", [
-            "patient" => $patient,
-            "registrations" => $registrations
+        return view('dashboard.patient.history.user', [
+            'patient' => $patient,
+            'registrations' => $registrations,
         ]);
     }
 
@@ -102,7 +104,7 @@ class PatientController extends Controller
 
         $registrations = $this->registrationRepository->getByPatientId($id);
         $patient = null;
-        if(!count($registrations)){
+        if (! count($registrations)) {
             $patient = $this->patientRepository->getById($id);
         } else {
             $patient = $registrations[0]->patient;
@@ -110,6 +112,7 @@ class PatientController extends Controller
 
         $timestamp = Carbon::now()->format('Y-m-d_His');
         $pdf = Pdf::loadView('pdf.patient-history', compact('registrations', 'patient'));
+
         return $pdf->stream("histori_rekam_medis_{$patient->name}_{$timestamp}.pdf");
     }
 
@@ -117,12 +120,12 @@ class PatientController extends Controller
     {
         $patient = $patientRepository->getById($id);
 
-        if (!$patient) {
+        if (! $patient) {
             abort(404);
         }
 
-        return view("dashboard.patient.edit", [
-            "patient" => $patient
+        return view('dashboard.patient.edit', [
+            'patient' => $patient,
         ]);
     }
 
@@ -132,21 +135,21 @@ class PatientController extends Controller
         $rmUrl = null;
 
         if ($request->hasFile('medical-record')) {
-            $rmUrl = $request->file("medical-record")->store('medical-record', 'public');
+            $rmUrl = $request->file('medical-record')->store('medical-record', 'public');
             $rmUrl = Storage::disk('public')->url($rmUrl);
         }
 
-        $patientDto = new PatientDTO();
-        $patientDto->name = $validated["name"];
+        $patientDto = new PatientDTO;
+        $patientDto->name = $validated['name'];
 
-        if ($validated["gender"] === "M") {
-            $patientDto->gender = "male";
+        if ($validated['gender'] === 'M') {
+            $patientDto->gender = 'male';
         } else {
-            $patientDto->gender = "female";
+            $patientDto->gender = 'female';
         }
-        $patientDto->address = $validated["address"];
-        $patientDto->history = $validated["history"];
-        $patientDto->telpNumber = $validated["phone-number"];
+        $patientDto->address = $validated['address'];
+        $patientDto->history = $validated['history'];
+        $patientDto->telpNumber = $validated['phone-number'];
 
         if ($rmUrl) {
             $patientDto->medicalRecordFileUrl = $rmUrl;
@@ -154,11 +157,11 @@ class PatientController extends Controller
 
         $editResult = $patientRepository->edit($id, $patientDto);
 
-        if (!$editResult) {
-            return redirect()->route("patient.index")->with("failed", "Gagal! Data gagal diedit");
+        if (! $editResult) {
+            return redirect()->route('patient.index')->with('failed', 'Gagal! Data gagal diedit');
         }
 
-        return redirect()->route("patient.index")->with("success", "Sukses! Data berhasil diedit");
+        return redirect()->route('patient.index')->with('success', 'Sukses! Data berhasil diedit');
     }
 
     public function print(PatientRepository $patientRepository)
@@ -167,52 +170,53 @@ class PatientController extends Controller
             $patients = $patientRepository->getAll();
             $timestamp = Carbon::now()->format('Y-m-d_His');
             $pdf = Pdf::loadView('pdf.patients', compact('patients'));
+
             return $pdf->stream("data_pasien_{$timestamp}.pdf");
         } catch (\Throwable $th) {
-            return back()->with("failed", "Terjadi kesalahan saat mencetak data pasien");
+            return back()->with('failed', 'Terjadi kesalahan saat mencetak data pasien');
         }
     }
 
     public function store(Request $request, PatientRepository $patientRepository)
     {
         try {
-            //code...
+            // code...
             $validated = $this->getPatientInputValidation($request);
             $rmUrl = null;
-    
+
             if ($request->hasFile('medical-record')) {
-                $rmUrl = $request->file("medical-record")->store('medical-record', 'public');
+                $rmUrl = $request->file('medical-record')->store('medical-record', 'public');
                 $rmUrl = Storage::disk('public')->url($rmUrl);
             }
-    
+
             $latestPatientId = $patientRepository->getLatestId();
-    
-            $medicalRecordNumber = 'MR-' . str_pad($latestPatientId + 1, 6, '0', STR_PAD_LEFT);
-    
-            $patientDto = new PatientDTO();
+
+            $medicalRecordNumber = 'MR-'.str_pad($latestPatientId + 1, 6, '0', STR_PAD_LEFT);
+
+            $patientDto = new PatientDTO;
             $patientDto->medicalRecordNumber = $medicalRecordNumber;
-            $patientDto->name = $validated["name"];
-            if ($validated["gender"] === "M") {
-                $patientDto->gender = "male";
+            $patientDto->name = $validated['name'];
+            if ($validated['gender'] === 'M') {
+                $patientDto->gender = 'male';
             } else {
-                $patientDto->gender = "female";
+                $patientDto->gender = 'female';
             }
-            $patientDto->dateOfBirth = Carbon::parse($validated["date-of-birth"]);
-            $patientDto->address = $validated["address"];
-            $patientDto->history = $validated["history"];
-            $patientDto->telpNumber = $validated["phone-number"];
-    
-            $patientDto->medicalRecordFileUrl = ($rmUrl) ?? "";
-    
+            $patientDto->dateOfBirth = Carbon::parse($validated['date-of-birth']);
+            $patientDto->address = $validated['address'];
+            $patientDto->history = $validated['history'];
+            $patientDto->telpNumber = $validated['phone-number'];
+
+            $patientDto->medicalRecordFileUrl = ($rmUrl) ?? '';
+
             $insertResult = $patientRepository->insert($patientDto);
-    
+
             if ($insertResult) {
-                return redirect()->route("patient.index")->with("success", "Sukses! Data berhasil disimpan");
+                return redirect()->route('patient.index')->with('success', 'Sukses! Data berhasil disimpan');
             } else {
-                return redirect()->route("patient.index")->with("failed", "Failed! Data gagal disimpan");
+                return redirect()->route('patient.index')->with('failed', 'Failed! Data gagal disimpan');
             }
         } catch (\Throwable $th) {
-            return redirect()->route("patient.index")->with("failed", "Failed! Data gagal disimpan");
+            return redirect()->route('patient.index')->with('failed', 'Failed! Data gagal disimpan');
         }
     }
 

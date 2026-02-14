@@ -2,9 +2,7 @@
 
 namespace App\Repository;
 
-use App\DTO\PatientDTO;
 use App\DTO\RegistrationDTO;
-use App\Models\Patient;
 use Carbon\CarbonInterface;
 
 interface RegistrationRepository

@@ -4,18 +4,17 @@ namespace App\Repository;
 
 use App\DTO\PatientDTO;
 use App\Models\Patient;
-use App\Repository\PatientRepository;
 use Carbon\Carbon;
 
 class PatientRepositoryEloquent implements PatientRepository
 {
-    function getAll(): array
+    public function getAll(): array
     {
         try {
             $patiensCollections = Patient::all();
 
             $formatedPatients = $patiensCollections->map(function ($patient) {
-                $formatedPatient = new PatientDTO();
+                $formatedPatient = new PatientDTO;
                 $formatedPatient->id = $patient->id;
                 $formatedPatient->name = $patient->fullname;
                 $formatedPatient->address = $patient->address;
@@ -23,12 +22,13 @@ class PatientRepositoryEloquent implements PatientRepository
                 $carbonDateOfBirth = Carbon::parse($patient->date_of_birth);
                 $formatedPatient->dateOfBirth = $carbonDateOfBirth;
                 $formatedPatient->telpNumber = $patient->telp_number;
-                $formatedPatient->gender = ($patient->gender === "female") ? "F" : "M";
+                $formatedPatient->gender = ($patient->gender === 'female') ? 'F' : 'M';
                 $formatedPatient->history = $patient->history;
                 $formatedPatient->medicalRecordFileUrl = $patient->medical_record_file_url;
                 $formatedPatient->medicalRecordNumber = $patient->medical_record_number;
                 $formatedPatient->createdAt = $patient->created_at;
                 $formatedPatient->updatedAt = $patient->updated_at;
+
                 return $formatedPatient;
             });
 
@@ -40,8 +40,7 @@ class PatientRepositoryEloquent implements PatientRepository
         }
     }
 
-
-    function insert(PatientDTO $patientDTO): ?PatientDTO
+    public function insert(PatientDTO $patientDTO): ?PatientDTO
     {
         try {
             $patient = Patient::create([
@@ -52,22 +51,22 @@ class PatientRepositoryEloquent implements PatientRepository
                 'telp_number' => $patientDTO->telpNumber,
                 'history' => $patientDTO->history,
                 'medical_record_file_url' => $patientDTO->medicalRecordFileUrl,
-                'medical_record_number' => $patientDTO->medicalRecordNumber
+                'medical_record_number' => $patientDTO->medicalRecordNumber,
             ]);
-    
+
             $patientDTO->id = $patient->id;
             $patientDTO->age = $patient->getAgeAttribute();
             $patientDTO->createdAt = $patient->created_at;
             $patientDTO->updatedAt = $patient->updated_at;
-    
+
             return $patientDTO;
         } catch (\Throwable $th) {
-            //throw $th;
+            // throw $th;
             return null;
         }
     }
 
-    function edit(string $id, PatientDTO $patientDTO): ?PatientDTO
+    public function edit(string $id, PatientDTO $patientDTO): ?PatientDTO
     {
         try {
             $updateData = [
@@ -83,7 +82,7 @@ class PatientRepositoryEloquent implements PatientRepository
             $filteredUpdateData = array_filter($updateData);
             $patientId = $id;
 
-            if (!empty($filteredUpdateData)) {
+            if (! empty($filteredUpdateData)) {
 
                 $edit = Patient::where('id', $patientId)
                     ->update($filteredUpdateData);
@@ -91,7 +90,7 @@ class PatientRepositoryEloquent implements PatientRepository
                 if ($edit > 0) {
                     $updatedData = Patient::find($id);
 
-                    $formatedUpdatedData = new PatientDTO();
+                    $formatedUpdatedData = new PatientDTO;
                     $formatedUpdatedData->id = $updatedData->id;
                     $formatedUpdatedData->name = $updatedData->fullname;
                     $formatedUpdatedData->address = $updatedData->address;
@@ -117,16 +116,16 @@ class PatientRepositoryEloquent implements PatientRepository
         }
     }
 
-    function getById(string $id): ?PatientDTO
+    public function getById(string $id): ?PatientDTO
     {
         try {
             $patient = Patient::find($id);
 
-            if (!$patient) {
+            if (! $patient) {
                 return null;
             }
 
-            $formatedpatient = new PatientDTO();
+            $formatedpatient = new PatientDTO;
             $formatedpatient->id = $patient->id;
             $formatedpatient->name = $patient->fullname;
             $formatedpatient->address = $patient->address;
@@ -139,32 +138,35 @@ class PatientRepositoryEloquent implements PatientRepository
             $formatedpatient->medicalRecordNumber = $patient->medical_record_number;
             $formatedpatient->createdAt = $patient->created_at;
             $formatedpatient->updatedAt = $patient->updated_at;
+
             return $formatedpatient;
         } catch (\Throwable $th) {
             return null;
         }
     }
 
-    function getLatestId(): int
+    public function getLatestId(): int
     {
         try {
             $latestId = Patient::max('id');
-            if (!$latestId) {
+            if (! $latestId) {
                 return 0;
             }
+
             return $latestId;
         } catch (\Throwable $th) {
             return 0;
         }
     }
 
-    function delete(string $id): bool
+    public function delete(string $id): bool
     {
         try {
             $patient = Patient::find($id);
 
             if ($patient) {
                 $result = $patient->delete();
+
                 return $result;
             }
 

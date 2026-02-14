@@ -13,7 +13,7 @@ class TransactionTypeHelper
             TransactionType::OUT->value => TransactionType::OUT,
             TransactionType::ADJUSTMENT->value => TransactionType::ADJUSTMENT,
             TransactionType::EXPIRED->value => TransactionType::EXPIRED,
-            'default' => throw new \Exception("Transaction Type is not valid")
+            'default' => throw new \Exception('Transaction Type is not valid')
         };
     }
 

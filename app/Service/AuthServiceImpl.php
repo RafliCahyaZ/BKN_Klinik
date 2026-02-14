@@ -14,6 +14,7 @@ class AuthServiceImpl implements AuthService
         ])) {
             return true;
         }
+
         return false;
     }
 

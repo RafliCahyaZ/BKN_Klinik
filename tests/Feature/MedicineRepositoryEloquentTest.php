@@ -2,19 +2,21 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
-use App\Repository\MedicineRepositoryEloquent;
-use App\Repository\UnitRepositoryEloquent;
 use App\DTO\MedicineDTO;
 use App\DTO\UnitDTO;
+use App\Repository\MedicineRepositoryEloquent;
+use App\Repository\UnitRepositoryEloquent;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class MedicineRepositoryEloquentTest extends TestCase
 {
     use RefreshDatabase;
 
     protected MedicineRepositoryEloquent $medicineRepository;
+
     protected UnitRepositoryEloquent $unitRepository;
+
     protected UnitDTO $unitDTO;
 
     protected array $medicineData;
@@ -23,10 +25,10 @@ class MedicineRepositoryEloquentTest extends TestCase
     {
         parent::setUp();
 
-        $this->medicineRepository = new MedicineRepositoryEloquent();
-        $this->unitRepository = new UnitRepositoryEloquent();
+        $this->medicineRepository = new MedicineRepositoryEloquent;
+        $this->unitRepository = new UnitRepositoryEloquent;
 
-        $unitDTO = new UnitDTO();
+        $unitDTO = new UnitDTO;
         $unitDTO->name = 'Tablet';
         $this->unitDTO = $this->unitRepository->insert($unitDTO);
 
@@ -38,9 +40,9 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test untuk insert medicine
-    public function testInsertMedicineSuccess(): void
+    public function test_insert_medicine_success(): void
     {
-        $medicineDTO = new MedicineDTO();
+        $medicineDTO = new MedicineDTO;
         $medicineDTO->name = $this->medicineData['name'];
         $medicineDTO->stock = $this->medicineData['stock'];
         $medicineDTO->unit = $this->medicineData['unit'];
@@ -55,14 +57,14 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test untuk insert medicine gagal ketika unit tidak ada
-    public function testInsertMedicineFailedWhenUnitNotExists(): void
+    public function test_insert_medicine_failed_when_unit_not_exists(): void
     {
-        $medicineDTO = new MedicineDTO();
+        $medicineDTO = new MedicineDTO;
         $medicineDTO->name = 'Invalid Medicine';
         $medicineDTO->stock = 50;
-        
+
         // Create invalid unit DTO
-        $invalidUnitDTO = new UnitDTO();
+        $invalidUnitDTO = new UnitDTO;
         $invalidUnitDTO->id = '9999'; // Non-existent unit ID
         $medicineDTO->unit = $invalidUnitDTO;
 
@@ -72,11 +74,11 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test untuk get all medicines
-    public function testGetAllMedicines(): void
+    public function test_get_all_medicines(): void
     {
         // Insert some medicines first
         for ($i = 1; $i <= 3; $i++) {
-            $medicineDTO = new MedicineDTO();
+            $medicineDTO = new MedicineDTO;
             $medicineDTO->name = "Medicine $i";
             $medicineDTO->stock = 50 * $i;
             $medicineDTO->unit = $this->unitDTO;
@@ -91,7 +93,7 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test untuk getall medicines ketika tidak ada data
-    public function testGetAllMedicinesWhenNoData(): void
+    public function test_get_all_medicines_when_no_data(): void
     {
         $medicines = $this->medicineRepository->getAll();
         $this->assertIsArray($medicines);
@@ -99,9 +101,9 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test untuk edit medicine
-    public function testEditMedicine(): void
+    public function test_edit_medicine(): void
     {
-        $medicineDTO = new MedicineDTO();
+        $medicineDTO = new MedicineDTO;
         $medicineDTO->name = $this->medicineData['name'];
         $medicineDTO->stock = $this->medicineData['stock'];
         $medicineDTO->unit = $this->medicineData['unit'];
@@ -110,23 +112,23 @@ class MedicineRepositoryEloquentTest extends TestCase
         $this->assertNotNull($insertedMedicineDTO);
 
         $insertedMedicineId = $insertedMedicineDTO->id;
-        $updatedMedicineDTO = new MedicineDTO();
-        $updatedMedicineDTO->name = "Updated Medicine Name";
+        $updatedMedicineDTO = new MedicineDTO;
+        $updatedMedicineDTO->name = 'Updated Medicine Name';
         $updatedMedicineDTO->stock = 200;
 
         $editedMedicineDTO = $this->medicineRepository->edit($insertedMedicineId, $updatedMedicineDTO);
         $this->assertNotNull($editedMedicineDTO);
-        $this->assertEquals("Updated Medicine Name", $editedMedicineDTO->name);
+        $this->assertEquals('Updated Medicine Name', $editedMedicineDTO->name);
         $this->assertEquals(200, $editedMedicineDTO->stock);
         $this->assertInstanceOf(MedicineDTO::class, $editedMedicineDTO);
     }
 
     // test untuk edit medicine yang tidak ada
-    public function testEditNonExistentMedicine(): void
+    public function test_edit_non_existent_medicine(): void
     {
         $nonExistentMedicineId = '9999';
-        $updatedMedicineDTO = new MedicineDTO();
-        $updatedMedicineDTO->name = "Updated Name";
+        $updatedMedicineDTO = new MedicineDTO;
+        $updatedMedicineDTO->name = 'Updated Name';
         $updatedMedicineDTO->stock = 100;
 
         $editedMedicineDTO = $this->medicineRepository->edit($nonExistentMedicineId, $updatedMedicineDTO);
@@ -134,9 +136,9 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test untuk edit medicine dengan data kosong
-    public function testEditMedicineWithEmptyData(): void
+    public function test_edit_medicine_with_empty_data(): void
     {
-        $medicineDTO = new MedicineDTO();
+        $medicineDTO = new MedicineDTO;
         $medicineDTO->name = $this->medicineData['name'];
         $medicineDTO->stock = $this->medicineData['stock'];
         $medicineDTO->unit = $this->medicineData['unit'];
@@ -145,16 +147,16 @@ class MedicineRepositoryEloquentTest extends TestCase
         $this->assertNotNull($insertedMedicineDTO);
 
         $insertedMedicineId = $insertedMedicineDTO->id;
-        $updatedMedicineDTO = new MedicineDTO(); // Data kosong
+        $updatedMedicineDTO = new MedicineDTO; // Data kosong
 
         $editedMedicineDTO = $this->medicineRepository->edit($insertedMedicineId, $updatedMedicineDTO);
         $this->assertNull($editedMedicineDTO);
     }
 
     // test getById medicine
-    public function testGetByIdMedicine(): void
+    public function test_get_by_id_medicine(): void
     {
-        $medicineDTO = new MedicineDTO();
+        $medicineDTO = new MedicineDTO;
         $medicineDTO->name = $this->medicineData['name'];
         $medicineDTO->stock = $this->medicineData['stock'];
         $medicineDTO->unit = $this->medicineData['unit'];
@@ -173,7 +175,7 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test getById medicine yang tidak ada
-    public function testGetByIdNonExistentMedicine(): void
+    public function test_get_by_id_non_existent_medicine(): void
     {
         $nonExistentMedicineId = '9999';
         $fetchedMedicineDTO = $this->medicineRepository->getById($nonExistentMedicineId);
@@ -181,12 +183,12 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test getLatestId medicine
-    public function testGetLatestIdMedicine(): void
+    public function test_get_latest_id_medicine(): void
     {
         // Insert some medicines first
         $latestInsertedId = null;
         for ($i = 1; $i <= 4; $i++) {
-            $medicineDTO = new MedicineDTO();
+            $medicineDTO = new MedicineDTO;
             $medicineDTO->name = "Medicine $i";
             $medicineDTO->stock = 50 * $i;
             $medicineDTO->unit = $this->unitDTO;
@@ -200,16 +202,16 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test getLatestId medicine ketika tidak ada data
-    public function testGetLatestIdMedicineWhenNoData(): void
+    public function test_get_latest_id_medicine_when_no_data(): void
     {
         $latestId = $this->medicineRepository->getLatestId();
         $this->assertEquals(0, $latestId);
     }
 
     // test delete medicine
-    public function testDeleteMedicine(): void
+    public function test_delete_medicine(): void
     {
-        $medicineDTO = new MedicineDTO();
+        $medicineDTO = new MedicineDTO;
         $medicineDTO->name = $this->medicineData['name'];
         $medicineDTO->stock = $this->medicineData['stock'];
         $medicineDTO->unit = $this->medicineData['unit'];
@@ -227,7 +229,7 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test delete medicine yang tidak ada
-    public function testDeleteNonExistentMedicine(): void
+    public function test_delete_non_existent_medicine(): void
     {
         $nonExistentMedicineId = '9999';
         $deleteResult = $this->medicineRepository->delete($nonExistentMedicineId);
@@ -235,9 +237,9 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test update stock medicine
-    public function testUpdateMedicinestock(): void
+    public function test_update_medicinestock(): void
     {
-        $medicineDTO = new MedicineDTO();
+        $medicineDTO = new MedicineDTO;
         $medicineDTO->name = $this->medicineData['name'];
         $medicineDTO->stock = $this->medicineData['stock'];
         $medicineDTO->unit = $this->medicineData['unit'];
@@ -247,7 +249,7 @@ class MedicineRepositoryEloquentTest extends TestCase
         $this->assertEquals(100, $insertedMedicineDTO->stock);
 
         // Update only stock
-        $updateDTO = new MedicineDTO();
+        $updateDTO = new MedicineDTO;
         $updateDTO->stock = 150;
 
         $editedMedicineDTO = $this->medicineRepository->edit($insertedMedicineDTO->id, $updateDTO);
@@ -257,7 +259,7 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test insert multiple medicines dengan unit yang sama
-    public function testInsertMultipleMedicinesWithSameUnit(): void
+    public function test_insert_multiple_medicines_with_same_unit(): void
     {
         $medicinesData = [
             ['name' => 'Aspirin', 'stock' => 80],
@@ -266,7 +268,7 @@ class MedicineRepositoryEloquentTest extends TestCase
         ];
 
         foreach ($medicinesData as $data) {
-            $medicineDTO = new MedicineDTO();
+            $medicineDTO = new MedicineDTO;
             $medicineDTO->name = $data['name'];
             $medicineDTO->stock = $data['stock'];
             $medicineDTO->unit = $this->unitDTO;
@@ -281,7 +283,7 @@ class MedicineRepositoryEloquentTest extends TestCase
     }
 
     // test untuk verify unit tersedia
-    public function testUnitIsAvailable(): void
+    public function test_unit_is_available(): void
     {
         $this->assertNotNull($this->unitDTO);
         $this->assertEquals('Tablet', $this->unitDTO->name);

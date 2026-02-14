@@ -32,25 +32,25 @@ class AppointmentController extends Controller
     {
         $registrationDto = $this->registrationRepository->getById($id);
 
-        if (!$registrationDto) {
+        if (! $registrationDto) {
             abort(404);
         }
 
         $user = Auth::user();
 
-        $doctor = new UserDTO();
+        $doctor = new UserDTO;
         $doctor->id = $user->id;
         $doctor->fullname = $user->fullname;
         $diagnoses = $this->diagnosisRepository->getAll();
         $treatments = $this->treatmentRepository->getAll();
         $medicines = $this->medicineRepository->getAll();
 
-        return view("dashboard.patient.appointment.create", [
-            "doctor" => $doctor,
-            "diagnoses" => $diagnoses,
-            "treatments" => $treatments,
-            "registration" => $registrationDto,
-            "medicines" => $medicines
+        return view('dashboard.patient.appointment.create', [
+            'doctor' => $doctor,
+            'diagnoses' => $diagnoses,
+            'treatments' => $treatments,
+            'registration' => $registrationDto,
+            'medicines' => $medicines,
         ]);
     }
 
@@ -59,36 +59,36 @@ class AppointmentController extends Controller
         try {
             $registration = $this->registrationRepository->getById($id);
 
-            if (!$registration) {
+            if (! $registration) {
                 abort(404);
             }
 
             $user = Auth::user();
 
-            $doctor = new UserDTO();
+            $doctor = new UserDTO;
             $doctor->id = $user->id;
             $registration->checkDate = Carbon::now();
             $registration->doctor = $doctor;
-            $registration->receipt = $request["receipt"];
-            $registration->complaint = $request["keluhan"];
+            $registration->receipt = $request['receipt'];
+            $registration->complaint = $request['keluhan'];
 
-            $diagnoses = collect($request["diagnosis_ids"])->map(function ($item) {
-                $diagnosisDto = new DiagnosisDTO();
+            $diagnoses = collect($request['diagnosis_ids'])->map(function ($item) {
+                $diagnosisDto = new DiagnosisDTO;
                 $diagnosisDto->id = $item;
+
                 return $diagnosisDto;
             });
 
-            $treatments = collect($request["treatment_ids"])->map(function ($item) {
-                $treatmentDto = new TreatmentDTO();
+            $treatments = collect($request['treatment_ids'])->map(function ($item) {
+                $treatmentDto = new TreatmentDTO;
                 $treatmentDto->id = $item;
+
                 return $treatmentDto;
             });
 
-
-            $aggregatedmedicineIds = $this->aggregateMedicineIds($request["medicine_ids"]);
+            $aggregatedmedicineIds = $this->aggregateMedicineIds($request['medicine_ids']);
 
             $medicineAvailables = [];
-
 
             foreach ($aggregatedmedicineIds as $medicine) {
                 $medicineAvailable = $this->isMedicineStockAvailable(
@@ -101,7 +101,6 @@ class AppointmentController extends Controller
                 $medicineAvailables[] = $medicineAvailable;
             }
 
-           
             $medicineInputs = $aggregatedmedicineIds;
             foreach ($medicineAvailables as $index => $medicineAvailable) {
                 $medicineInputs[$index]["'stock'"] = $medicineAvailables[$index]->stock;
@@ -117,15 +116,13 @@ class AppointmentController extends Controller
                 $medicinesTransaction
             );
 
-            
-            if (!$patientExaminationResult) {
-                return back()->with("failed", "Failed make appointment");
+            if (! $patientExaminationResult) {
+                return back()->with('failed', 'Failed make appointment');
             }
 
-
-            return redirect()->route("patient.history.show", $id)->with("success", "Berhasil melakukan pemeriksaan");
+            return redirect()->route('patient.history.show', $id)->with('success', 'Berhasil melakukan pemeriksaan');
         } catch (\Throwable $th) {
-            return back()->with("failed", "Terjadi kesalahan saat melakukan pemeriksaan");
+            return back()->with('failed', 'Terjadi kesalahan saat melakukan pemeriksaan');
         }
     }
 
@@ -142,13 +139,14 @@ class AppointmentController extends Controller
                 $aggregatedmedicineIds[] = $medicineId;
             }
         }
+
         return $aggregatedmedicineIds;
     }
 
     private function isMedicineStockAvailable(string $medicineId, int $requestedQuantity)
     {
         $medicine = $this->medicineRepository->getById($medicineId);
-        if (!$medicine) {
+        if (! $medicine) {
             return null;
         }
         if ($medicine->stock >= $requestedQuantity) {
@@ -163,7 +161,7 @@ class AppointmentController extends Controller
         try {
             $registration = $this->registrationRepository->getById($id);
 
-            if (!$registration) {
+            if (! $registration) {
                 abort(404);
             }
 
@@ -171,13 +169,13 @@ class AppointmentController extends Controller
 
             $cancelResult = $this->registrationRepository->edit($registration);
 
-            if (!$cancelResult) {
-                return back()->with("failed", "Gagal membatalkan janji");
+            if (! $cancelResult) {
+                return back()->with('failed', 'Gagal membatalkan janji');
             }
 
-            return redirect()->route("patient.queue")->with("success", "Berhasil membatalkan janji");
+            return redirect()->route('patient.queue')->with('success', 'Berhasil membatalkan janji');
         } catch (\Throwable $th) {
-            //throw $th;
+            // throw $th;
         }
     }
 
@@ -185,17 +183,16 @@ class AppointmentController extends Controller
     {
         $medicineStocks = [];
 
-
         foreach ($medicineInputs as $medicineInput) {
-            $medicineStockTransactionDto = new MedicineStockTransactionDTO();
-            $medicineStockTransactionDto->inventoryOfficer = new UserDTO();
+            $medicineStockTransactionDto = new MedicineStockTransactionDTO;
+            $medicineStockTransactionDto->inventoryOfficer = new UserDTO;
             $medicineStockTransactionDto->inventoryOfficer->id = Auth::id();
-            $medicineStockTransactionDto->medicine = new MedicineDTO();
+            $medicineStockTransactionDto->medicine = new MedicineDTO;
             $medicineStockTransactionDto->medicine->id = $medicineInput["'id'"];
             $medicineStockTransactionDto->medicine->stock = $medicineInput["'stock'"];
             $medicineStockTransactionDto->beginningStock = $medicineInput["'stock'"];
             $medicineStockTransactionDto->lastStock = $medicineInput["'stock'"] - $medicineInput["'quantity'"];
-            $medicineStockTransactionDto->registration = new RegistrationDTO();
+            $medicineStockTransactionDto->registration = new RegistrationDTO;
             $medicineStockTransactionDto->registration->id = $registrationId;
             $medicineStockTransactionDto->type = TransactionType::OUT;
             $medicineStockTransactionDto->quantity = $medicineInput["'quantity'"];

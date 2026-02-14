@@ -2,40 +2,30 @@
 
 namespace App\Providers;
 
-use App\Repository\PatientRepository;
-use App\Repository\PatientRepositoryImpl;
-use App\Repository\PatientRepositoryEloquent;
-use App\Repository\DiagnosisRepository;
-use App\Repository\DiagnosisRepositoryEloquent;
-use App\Repository\DiagnosisRepositoryImpl;
-use App\Repository\TreatmentRepository;
-use App\Repository\TreatmentRepositoryEloquent;
-use App\Repository\TreatmentRepositoryImpl;
-use App\Repository\UserRepository;
-use App\Repository\UserRepositoryImpl;
-use Illuminate\Support\ServiceProvider;
-use App\Repository\RegistrationRepository;
-use App\Repository\RegistrationRepositoryImpl;
 use App\Repository\AppointmentRepository;
 use App\Repository\AppointmentRepositoryEloquent;
-use App\Repository\AppointmentRepositoryImpl;
-use App\Repository\MedicineRepository;
-use App\Repository\MedicineRepositoryEloquent;
-use App\Repository\MedicineRepositoryImpl;
-use App\Repository\MedicineStockTransactionRepository;
-use App\Repository\MedicineStockTransactionRepositoryEloquent;
-use App\Repository\MedicineStockTransactionRepositoryImpl;
-use App\Repository\RegistrationRepositoryEloquent;
-use App\Repository\UnitRepository;
-use App\Repository\UnitRepositoryEloquent;
-use App\Repository\UnitRepositoryImpl;
-use App\Repository\UserRepositoryEloquent;
+use App\Repository\DiagnosisRepository;
+use App\Repository\DiagnosisRepositoryEloquent;
 use App\Repository\LoginLogRepository;
 use App\Repository\LoginLogRepositoryEloquent;
+use App\Repository\MedicineRepository;
+use App\Repository\MedicineRepositoryEloquent;
+use App\Repository\MedicineStockTransactionRepository;
+use App\Repository\MedicineStockTransactionRepositoryEloquent;
+use App\Repository\PatientRepository;
+use App\Repository\PatientRepositoryEloquent;
+use App\Repository\RegistrationRepository;
+use App\Repository\RegistrationRepositoryEloquent;
+use App\Repository\TreatmentRepository;
+use App\Repository\TreatmentRepositoryEloquent;
+use App\Repository\UnitRepository;
+use App\Repository\UnitRepositoryEloquent;
+use App\Repository\UserRepository;
+use App\Repository\UserRepositoryEloquent;
+use Illuminate\Support\ServiceProvider;
 
 class RepositoryProvider extends ServiceProvider
 {
-
     public $singletons = [
         PatientRepository::class => PatientRepositoryEloquent::class,
         DiagnosisRepository::class => DiagnosisRepositoryEloquent::class,
@@ -46,8 +36,9 @@ class RepositoryProvider extends ServiceProvider
         MedicineRepository::class => MedicineRepositoryEloquent::class,
         MedicineStockTransactionRepository::class => MedicineStockTransactionRepositoryEloquent::class,
         UnitRepository::class => UnitRepositoryEloquent::class,
-        LoginLogRepository::class => LoginLogRepositoryEloquent::class
+        LoginLogRepository::class => LoginLogRepositoryEloquent::class,
     ];
+
     /**
      * Register services.
      */

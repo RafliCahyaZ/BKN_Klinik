@@ -11,11 +11,11 @@ use App\Repository\MedicineRepository;
 use App\Repository\MedicineStockTransactionRepository;
 use App\Repository\UnitRepository;
 use App\Type\TransactionType;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class MedicineController extends Controller
 {
@@ -29,15 +29,15 @@ class MedicineController extends Controller
     {
         $medicine = $this->medicineRepository->getById($id);
 
-        if (!$medicine) {
+        if (! $medicine) {
             abort(404);
         }
 
         $medicineStockTransactions = $this->medicineStockTransactionRepository->getByMedicineId($id);
 
-        return view("dashboard.medicine.history", [
-            "medicineStockTransactions" => $medicineStockTransactions,
-            "medicine" => $medicine
+        return view('dashboard.medicine.history', [
+            'medicineStockTransactions' => $medicineStockTransactions,
+            'medicine' => $medicine,
         ]);
     }
 
@@ -45,14 +45,15 @@ class MedicineController extends Controller
     {
         $medicine = $this->medicineRepository->getById($id);
 
-        if (!$medicine) {
+        if (! $medicine) {
             abort(404);
         }
 
         $transactionTypes = TransactionTypeHelper::getArrayOptions();
-        return view("dashboard.medicine.transaction", [
+
+        return view('dashboard.medicine.transaction', [
             'transactionTypes' => $transactionTypes,
-            "medicine" => $medicine
+            'medicine' => $medicine,
         ]);
     }
 
@@ -60,9 +61,10 @@ class MedicineController extends Controller
     {
         $transactions = $this->medicineStockTransactionRepository->getAll();
         $transactionTypes = TransactionTypeHelper::getArrayOptions();
-        return view("dashboard.medicine-transaction.index", [
+
+        return view('dashboard.medicine-transaction.index', [
             'transactions' => $transactions,
-            'transactionTypes' => $transactionTypes
+            'transactionTypes' => $transactionTypes,
         ]);
     }
 
@@ -70,9 +72,10 @@ class MedicineController extends Controller
     {
         $transactionTypes = TransactionTypeHelper::getArrayOptions();
         $medicines = $this->medicineRepository->getAll();
-        return view("dashboard.medicine-transaction.create", [
+
+        return view('dashboard.medicine-transaction.create', [
             'transactionTypes' => $transactionTypes,
-            'medicines' => $medicines
+            'medicines' => $medicines,
         ]);
     }
 
@@ -81,46 +84,46 @@ class MedicineController extends Controller
 
         try {
             $validated = $request->validate([
-                "medicineId" => [
+                'medicineId' => [
                     'required',
                 ],
-                "transactionType" => [
+                'transactionType' => [
                     'required',
                     Rule::in(TransactionTypeHelper::getArrayOptions()),
                 ],
                 'quantity' => [
                     'required',
                     'integer',
-                    'min:1'
-                ]
+                    'min:1',
+                ],
             ]);
 
-            $medicineStockTransaction = new MedicineStockTransactionDTO();
+            $medicineStockTransaction = new MedicineStockTransactionDTO;
 
-            $medicineStockTransaction->inventoryOfficer = new UserDTO();
+            $medicineStockTransaction->inventoryOfficer = new UserDTO;
             $medicineStockTransaction->inventoryOfficer->id = Auth::id();
 
-            $medicineStockTransaction->type = TransactionTypeHelper::stringToTransactionRole($validated["transactionType"]);
-            $medicineStockTransaction->quantity = $validated["quantity"];
+            $medicineStockTransaction->type = TransactionTypeHelper::stringToTransactionRole($validated['transactionType']);
+            $medicineStockTransaction->quantity = $validated['quantity'];
             $medicineStockTransaction->createdAt = Carbon::now();
             $medicineStockTransaction->updatedAt = Carbon::now();
 
-            if ($request["notes"]) {
-                $medicineStockTransaction->notes = $request["notes"];
+            if ($request['notes']) {
+                $medicineStockTransaction->notes = $request['notes'];
             }
 
-            $medicine = $this->medicineRepository->getById($validated["medicineId"]);
+            $medicine = $this->medicineRepository->getById($validated['medicineId']);
 
-            if (!$medicine) {
+            if (! $medicine) {
                 abort(404);
             }
 
-            $medicineStockTransaction->medicine = new MedicineDTO();
-            $medicineStockTransaction->medicine->id = $validated["medicineId"];
+            $medicineStockTransaction->medicine = new MedicineDTO;
+            $medicineStockTransaction->medicine->id = $validated['medicineId'];
             $medicineStockTransaction->beginningStock = $medicine->stock;
 
             if ($medicine->stock + ($medicineStockTransaction->type === TransactionType::IN ? $medicineStockTransaction->quantity : -$medicineStockTransaction->quantity) < 0) {
-                return redirect()->route('medicine.index')->with("failed", "Stock medicine cannot be negative");
+                return redirect()->route('medicine.index')->with('failed', 'Stock medicine cannot be negative');
             }
 
             if ($medicineStockTransaction->type !== TransactionType::ADJUSTMENT) {
@@ -132,23 +135,23 @@ class MedicineController extends Controller
             $updatedMedicine = $this->medicineRepository->edit($medicine->id, $medicine);
             $medicineStockTransaction->lastStock = $medicine->stock;
 
-            if (!$updatedMedicine) {
-                return redirect()->route('medicine.index')->with("failed", "Update medicine stock failed");
+            if (! $updatedMedicine) {
+                return redirect()->route('medicine.index')->with('failed', 'Update medicine stock failed');
             }
 
-            if (!$this->medicineStockTransactionRepository->insert($medicineStockTransaction)) {
-                return redirect()->route('medicine.index')->with("failed", "Insert medicine failed");
+            if (! $this->medicineStockTransactionRepository->insert($medicineStockTransaction)) {
+                return redirect()->route('medicine.index')->with('failed', 'Insert medicine failed');
             }
 
-            return redirect()->route("medicine.transaction.index")->with("success", "Success Create Transaction");
+            return redirect()->route('medicine.transaction.index')->with('success', 'Success Create Transaction');
         } catch (\Throwable $th) {
-            //throw $th;
+            // throw $th;
         }
     }
 
     public function createTransactionReport()
     {
-        return view("dashboard.medicine-transaction.report.create");
+        return view('dashboard.medicine-transaction.report.create');
     }
 
     public function printTransactionReport(Request $request)
@@ -172,49 +175,50 @@ class MedicineController extends Controller
             $medicineStockTransactions = $this->medicineStockTransactionRepository->getByPeriod($startDate, $endDate);
             $timestamp = Carbon::now()->format('Y-m-d_His');
             $pdf = Pdf::loadView('pdf.medicine-transaction-report', compact('medicineStockTransactions', 'startDate', 'endDate'));
+
             return $pdf->stream("laporan_periode_transaksi_obat_{$timestamp}.pdf");
         } catch (\Throwable $th) {
-            return back()->with("failed", "Terjadi kesalahan saat membuat laporan");
+            return back()->with('failed', 'Terjadi kesalahan saat membuat laporan');
         }
     }
 
     public function transactionAction($id, Request $request)
     {
         $validated = $request->validate([
-            "transactionType" => [
+            'transactionType' => [
                 'required',
                 Rule::in(TransactionTypeHelper::getArrayOptions()),
             ],
             'quantity' => [
                 'required',
                 'integer',
-                'min:1'
+                'min:1',
             ],
         ]);
 
-        $medicineStockTransaction = new MedicineStockTransactionDTO();
+        $medicineStockTransaction = new MedicineStockTransactionDTO;
 
-        $medicineStockTransaction->inventoryOfficer = new UserDTO();
+        $medicineStockTransaction->inventoryOfficer = new UserDTO;
         $medicineStockTransaction->inventoryOfficer->id = Auth::id();
 
-        $medicineStockTransaction->medicine = new MedicineDTO();
+        $medicineStockTransaction->medicine = new MedicineDTO;
         $medicineStockTransaction->medicine->id = $id;
 
-        $medicineStockTransaction->type = TransactionTypeHelper::stringToTransactionRole($validated["transactionType"]);
-        $medicineStockTransaction->quantity = $validated["quantity"];
+        $medicineStockTransaction->type = TransactionTypeHelper::stringToTransactionRole($validated['transactionType']);
+        $medicineStockTransaction->quantity = $validated['quantity'];
 
         $medicineStockTransaction->createdAt = Carbon::now();
         $medicineStockTransaction->updatedAt = Carbon::now();
 
-        if ($request["notes"]) {
-            $medicineStockTransaction->notes = $request["notes"];
+        if ($request['notes']) {
+            $medicineStockTransaction->notes = $request['notes'];
         }
 
-        if (!$this->medicineStockTransactionRepository->insert($medicineStockTransaction)) {
-            return redirect()->route('medicine.index')->with("failed", "Insert medicine failed");
+        if (! $this->medicineStockTransactionRepository->insert($medicineStockTransaction)) {
+            return redirect()->route('medicine.index')->with('failed', 'Insert medicine failed');
         }
 
-        return redirect()->route("medicine.history", $id)->with("success", "Success Create Transaction");
+        return redirect()->route('medicine.history', $id)->with('success', 'Success Create Transaction');
     }
 
     public function printAllTransaction()
@@ -223,14 +227,16 @@ class MedicineController extends Controller
         $timestamp = Carbon::now()->format('Y-m-d_His');
 
         $pdf = Pdf::loadView('pdf.all-medicine-transactions', compact('medicineStockTransactions'));
+
         return $pdf->stream("laporan_transaksi_obat_{$timestamp}.pdf");
     }
 
     public function index()
     {
         $medicines = $this->medicineRepository->getAll();
-        return view("dashboard.medicine.home", [
-            "medicines" => $medicines
+
+        return view('dashboard.medicine.home', [
+            'medicines' => $medicines,
         ]);
     }
 
@@ -238,15 +244,15 @@ class MedicineController extends Controller
     {
         $medicine = $this->medicineRepository->getById($id);
 
-        if (!$medicine) {
+        if (! $medicine) {
             abort(404);
         }
 
         $units = $this->unitRepository->getAll();
 
-        return view("dashboard.medicine.edit", [
-            "medicine" => $medicine,
-            "units" => $units
+        return view('dashboard.medicine.edit', [
+            'medicine' => $medicine,
+            'units' => $units,
         ]);
     }
 
@@ -257,48 +263,49 @@ class MedicineController extends Controller
                 'required',
                 'string',
                 'min:2',
-                'max:100'
+                'max:100',
             ],
             'unit' => [
-                'required'
-            ]
+                'required',
+            ],
         ]);
         $medicine = $this->medicineRepository->getById($id);
 
-        if (!$medicine) {
+        if (! $medicine) {
             abort(404);
         }
 
-        $medicine->name = $validated["name"];
-        $medicine->unit->id = $validated["unit"];
+        $medicine->name = $validated['name'];
+        $medicine->unit->id = $validated['unit'];
 
-        if (!$this->medicineRepository->edit($id, $medicine)) {
-            return redirect()->route("medicine.index")->with("failed", "Failed! Data gagal diedit");
+        if (! $this->medicineRepository->edit($id, $medicine)) {
+            return redirect()->route('medicine.index')->with('failed', 'Failed! Data gagal diedit');
         }
 
-        return redirect()->route("medicine.index")->with("success", "Sukses! Data berhasil diedit");
+        return redirect()->route('medicine.index')->with('success', 'Sukses! Data berhasil diedit');
     }
 
     public function create()
     {
         $units = $this->unitRepository->getAll();
-        return view("dashboard.medicine.create", [
-            "units" => $units
+
+        return view('dashboard.medicine.create', [
+            'units' => $units,
         ]);
     }
 
     public function destroy($id)
     {
         $medicine = $this->medicineRepository->getById($id);
-        if (!$medicine) {
+        if (! $medicine) {
             abort(404);
         }
 
-        if (!$this->medicineRepository->delete($id)) {
-            return redirect()->route("medicine.index")->with("failed", "Failed! Data gagal dihapus");
+        if (! $this->medicineRepository->delete($id)) {
+            return redirect()->route('medicine.index')->with('failed', 'Failed! Data gagal dihapus');
         }
 
-        return redirect()->route("medicine.index")->with("success", "Sukses! Data berhasil dihapus");
+        return redirect()->route('medicine.index')->with('success', 'Sukses! Data berhasil dihapus');
     }
 
     public function print()
@@ -307,6 +314,7 @@ class MedicineController extends Controller
         $timestamp = Carbon::now()->format('Y-m-d_His');
 
         $pdf = Pdf::loadView('pdf.medicines', compact('medicines'));
+
         return $pdf->stream("master_data_obat_{$timestamp}.pdf");
     }
 
@@ -314,7 +322,7 @@ class MedicineController extends Controller
     {
         $medicine = $this->medicineRepository->getById($id);
 
-        if (!$medicine) {
+        if (! $medicine) {
             abort(404);
         }
 
@@ -322,6 +330,7 @@ class MedicineController extends Controller
         $timestamp = Carbon::now()->format('Y-m-d_His');
 
         $pdf = Pdf::loadView('pdf.medicine-transaction', compact('medicine', 'medicineStockTransactions'));
+
         return $pdf->stream("histori_transaksi_{$medicine->name}_{$timestamp}.pdf");
     }
 
@@ -329,17 +338,17 @@ class MedicineController extends Controller
     {
         $validated = $this->getMedicineInputValidation($request);
 
-        $medicineDto = new MedicineDTO();
-        $medicineDto->name = $validated["name"];
-        $medicineDto->stock = $validated["stock"];
-        $medicineDto->unit = new UnitDTO();
-        $medicineDto->unit->id = $validated["unit"];
+        $medicineDto = new MedicineDTO;
+        $medicineDto->name = $validated['name'];
+        $medicineDto->stock = $validated['stock'];
+        $medicineDto->unit = new UnitDTO;
+        $medicineDto->unit->id = $validated['unit'];
 
-        if (!$this->medicineRepository->insert($medicineDto)) {
-            return redirect()->route("medicine.index")->with("failed", "Failed! Data gagal disimpan");
+        if (! $this->medicineRepository->insert($medicineDto)) {
+            return redirect()->route('medicine.index')->with('failed', 'Failed! Data gagal disimpan');
         }
 
-        return redirect()->route("medicine.index")->with("success", "Sukses! Data berhasil disimpan");
+        return redirect()->route('medicine.index')->with('success', 'Sukses! Data berhasil disimpan');
     }
 
     public function getMedicineInputValidation(Request $request)
@@ -349,16 +358,16 @@ class MedicineController extends Controller
                 'required',
                 'string',
                 'min:2',
-                'max:100'
+                'max:100',
             ],
             'stock' => [
                 'required',
                 'integer',
-                'min:0'
+                'min:0',
             ],
             'unit' => [
-                'required'
-            ]
+                'required',
+            ],
         ]);
 
         return $validated;

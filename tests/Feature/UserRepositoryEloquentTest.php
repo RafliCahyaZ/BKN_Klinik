@@ -2,15 +2,13 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
-use App\Repository\UserRepositoryEloquent;
 use App\DTO\UserDTO;
+use App\Repository\UserRepositoryEloquent;
 use App\Type\UserRole;
-use Carbon\Carbon;
 use Carbon\CarbonInterface;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 class UserRepositoryEloquentTest extends TestCase
 {
@@ -24,7 +22,7 @@ class UserRepositoryEloquentTest extends TestCase
     {
         parent::setUp();
 
-        $this->userRepository = new UserRepositoryEloquent();
+        $this->userRepository = new UserRepositoryEloquent;
 
         $this->userData = [
             'username' => 'johndoe',
@@ -36,9 +34,9 @@ class UserRepositoryEloquentTest extends TestCase
     }
 
     // test untuk insert user
-    public function testInsertUserSuccess(): void 
+    public function test_insert_user_success(): void
     {
-        $userDTO = new UserDTO();
+        $userDTO = new UserDTO;
         $userDTO->username = $this->userData['username'];
         $userDTO->password = Hash::make($this->userData['password']);
         $userDTO->fullname = $this->userData['fullname'];
@@ -46,7 +44,7 @@ class UserRepositoryEloquentTest extends TestCase
         $userDTO->role = $this->userData['role'];
 
         $insertedUserDTO = $this->userRepository->insert($userDTO);
-        
+
         $this->assertNotNull($insertedUserDTO);
         $this->assertEquals($this->userData['username'], $insertedUserDTO->username);
         $this->assertEquals($this->userData['fullname'], $insertedUserDTO->fullname);
@@ -64,25 +62,25 @@ class UserRepositoryEloquentTest extends TestCase
     }
 
     // test untuk insert user gagal ketika email sudah ada
-    public function testInsertUserFailedWhenEmailExists(): void 
+    public function test_insert_user_failed_when_email_exists(): void
     {
-        $userDTO = new UserDTO();
+        $userDTO = new UserDTO;
         $userDTO->username = $this->userData['username'];
         $userDTO->password = Hash::make($this->userData['password']);
         $userDTO->fullname = $this->userData['fullname'];
         $userDTO->email = $this->userData['email'];
         $userDTO->role = $this->userData['role'];
-        
+
         $firstInsert = $this->userRepository->insert($userDTO);
         $this->assertNotNull($firstInsert);
 
-        $duplicateUserDTO = new UserDTO();
+        $duplicateUserDTO = new UserDTO;
         $duplicateUserDTO->username = 'janedoe';
         $duplicateUserDTO->password = Hash::make('password456');
         $duplicateUserDTO->fullname = 'Jane Doe';
         $duplicateUserDTO->email = $this->userData['email']; // Same email
         $duplicateUserDTO->role = UserRole::ADMIN;
-        
+
         $this->expectException(\Illuminate\Database\QueryException::class);
         $secondInsert = $this->userRepository->insert($duplicateUserDTO);
         $this->assertNull($secondInsert);
@@ -97,45 +95,44 @@ class UserRepositoryEloquentTest extends TestCase
         $this->assertInstanceOf(CarbonInterface::class, $firstInsert->updatedAt);
     }
 
-
     // test untuk insert user gagal ketika email sudah ada
-    public function testInsertUserFailedWhenExists(): void 
+    public function test_insert_user_failed_when_exists(): void
     {
-        $userDTO = new UserDTO();
+        $userDTO = new UserDTO;
         $userDTO->username = $this->userData['username'];
         $userDTO->password = Hash::make($this->userData['password']);
         $userDTO->fullname = $this->userData['fullname'];
         $userDTO->email = $this->userData['email'];
         $userDTO->role = $this->userData['role'];
-        
+
         $firstInsert = $this->userRepository->insert($userDTO);
         $this->assertNotNull($firstInsert);
 
-        $duplicateUserDTO = new UserDTO();
+        $duplicateUserDTO = new UserDTO;
         $duplicateUserDTO->username = $this->userData['username']; // Same username
         $duplicateUserDTO->password = Hash::make('password456');
         $duplicateUserDTO->fullname = 'Jane Doe';
-        $duplicateUserDTO->email = 'anjing@gmail.com'; 
+        $duplicateUserDTO->email = 'anjing@gmail.com';
         $duplicateUserDTO->role = UserRole::ADMIN;
-        
+
         $this->expectException(\Illuminate\Database\QueryException::class);
         $secondInsert = $this->userRepository->insert($duplicateUserDTO);
         $this->assertNull($secondInsert);
     }
 
     // test untuk get all users
-    public function testGetAllUsers(): void 
+    public function test_get_all_users(): void
     {
         // Insert some users first
         for ($i = 1; $i <= 3; $i++) {
-            $userDTO = new UserDTO();
+            $userDTO = new UserDTO;
             $userDTO->username = "user$i";
             $userDTO->password = Hash::make("password$i");
             $userDTO->fullname = "User $i";
             $userDTO->email = "user$i@example.com";
             $userDTO->role = ($i % 2 == 0) ? UserRole::ADMIN : UserRole::DOCTOR;
 
-            $this->userRepository->insert($userDTO); 
+            $this->userRepository->insert($userDTO);
         }
 
         $users = $this->userRepository->getAll();
@@ -153,11 +150,11 @@ class UserRepositoryEloquentTest extends TestCase
             $this->assertInstanceOf(CarbonInterface::class, $user->createdAt);
             $this->assertInstanceOf(CarbonInterface::class, $user->updatedAt);
         }
-        
+
     }
 
     // test untuk getall users ketika tidak ada data
-    public function testGetAllUsersWhenNoData(): void 
+    public function test_get_all_users_when_no_data(): void
     {
         $users = $this->userRepository->getAll();
         $this->assertIsArray($users);
@@ -165,105 +162,105 @@ class UserRepositoryEloquentTest extends TestCase
     }
 
     // test untuk edit user
-    public function testEditUser(): void 
+    public function test_edit_user(): void
     {
-        $userDTO = new UserDTO();
+        $userDTO = new UserDTO;
         $userDTO->username = $this->userData['username'];
         $userDTO->password = Hash::make($this->userData['password']);
         $userDTO->fullname = $this->userData['fullname'];
         $userDTO->email = $this->userData['email'];
         $userDTO->role = $this->userData['role'];
-        
-        $insertedUserDTO = $this->userRepository->insert($userDTO);    
+
+        $insertedUserDTO = $this->userRepository->insert($userDTO);
         $this->assertNotNull($insertedUserDTO);
 
         $insertedUserId = $insertedUserDTO->id;
-        $updatedUserDTO = new UserDTO();
-        $updatedUserDTO->fullname = "Updated Name";
+        $updatedUserDTO = new UserDTO;
+        $updatedUserDTO->fullname = 'Updated Name';
         $updatedUserDTO->role = UserRole::ADMIN;
-        
+
         $editedUserDTO = $this->userRepository->edit($insertedUserId, $updatedUserDTO);
         $this->assertNotNull($editedUserDTO);
-        $this->assertEquals("Updated Name", $editedUserDTO->fullname);
+        $this->assertEquals('Updated Name', $editedUserDTO->fullname);
         $this->assertEquals(UserRole::ADMIN, $editedUserDTO->role);
         $this->assertInstanceOf(UserDTO::class, $editedUserDTO);
-    }   
+    }
 
     // test untuk edit user yang tidak ada
-    public function testEditNonExistentUser(): void 
+    public function test_edit_non_existent_user(): void
     {
         $nonExistentUserId = '9999';
-        $updatedUserDTO = new UserDTO();
-        $updatedUserDTO->fullname = "Updated Name";
-        $updatedUserDTO->email = "updated@example.com";
-        
+        $updatedUserDTO = new UserDTO;
+        $updatedUserDTO->fullname = 'Updated Name';
+        $updatedUserDTO->email = 'updated@example.com';
+
         $editedUserDTO = $this->userRepository->edit($nonExistentUserId, $updatedUserDTO);
         $this->assertNull($editedUserDTO);
     }
 
     // test untuk edit user dengan data kosong
-    public function testEditUserWithEmptyData(): void 
+    public function test_edit_user_with_empty_data(): void
     {
-        $userDTO = new UserDTO();
+        $userDTO = new UserDTO;
         $userDTO->username = $this->userData['username'];
         $userDTO->password = Hash::make($this->userData['password']);
         $userDTO->fullname = $this->userData['fullname'];
         $userDTO->email = $this->userData['email'];
         $userDTO->role = $this->userData['role'];
-        
-        $insertedUserDTO = $this->userRepository->insert($userDTO);    
+
+        $insertedUserDTO = $this->userRepository->insert($userDTO);
         $this->assertNotNull($insertedUserDTO);
 
         $insertedUserId = $insertedUserDTO->id;
-        $updatedUserDTO = new UserDTO(); // Data kosong
-        
+        $updatedUserDTO = new UserDTO; // Data kosong
+
         $editedUserDTO = $this->userRepository->edit($insertedUserId, $updatedUserDTO);
         $this->assertNull($editedUserDTO);
     }
-    
-        // test untuk edit user dengan data yang tidak bisa diedit seperti username dan password
-    public function testEditUserWithNonEditableData(): void 
+
+    // test untuk edit user dengan data yang tidak bisa diedit seperti username dan password
+    public function test_edit_user_with_non_editable_data(): void
     {
-        $userDTO = new UserDTO();
+        $userDTO = new UserDTO;
         $userDTO->username = $this->userData['username'];
         $userDTO->password = Hash::make($this->userData['password']);
         $userDTO->fullname = $this->userData['fullname'];
         $userDTO->email = $this->userData['email'];
-        $userDTO->role = $this->userData['role'];  
+        $userDTO->role = $this->userData['role'];
 
-        $insertedUserDTO = $this->userRepository->insert($userDTO);    
+        $insertedUserDTO = $this->userRepository->insert($userDTO);
         $this->assertNotNull($insertedUserDTO);
-        
+
         $insertedUserId = $insertedUserDTO->id;
-        $updatedUserDTO = new UserDTO(); // Data kosong
-        $updatedUserDTO->username = "newusername"; // tidak bisa diedit
-        $updatedUserDTO->password = Hash::make("newpassword"); // tidak bisa died
-        
+        $updatedUserDTO = new UserDTO; // Data kosong
+        $updatedUserDTO->username = 'newusername'; // tidak bisa diedit
+        $updatedUserDTO->password = Hash::make('newpassword'); // tidak bisa died
+
         $editedUserDTO = $this->userRepository->edit($insertedUserId, $updatedUserDTO);
         $this->assertNotNull($editedUserDTO);
-
 
         $this->assertEquals($this->userData['username'], $editedUserDTO->username); // tetap sama
         $this->assertEquals($this->userData['email'], $editedUserDTO->email); // tetap sama
         $this->assertInstanceOf(UserDTO::class, $editedUserDTO);
 
     }
+
     // test getById user
-    public function testGetByIdUser(): void 
+    public function test_get_by_id_user(): void
     {
-        $userDTO = new UserDTO();
+        $userDTO = new UserDTO;
         $userDTO->username = $this->userData['username'];
         $userDTO->password = Hash::make($this->userData['password']);
         $userDTO->fullname = $this->userData['fullname'];
         $userDTO->email = $this->userData['email'];
         $userDTO->role = $this->userData['role'];
-        
-        $insertedUserDTO = $this->userRepository->insert($userDTO);    
+
+        $insertedUserDTO = $this->userRepository->insert($userDTO);
         $this->assertNotNull($insertedUserDTO);
-        
+
         $insertedUserId = $insertedUserDTO->id;
         $fetchedUserDTO = $this->userRepository->getById($insertedUserId);
-        
+
         $this->assertNotNull($fetchedUserDTO);
         $this->assertEquals($insertedUserDTO->username, $fetchedUserDTO->username);
         $this->assertEquals($insertedUserDTO->fullname, $fetchedUserDTO->fullname);
@@ -282,7 +279,7 @@ class UserRepositoryEloquentTest extends TestCase
     }
 
     // test getById user yang tidak ada
-    public function testGetByIdNonExistentUser(): void 
+    public function test_get_by_id_non_existent_user(): void
     {
         $nonExistentUserId = '9999';
         $fetchedUserDTO = $this->userRepository->getById($nonExistentUserId);
@@ -290,20 +287,20 @@ class UserRepositoryEloquentTest extends TestCase
     }
 
     // test getByEmail user
-    public function testGetByEmailUser(): void 
+    public function test_get_by_email_user(): void
     {
-        $userDTO = new UserDTO();
+        $userDTO = new UserDTO;
         $userDTO->username = $this->userData['username'];
         $userDTO->password = Hash::make($this->userData['password']);
         $userDTO->fullname = $this->userData['fullname'];
         $userDTO->email = $this->userData['email'];
         $userDTO->role = $this->userData['role'];
-        
-        $insertedUserDTO = $this->userRepository->insert($userDTO);    
+
+        $insertedUserDTO = $this->userRepository->insert($userDTO);
         $this->assertNotNull($insertedUserDTO);
-        
+
         $fetchedUserDTO = $this->userRepository->getByEmail($this->userData['email']);
-        
+
         $this->assertNotNull($fetchedUserDTO);
         $this->assertEquals($insertedUserDTO->username, $fetchedUserDTO->username);
         $this->assertEquals($insertedUserDTO->fullname, $fetchedUserDTO->fullname);
@@ -321,7 +318,7 @@ class UserRepositoryEloquentTest extends TestCase
     }
 
     // test getByEmail user yang tidak ada
-    public function testGetByEmailNonExistentUser(): void 
+    public function test_get_by_email_non_existent_user(): void
     {
         $nonExistentEmail = 'notfound@example.com';
         $fetchedUserDTO = $this->userRepository->getByEmail($nonExistentEmail);
@@ -329,18 +326,18 @@ class UserRepositoryEloquentTest extends TestCase
     }
 
     // test getLatestId user
-    public function testGetLatestIdUser(): void 
+    public function test_get_latest_id_user(): void
     {
         // Insert some users first
         $latestInsertedId = null;
         for ($i = 1; $i <= 4; $i++) {
-            $userDTO = new UserDTO();
+            $userDTO = new UserDTO;
             $userDTO->username = "user$i";
             $userDTO->password = Hash::make("password$i");
             $userDTO->fullname = "User $i";
             $userDTO->email = "user$i@example.com";
             $userDTO->role = UserRole::DOCTOR;
-            
+
             $insertedUserDTO = $this->userRepository->insert($userDTO);
             $latestInsertedId = $insertedUserDTO->id;
         }
@@ -350,39 +347,39 @@ class UserRepositoryEloquentTest extends TestCase
     }
 
     // test getLatestId user ketika tidak ada data
-    public function testGetLatestIdUserWhenNoData(): void 
+    public function test_get_latest_id_user_when_no_data(): void
     {
         $latestId = $this->userRepository->getLatestId();
         $this->assertEquals(0, $latestId);
     }
 
     // test delete user
-    public function testDeleteUser(): void 
+    public function test_delete_user(): void
     {
-        $userDTO = new UserDTO();
+        $userDTO = new UserDTO;
         $userDTO->username = $this->userData['username'];
         $userDTO->password = Hash::make($this->userData['password']);
         $userDTO->fullname = $this->userData['fullname'];
         $userDTO->email = $this->userData['email'];
         $userDTO->role = $this->userData['role'];
-        
-        $insertedUserDTO = $this->userRepository->insert($userDTO);    
+
+        $insertedUserDTO = $this->userRepository->insert($userDTO);
         $this->assertNotNull($insertedUserDTO);
-        
+
         $insertedUserId = $insertedUserDTO->id;
         $deleteResult = $this->userRepository->delete($insertedUserId);
         $this->assertTrue($deleteResult);
-        
+
         // Verify user is deleted
         $fetchedUserDTO = $this->userRepository->getById($insertedUserId);
         $this->assertNull($fetchedUserDTO);
     }
 
     // test delete user yang tidak ada
-    public function testDeleteNonExistentUser(): void 
+    public function test_delete_non_existent_user(): void
     {
         $nonExistentUserId = '9999';
         $deleteResult = $this->userRepository->delete($nonExistentUserId);
-        $this->assertFalse($deleteResult); 
+        $this->assertFalse($deleteResult);
     }
 }

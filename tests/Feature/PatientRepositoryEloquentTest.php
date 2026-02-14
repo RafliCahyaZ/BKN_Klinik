@@ -6,17 +6,15 @@ use App\DTO\PatientDTO;
 use App\Repository\PatientRepositoryEloquent;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PatientRepositoryEloquentTest extends TestCase
 {
     /**
      * A basic feature test example.
-     *
      */
-
     use RefreshDatabase;
+
     protected PatientRepositoryEloquent $patientRepository;
 
     protected array $patientData = [
@@ -27,7 +25,7 @@ class PatientRepositoryEloquentTest extends TestCase
     {
         parent::setUp();
 
-        $this->patientRepository = new PatientRepositoryEloquent();
+        $this->patientRepository = new PatientRepositoryEloquent;
 
         $this->patientData = [
             'fullname' => 'John Doe',
@@ -42,11 +40,11 @@ class PatientRepositoryEloquentTest extends TestCase
     }
 
     // test untuk insert patient
-    public function testInsertPatientSuccess(): void 
+    public function test_insert_patient_success(): void
     {
-        $patientDTO = new PatientDTO();
+        $patientDTO = new PatientDTO;
         $patientDTO->name = $this->patientData['fullname'];
-        $patientDTO->gender = $this->patientData['gender']; 
+        $patientDTO->gender = $this->patientData['gender'];
         $patientDTO->address = $this->patientData['address'];
         $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);
         $patientDTO->telpNumber = $this->patientData['telp_number'];
@@ -63,22 +61,22 @@ class PatientRepositoryEloquentTest extends TestCase
     }
 
     // test untuk insert patient gagal ketika data unik sudah ada
-    public function testInsertPatientFailedWhenUniqueDataExists(): void 
+    public function test_insert_patient_failed_when_unique_data_exists(): void
     {
-        $patientDTO = new PatientDTO();
+        $patientDTO = new PatientDTO;
         $patientDTO->name = $this->patientData['fullname'];
-        $patientDTO->gender = $this->patientData['gender']; 
+        $patientDTO->gender = $this->patientData['gender'];
         $patientDTO->address = $this->patientData['address'];
         $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);
         $patientDTO->telpNumber = $this->patientData['telp_number'];
         $patientDTO->history = $this->patientData['history'];
         $patientDTO->medicalRecordFileUrl = $this->patientData['medical_record_file_url'];
         $patientDTO->medicalRecordNumber = $this->patientData['medical_record_number'];
-        
+
         $firstInsert = $this->patientRepository->insert($patientDTO);
         $this->assertNotNull($firstInsert);
 
-        $duplicatePatientDTO = new PatientDTO();
+        $duplicatePatientDTO = new PatientDTO;
         $duplicatePatientDTO->name = 'Jane Doe';
         $duplicatePatientDTO->gender = 'female';
         $duplicatePatientDTO->address = '456 Oak St';
@@ -87,19 +85,18 @@ class PatientRepositoryEloquentTest extends TestCase
         $duplicatePatientDTO->history = 'Some history';
         $duplicatePatientDTO->medicalRecordFileUrl = 'http://example.com/record2.pdf';
         $duplicatePatientDTO->medicalRecordNumber = $this->patientData['medical_record_number']; // Same as first patient
-        
+
         $this->expectException(\Illuminate\Database\QueryException::class);
         $secondInsert = $this->patientRepository->insert($duplicatePatientDTO);
         $this->assertEquals(null, $secondInsert);
     }
-    
 
-        // test untuk get all patients
-    public function testGetAllPatients(): void 
+    // test untuk get all patients
+    public function test_get_all_patients(): void
     {
         // Insert some patients first
         for ($i = 1; $i <= 3; $i++) {
-            $patientDTO = new PatientDTO();
+            $patientDTO = new PatientDTO;
             $patientDTO->name = "Patient $i";
             $patientDTO->gender = ($i % 2 == 0) ? 'female' : 'male';
             $patientDTO->address = "$i Main St";
@@ -107,9 +104,9 @@ class PatientRepositoryEloquentTest extends TestCase
             $patientDTO->telpNumber = "123456789$i";
             $patientDTO->history = "History $i";
             $patientDTO->medicalRecordFileUrl = "http://example.com/record$i.pdf";
-            $patientDTO->medicalRecordNumber = "MRN12345$i";    
+            $patientDTO->medicalRecordNumber = "MRN12345$i";
 
-            $this->patientRepository->insert($patientDTO); 
+            $this->patientRepository->insert($patientDTO);
         }
 
         $patients = $this->patientRepository->getAll();
@@ -117,9 +114,8 @@ class PatientRepositoryEloquentTest extends TestCase
         $this->assertCount(3, $patients);
     }
 
-
     // test untuk getall patients ketika tidak ada data
-    public function testGetAllPatientsWhenNoData(): void 
+    public function test_get_all_patients_when_no_data(): void
     {
         $patients = $this->patientRepository->getAll();
         // cek patients adalah array kosong
@@ -127,97 +123,94 @@ class PatientRepositoryEloquentTest extends TestCase
         $this->assertCount(0, $patients);
     }
 
-
     // test untuk edit patient
-    public function testEditPatient(): void 
+    public function test_edit_patient(): void
     {
-        $patientDTO = new PatientDTO();
+        $patientDTO = new PatientDTO;
         $patientDTO->name = $this->patientData['fullname'];
-        $patientDTO->gender = $this->patientData['gender']; 
+        $patientDTO->gender = $this->patientData['gender'];
         $patientDTO->address = $this->patientData['address'];
         $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);
         $patientDTO->telpNumber = $this->patientData['telp_number'];
         $patientDTO->history = $this->patientData['history'];
         $patientDTO->medicalRecordFileUrl = $this->patientData['medical_record_file_url'];
         $patientDTO->medicalRecordNumber = $this->patientData['medical_record_number'];
-        $insertedPatientDTO = $this->patientRepository->insert($patientDTO);    
+        $insertedPatientDTO = $this->patientRepository->insert($patientDTO);
         $this->assertNotNull($insertedPatientDTO);
 
         $insertedPatientId = $insertedPatientDTO->id;
-        $updatedPatientDTO = new PatientDTO();
-        $updatedPatientDTO->name = "Updated Name";
-        $updatedPatientDTO->gender = "female";
-        $updatedPatientDTO->address = "Updated Address";
-        
+        $updatedPatientDTO = new PatientDTO;
+        $updatedPatientDTO->name = 'Updated Name';
+        $updatedPatientDTO->gender = 'female';
+        $updatedPatientDTO->address = 'Updated Address';
+
         $editedPatientDTO = $this->patientRepository->edit($insertedPatientId, $updatedPatientDTO);
         $this->assertNotNull($editedPatientDTO);
-        $this->assertEquals("Updated Name", $editedPatientDTO->name);
-        $this->assertEquals("female", $editedPatientDTO->gender);
-        $this->assertEquals("Updated Address", $editedPatientDTO->address);
+        $this->assertEquals('Updated Name', $editedPatientDTO->name);
+        $this->assertEquals('female', $editedPatientDTO->gender);
+        $this->assertEquals('Updated Address', $editedPatientDTO->address);
 
         $this->assertInstanceOf(PatientDTO::class, $editedPatientDTO);
-    }   
-
+    }
 
     // test untuk edit patient yang tidak ada
-    public function testEditNonExistentPatient(): void 
+    public function test_edit_non_existent_patient(): void
     {
         $nonExistentPatientId = 9999; // ID yang tidak ada di database
-        $updatedPatientDTO = new PatientDTO();
-        $updatedPatientDTO->name = "Updated Name";
-        $updatedPatientDTO->gender = "female";
-        $updatedPatientDTO->address = "Updated Address";
+        $updatedPatientDTO = new PatientDTO;
+        $updatedPatientDTO->name = 'Updated Name';
+        $updatedPatientDTO->gender = 'female';
+        $updatedPatientDTO->address = 'Updated Address';
         $editedPatientDTO = $this->patientRepository->edit($nonExistentPatientId, $updatedPatientDTO);
         $this->assertNull($editedPatientDTO);
     }
 
     // test untuk edit patient dengan data kosong
-    public function testEditPatientWithEmptyData(): void 
+    public function test_edit_patient_with_empty_data(): void
     {
-        $patientDTO = new PatientDTO();
+        $patientDTO = new PatientDTO;
         $patientDTO->name = $this->patientData['fullname'];
-        $patientDTO->gender = $this->patientData['gender']; 
+        $patientDTO->gender = $this->patientData['gender'];
         $patientDTO->address = $this->patientData['address'];
         $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);
         $patientDTO->telpNumber = $this->patientData['telp_number'];
         $patientDTO->history = $this->patientData['history'];
         $patientDTO->medicalRecordFileUrl = $this->patientData['medical_record_file_url'];
         $patientDTO->medicalRecordNumber = $this->patientData['medical_record_number'];
-        $insertedPatientDTO = $this->patientRepository->insert($patientDTO);    
+        $insertedPatientDTO = $this->patientRepository->insert($patientDTO);
         $this->assertNotNull($insertedPatientDTO);
 
         $insertedPatientId = $insertedPatientDTO->id;
-        $updatedPatientDTO = new PatientDTO(); // Data kosong
+        $updatedPatientDTO = new PatientDTO; // Data kosong
         $editedPatientDTO = $this->patientRepository->edit($insertedPatientId, $updatedPatientDTO);
         $this->assertNull($editedPatientDTO);
     }
 
-
     // test getById patient
-    public function testGetByIdPatient(): void 
+    public function test_get_by_id_patient(): void
     {
-        $patientDTO = new PatientDTO();
+        $patientDTO = new PatientDTO;
         $patientDTO->name = $this->patientData['fullname'];
-        $patientDTO->gender = $this->patientData['gender']; 
+        $patientDTO->gender = $this->patientData['gender'];
         $patientDTO->address = $this->patientData['address'];
         $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);
         $patientDTO->telpNumber = $this->patientData['telp_number'];
         $patientDTO->history = $this->patientData['history'];
         $patientDTO->medicalRecordFileUrl = $this->patientData['medical_record_file_url'];
         $patientDTO->medicalRecordNumber = $this->patientData['medical_record_number'];
-        $insertedPatientDTO = $this->patientRepository->insert($patientDTO);    
+        $insertedPatientDTO = $this->patientRepository->insert($patientDTO);
         $this->assertNotNull($insertedPatientDTO);
         $insertedPatientId = $insertedPatientDTO->id;
         $fetchedPatientDTO = $this->patientRepository->getById($insertedPatientId);
         $this->assertNotNull($fetchedPatientDTO);
         $this->assertEquals($insertedPatientDTO->name, $fetchedPatientDTO->name);
-        $this->assertEquals($insertedPatientDTO->gender, $fetchedPatientDTO->gender);  
+        $this->assertEquals($insertedPatientDTO->gender, $fetchedPatientDTO->gender);
         $this->assertInstanceOf(PatientDTO::class, $fetchedPatientDTO);
-        
+
     }
 
     // test getById patient yang tidak ada
-    public function testGetByIdNonExistentPatient(): void 
+    public function test_get_by_id_non_existent_patient(): void
     {
         $nonExistentPatientId = 9999; // ID yang tidak ada di database
         $fetchedPatientDTO = $this->patientRepository->getById($nonExistentPatientId);
@@ -225,12 +218,12 @@ class PatientRepositoryEloquentTest extends TestCase
     }
 
     // test getLatestId patient
-    public function testGetLatestIdPatient(): void 
+    public function test_get_latest_id_patient(): void
     {
         // Insert some patients first
         $latestInsertedId = null;
         for ($i = 1; $i <= 4; $i++) {
-            $patientDTO = new PatientDTO();
+            $patientDTO = new PatientDTO;
             $patientDTO->name = "Patient $i";
             $patientDTO->gender = ($i % 2 == 0) ? 'female' : 'male';
             $patientDTO->address = "$i Main St";
@@ -248,26 +241,25 @@ class PatientRepositoryEloquentTest extends TestCase
     }
 
     // test getLatestId patient ketika tidak ada data
-    public function testGetLatestIdPatientWhenNoData(): void 
+    public function test_get_latest_id_patient_when_no_data(): void
     {
         $latestId = $this->patientRepository->getLatestId();
         $this->assertEquals(0, $latestId);
     }
 
-
     // test delete patient
-    public function testDeletePatient(): void 
+    public function test_delete_patient(): void
     {
-        $patientDTO = new PatientDTO();
+        $patientDTO = new PatientDTO;
         $patientDTO->name = $this->patientData['fullname'];
-        $patientDTO->gender = $this->patientData['gender']; 
+        $patientDTO->gender = $this->patientData['gender'];
         $patientDTO->address = $this->patientData['address'];
         $patientDTO->dateOfBirth = Carbon::parse($this->patientData['date_of_birth']);
         $patientDTO->telpNumber = $this->patientData['telp_number'];
         $patientDTO->history = $this->patientData['history'];
         $patientDTO->medicalRecordFileUrl = $this->patientData['medical_record_file_url'];
         $patientDTO->medicalRecordNumber = $this->patientData['medical_record_number'];
-        $insertedPatientDTO = $this->patientRepository->insert($patientDTO);    
+        $insertedPatientDTO = $this->patientRepository->insert($patientDTO);
         $this->assertNotNull($insertedPatientDTO);
         $insertedPatientId = $insertedPatientDTO->id;
         $deleteResult = $this->patientRepository->delete($insertedPatientId);
@@ -276,10 +268,10 @@ class PatientRepositoryEloquentTest extends TestCase
     }
 
     // test delete patient yang tidak ada
-    public function testDeleteNonExistentPatient(): void 
+    public function test_delete_non_existent_patient(): void
     {
         $nonExistentPatientId = 9999; // ID yang tidak ada di database
         $deleteResult = $this->patientRepository->delete($nonExistentPatientId);
-        $this->assertFalse($deleteResult); 
+        $this->assertFalse($deleteResult);
     }
 }

@@ -8,20 +8,30 @@ use Carbon\CarbonInterface;
 class UserDTO
 {
     public string $id;
+
     public string $username;
+
     public string $password;
+
     public string $fullname;
+
     public string $email;
+
     public UserRole $role;
+
     public bool $isActive;
+
     public int $failedLoginAttempts;
+
     public ?CarbonInterface $lastLoginAt = null;
+
     public CarbonInterface $createdAt;
+
     public CarbonInterface $updatedAt;
 
-    static function createFromArray(array $data): UserDTO
+    public static function createFromArray(array $data): UserDTO
     {
-        $userDTO = new UserDTO();
+        $userDTO = new UserDTO;
         $userDTO->id = $data['id'];
         $userDTO->username = $data['username'];
         $userDTO->password = $data['password'];

@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\DTO\TreatmentDTO;
 
 interface TreatmentRepository
-
 {
     public function getAll(): array;
 

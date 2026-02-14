@@ -18,14 +18,14 @@ class UserController extends Controller
 
     public function index()
     {
-        return view("dashboard.user.home", [
-            "users" => $this->userRepository->getAll()
+        return view('dashboard.user.home', [
+            'users' => $this->userRepository->getAll(),
         ]);
     }
 
     public function create()
     {
-        return view("dashboard.user.create");
+        return view('dashboard.user.create');
     }
 
     public function store(Request $request)
@@ -71,30 +71,30 @@ class UserController extends Controller
             'role.in' => 'Role tidak valid',
         ]);
 
-        $userCreateDto = new UserDTO();
-        $userCreateDto->username = $validated["username"];
-        $userCreateDto->password = $validated["password"];
-        $userCreateDto->fullname = $validated["fullname"];
-        $userCreateDto->email = $validated["email"];
-        $userCreateDto->role = UserRoleHelper::stringToUserRole($validated["role"]);
+        $userCreateDto = new UserDTO;
+        $userCreateDto->username = $validated['username'];
+        $userCreateDto->password = $validated['password'];
+        $userCreateDto->fullname = $validated['fullname'];
+        $userCreateDto->email = $validated['email'];
+        $userCreateDto->role = UserRoleHelper::stringToUserRole($validated['role']);
 
-        if (!$this->userRepository->insert($userCreateDto)) {
-            return redirect()->route("user.index")->with("failed", "Gagal! User gagal ditambah");
+        if (! $this->userRepository->insert($userCreateDto)) {
+            return redirect()->route('user.index')->with('failed', 'Gagal! User gagal ditambah');
         }
 
-        return redirect()->route("user.index")->with("success", "Sukses! User berhasil ditambah");
+        return redirect()->route('user.index')->with('success', 'Sukses! User berhasil ditambah');
     }
 
     public function edit($id)
     {
         $user = $this->userRepository->getById($id);
 
-        if (!$user) {
+        if (! $user) {
             abort(404);
         }
 
-        return view("dashboard.user.edit", [
-            "user" => $user
+        return view('dashboard.user.edit', [
+            'user' => $user,
         ]);
     }
 
@@ -114,54 +114,54 @@ class UserController extends Controller
             'role.in' => 'Role tidak valid',
         ]);
 
-        $userDto = new UserDTO();
+        $userDto = new UserDTO;
         $userDto->id = $id;
-        $userDto->role = UserRoleHelper::stringToUserRole($validated["role"]);
-        $userDto->fullname = $validated["fullname"];
+        $userDto->role = UserRoleHelper::stringToUserRole($validated['role']);
+        $userDto->fullname = $validated['fullname'];
 
-        if (!$this->userRepository->edit($id, $userDto)) {
+        if (! $this->userRepository->edit($id, $userDto)) {
             return back()->withInput();
         }
 
-        return redirect()->route("user.index")->with("success", "Sukses! Berhasil edit user");
+        return redirect()->route('user.index')->with('success', 'Sukses! Berhasil edit user');
     }
 
     public function destroy($id)
     {
         $user = $this->userRepository->getById($id);
 
-        if (!$user) {
+        if (! $user) {
             abort(404);
         }
 
-        if (!$this->userRepository->delete($id)) {
-            return redirect()->route("user.index")->with("failed", "Failed! Data gagal dihapus");
+        if (! $this->userRepository->delete($id)) {
+            return redirect()->route('user.index')->with('failed', 'Failed! Data gagal dihapus');
         }
 
-        return redirect()->route("user.index")->with("success", "Sukses! Data berhasil dihapus");
+        return redirect()->route('user.index')->with('success', 'Sukses! Data berhasil dihapus');
     }
 
     public function activate($id)
     {
         $user = $this->userRepository->getById($id);
 
-        if (!$user) {
+        if (! $user) {
             abort(404);
         }
 
         if ($user->isActive) {
-            return redirect()->route("user.index")->with("info", "Info! Akun sudah aktif");
+            return redirect()->route('user.index')->with('info', 'Info! Akun sudah aktif');
         }
 
-        if (!$this->userRepository->activate($id)) {
-            return redirect()->route("user.index")->with("failed", "Failed! Akun gagal diaktifkan");
+        if (! $this->userRepository->activate($id)) {
+            return redirect()->route('user.index')->with('failed', 'Failed! Akun gagal diaktifkan');
         }
 
-        if(!$this->userRepository->resetFailedLoginAttempts($id)) {
-            return redirect()->route("user.index")->with("failed", "Failed! Gagal mereset percobaan login gagal");
+        if (! $this->userRepository->resetFailedLoginAttempts($id)) {
+            return redirect()->route('user.index')->with('failed', 'Failed! Gagal mereset percobaan login gagal');
         }
 
-        return redirect()->route("user.index")->with("success", "Sukses! Akun berhasil diaktifkan");
+        return redirect()->route('user.index')->with('success', 'Sukses! Akun berhasil diaktifkan');
     }
 
     public function profile()
@@ -172,13 +172,13 @@ class UserController extends Controller
     public function profileAction(Request $request)
     {
         $validated = $request->validate([
-            "password" => ['required', 'min:8', 'confirmed']
+            'password' => ['required', 'min:8', 'confirmed'],
         ]);
 
         $request->user()->update([
-            'password' => Hash::make($validated["password"])
+            'password' => Hash::make($validated['password']),
         ]);
 
-        return back()->with("success", "Password berhasil diubah");
+        return back()->with('success', 'Password berhasil diubah');
     }
 }

@@ -17,6 +17,7 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
         private MedicineStockTransactionRepositoryEloquent $medicineStockTransactionRepository,
         private MedicineRepositoryEloquent $medicineRepository
     ) {}
+
     public function execute(
         RegistrationDTO $registrationDto,
         array $diagnoses,
@@ -32,21 +33,19 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
             ) {
 
                 $editResult = true;
-                if (!$this->appointmentRepository->attachManyDiagnosesToRegistration($registrationDto, $diagnoses)) {
+                if (! $this->appointmentRepository->attachManyDiagnosesToRegistration($registrationDto, $diagnoses)) {
                     $editResult = false;
                 }
-                if (!$this->appointmentRepository->attachManyTreatmentsToRegistration($registrationDto, $treatments)) {
+                if (! $this->appointmentRepository->attachManyTreatmentsToRegistration($registrationDto, $treatments)) {
                     $editResult = false;
                 }
-                if (!$this->registrationRepository->edit($registrationDto)) {
+                if (! $this->registrationRepository->edit($registrationDto)) {
                     dd('failed edit registration in patient examination service');
                     $editResult = false;
                 }
 
                 $medicineUpdates = [];
 
-                // dd($editResult)
-                
                 foreach ($medicineTransactions as $medicineStockTransactionDto) {
                     if (is_null($this->medicineStockTransactionRepository->insert($medicineStockTransactionDto))) {
                         $editResult = false;
@@ -54,36 +53,34 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
                     }
 
                     $medicineId = $medicineStockTransactionDto->medicine->id;
-                    if (!isset($medicineUpdates[$medicineId])) {
+                    if (! isset($medicineUpdates[$medicineId])) {
                         $medicineUpdates[$medicineId] = [
                             'medicine' => $medicineStockTransactionDto->medicine,
-                            'totalQuantity' => 0
+                            'totalQuantity' => 0,
                         ];
                     }
                     $medicineUpdates[$medicineId]['totalQuantity'] += $medicineStockTransactionDto->quantity;
                 }
 
-                
-
                 if ($editResult) {
                     foreach ($medicineUpdates as $medicineId => $updateData) {
                         $currentMedicine = $this->medicineRepository->getById($medicineId);
-                        if (!$currentMedicine) {
+                        if (! $currentMedicine) {
                             $editResult = false;
                             break;
                         }
 
                         $newStock = $currentMedicine->stock - $updateData['totalQuantity'];
-                        
+
                         if ($newStock < 0) {
                             $editResult = false;
                             break;
                         }
-                        
+
                         $currentMedicine->stock = $newStock;
                         $updatedMedicineDto = $this->medicineRepository->edit($medicineId, $currentMedicine);
-                        
-                        if (!$updatedMedicineDto) {
+
+                        if (! $updatedMedicineDto) {
                             $editResult = false;
                             break;
                         }
@@ -93,7 +90,6 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
                 return $editResult;
             });
         } catch (\Throwable $th) {
-            dd($th);
             return false;
         }
 

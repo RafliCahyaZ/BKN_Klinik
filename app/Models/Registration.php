@@ -41,7 +41,4 @@ class Registration extends Model
     {
         return $this->belongsToMany(Treatment::class)->withTimestamps();
     }
-
-
-
 }

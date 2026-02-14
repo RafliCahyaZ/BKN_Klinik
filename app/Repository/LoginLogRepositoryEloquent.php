@@ -26,7 +26,7 @@ class LoginLogRepositoryEloquent implements LoginLogRepository
         try {
             $loginLog = LoginLog::with('user')->find($id);
 
-            if (!$loginLog) {
+            if (! $loginLog) {
                 return null;
             }
 
@@ -123,7 +123,7 @@ class LoginLogRepositoryEloquent implements LoginLogRepository
     public function insert(LoginLogDTO $loginLogDTO): ?LoginLogDTO
     {
         try {
-            $loginLog = new LoginLog();
+            $loginLog = new LoginLog;
             $loginLog->fill([
                 'user_id' => $loginLogDTO->userId,
                 'ip_address' => $loginLogDTO->ipAddress,
@@ -165,7 +165,7 @@ class LoginLogRepositoryEloquent implements LoginLogRepository
     {
         try {
             $latestId = LoginLog::max('id');
-            
+
             if ($latestId === null) {
                 return 0;
             }
@@ -179,7 +179,7 @@ class LoginLogRepositoryEloquent implements LoginLogRepository
     private function mapLoginLogModelToDTO(LoginLog $loginLog): LoginLogDTO
     {
         try {
-            $dto = new LoginLogDTO();
+            $dto = new LoginLogDTO;
             $dto->id = $loginLog->id;
             $dto->userId = $loginLog->user_id;
             $dto->ipAddress = $loginLog->ip_address;
@@ -193,7 +193,7 @@ class LoginLogRepositoryEloquent implements LoginLogRepository
 
             return $dto;
         } catch (\Throwable $th) {
-            return new LoginLogDTO();
+            return new LoginLogDTO;
         }
     }
 }

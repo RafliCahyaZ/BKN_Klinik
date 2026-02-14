@@ -3,12 +3,12 @@
 namespace App\Repository;
 
 use App\DTO\DiagnosisDTO;
-use App\DTO\PatientDTO;
-use App\DTO\RegistrationDTO;
-use App\DTO\UserDTO;
 use App\DTO\MedicineDTO;
 use App\DTO\MedicineStockTransactionDTO;
+use App\DTO\PatientDTO;
+use App\DTO\RegistrationDTO;
 use App\DTO\TreatmentDTO;
+use App\DTO\UserDTO;
 use App\Helper\UserRoleHelper;
 use App\Models\Registration;
 use Carbon\Carbon;
@@ -19,10 +19,10 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
 {
     public static function mapRegistrationModelToRegistrationDto($registration): RegistrationDTO
     {
-        $formatedRegistration = new RegistrationDTO();
+        $formatedRegistration = new RegistrationDTO;
         $formatedRegistration->id = $registration->id;
 
-        $patient = new PatientDTO();
+        $patient = new PatientDTO;
         $patient->id = $registration->patient->id;
         $patient->name = $registration->patient->fullname;
         $patient->age = $registration->patient->getAgeAttribute();
@@ -36,14 +36,14 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
         $patient->createdAt = $registration->patient->created_at;
         $patient->updatedAt = $registration->patient->updated_at;
 
-        $doctor = new UserDTO();
+        $doctor = new UserDTO;
         if ($registration->doctor) {
             $doctor = UserRepositoryEloquent::mapUserModelToUserDto($registration->doctor);
         }
 
         $formatedRegistration->patient = $patient;
         $formatedRegistration->doctor = $doctor;
-        $formatedRegistration->medicineStockTransactions = []; 
+        $formatedRegistration->medicineStockTransactions = [];
         $formatedRegistration->complaint = $registration->complaint;
         $formatedRegistration->receipt = $registration->receipt;
         $formatedRegistration->checkDate = $registration->check_date ? Carbon::parse($registration->check_date) : null;
@@ -53,16 +53,16 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
         return $formatedRegistration;
     }
 
-    function getAll(): array
+    public function getAll(): array
     {
         try {
             $registrationsCollections = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit'])->get();
 
             $formatedRegistrations = $registrationsCollections->map(function ($registration) {
-                $formatedRegistration = new RegistrationDTO();
+                $formatedRegistration = new RegistrationDTO;
                 $formatedRegistration->id = $registration->id;
 
-                $patient = new PatientDTO();
+                $patient = new PatientDTO;
                 $patient->id = $registration->patient->id;
                 $patient->name = $registration->patient->fullname;
                 $patient->age = $registration->patient->getAgeAttribute();
@@ -76,7 +76,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $patient->createdAt = $registration->patient->created_at;
                 $patient->updatedAt = $registration->patient->updated_at;
 
-                $doctor = new UserDTO();
+                $doctor = new UserDTO;
                 if ($registration->doctor) {
                     $doctor = UserRepositoryEloquent::mapUserModelToUserDto($registration->doctor);
                 }
@@ -84,23 +84,23 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $medicineStockTransactions = [];
                 if ($registration->medicineStockTransactions) {
                     foreach ($registration->medicineStockTransactions as $transaction) {
-                        $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
+                        $medicineStockTransactionDTO = new MedicineStockTransactionDTO;
                         $medicineStockTransactionDTO->id = $transaction->id;
 
-                        $inventoryOfficer = new UserDTO();
+                        $inventoryOfficer = new UserDTO;
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
 
-                        $medicine = new MedicineDTO();
-                        
+                        $medicine = new MedicineDTO;
+
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
 
                         $medicineStockTransactionDTO->medicine = $medicine;
-                        $medicineStockTransactionDTO->registration = null; 
+                        $medicineStockTransactionDTO->registration = null;
                         $medicineStockTransactionDTO->type = $transaction->type;
                         $medicineStockTransactionDTO->quantity = $transaction->quantity;
                         $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
@@ -113,7 +113,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 }
 
                 $formatedRegistration->patient = $patient;
-                $formatedRegistration->doctor = $doctor; 
+                $formatedRegistration->doctor = $doctor;
                 $formatedRegistration->medicineStockTransactions = $medicineStockTransactions;
                 $formatedRegistration->complaint = $registration->complaint;
                 $formatedRegistration->receipt = $registration->receipt;
@@ -125,25 +125,26 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             });
 
             $registrations = $formatedRegistrations->toArray();
+
             return $registrations;
         } catch (\Exception $e) {
             return [];
         }
     }
 
-    function getById(string $id): ?RegistrationDTO
+    public function getById(string $id): ?RegistrationDTO
     {
         try {
             $registration = Registration::with(['doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit', 'diagnoses', 'treatments'])->find($id);
 
-            if (!$registration) {
+            if (! $registration) {
                 return null;
             }
 
-            $formated_registration = new RegistrationDTO();
+            $formated_registration = new RegistrationDTO;
             $formated_registration->id = $registration->id;
 
-            $patient = new PatientDTO();
+            $patient = new PatientDTO;
             $patient->id = $registration->patient->id;
             $patient->name = $registration->patient->fullname;
             $patient->age = $registration->patient->getAgeAttribute();
@@ -158,7 +159,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             $patient->updatedAt = $registration->patient->updated_at;
 
             if ($registration->doctor) {
-                $doctor = new UserDTO();
+                $doctor = new UserDTO;
                 $doctor = UserRepositoryEloquent::mapUserModelToUserDto($registration->doctor);
                 $formated_registration->doctor = $doctor;
             }
@@ -167,7 +168,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
 
             if ($registration->diagnoses) {
                 foreach ($registration->diagnoses as $diagnosis) {
-                    $diagnosisDTO = new DiagnosisDTO();
+                    $diagnosisDTO = new DiagnosisDTO;
                     $diagnosisDTO->id = $diagnosis->id;
                     $diagnosisDTO->icdCode = $diagnosis->icd_code;
                     $diagnosisDTO->createdAt = Carbon::parse($diagnosis->created_at);
@@ -181,7 +182,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
 
             if ($registration->treatments) {
                 foreach ($registration->treatments as $treatment) {
-                    $treatmentDTO = new TreatmentDTO();
+                    $treatmentDTO = new TreatmentDTO;
                     $treatmentDTO->id = $treatment->id;
                     $treatmentDTO->treatmentCode = $treatment->treatment_code;
                     $treatmentDTO->treatmentName = $treatment->treatment_name;
@@ -194,24 +195,24 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             $medicineStockTransactions = [];
             if ($registration->medicineStockTransactions) {
                 foreach ($registration->medicineStockTransactions as $transaction) {
-                    $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
+                    $medicineStockTransactionDTO = new MedicineStockTransactionDTO;
                     $medicineStockTransactionDTO->id = $transaction->id;
 
                     // Map inventory officer to UserDTO
-                    $inventoryOfficer = new UserDTO();
+                    $inventoryOfficer = new UserDTO;
                     if ($transaction->inventoryOfficer) {
                         $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                     }
                     $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
 
                     // Map medicine to MedicineDTO
-                    $medicine = new MedicineDTO();
+                    $medicine = new MedicineDTO;
                     if ($transaction->medicine) {
                         $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                     }
                     $medicineStockTransactionDTO->medicine = $medicine;
 
-                    $medicineStockTransactionDTO->registration = null; 
+                    $medicineStockTransactionDTO->registration = null;
                     $medicineStockTransactionDTO->type = $transaction->type;
                     $medicineStockTransactionDTO->quantity = $transaction->quantity;
                     $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
@@ -239,16 +240,16 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
         }
     }
 
-    function getByPatientId($patientId): array
+    public function getByPatientId($patientId): array
     {
         try {
             $registrationsCollections = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit', 'diagnoses', 'treatments'])->where('patient_id', $patientId)->orderBy('created_at', 'desc')->get();
 
             $formatedRegistrations = $registrationsCollections->map(function ($registration) {
-                $formatedRegistration = new RegistrationDTO();
+                $formatedRegistration = new RegistrationDTO;
                 $formatedRegistration->id = $registration->id;
 
-                $patient = new PatientDTO();
+                $patient = new PatientDTO;
                 $patient->id = $registration->patient->id;
                 $patient->name = $registration->patient->fullname;
                 $patient->age = $registration->patient->getAgeAttribute();
@@ -262,7 +263,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $patient->createdAt = $registration->patient->created_at;
                 $patient->updatedAt = $registration->patient->updated_at;
 
-                $doctor = new UserDTO();
+                $doctor = new UserDTO;
                 if ($registration->doctor) {
                     $doctor->id = $registration->doctor->id;
                     $doctor->username = $registration->doctor->fullname;
@@ -276,22 +277,22 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $medicineStockTransactions = [];
                 if ($registration->medicineStockTransactions) {
                     foreach ($registration->medicineStockTransactions as $transaction) {
-                        $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
+                        $medicineStockTransactionDTO = new MedicineStockTransactionDTO;
                         $medicineStockTransactionDTO->id = $transaction->id;
 
-                        $inventoryOfficer = new UserDTO();
+                        $inventoryOfficer = new UserDTO;
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
 
-                        $medicine = new MedicineDTO();
+                        $medicine = new MedicineDTO;
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
                         $medicineStockTransactionDTO->medicine = $medicine;
 
-                        $medicineStockTransactionDTO->registration = null; 
+                        $medicineStockTransactionDTO->registration = null;
 
                         $medicineStockTransactionDTO->type = $transaction->type;
                         $medicineStockTransactionDTO->quantity = $transaction->quantity;
@@ -317,16 +318,17 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             });
 
             $registrations = $formatedRegistrations->toArray();
+
             return $registrations;
         } catch (\Exception $e) {
             return [];
         }
     }
 
-    function insert(RegistrationDTO $registrationDTO): ?RegistrationDTO
+    public function insert(RegistrationDTO $registrationDTO): ?RegistrationDTO
     {
         try {
-            $registration = new Registration();
+            $registration = new Registration;
             $registration->fill([
                 'patient_id' => $registrationDTO->patient->id,
                 'receipt' => $registrationDTO->receipt,
@@ -348,10 +350,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
         }
     }
 
-
-    function edit(RegistrationDTO $registrationDTO): ?RegistrationDTO
+    public function edit(RegistrationDTO $registrationDTO): ?RegistrationDTO
     {
-        // dd($registrationDTO);
         try {
             $updateData = [
                 'doctor_id' => $registrationDTO->doctor->id ?? null,
@@ -363,21 +363,21 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             $filteredUpdateData = array_filter($updateData);
             $registrationId = $registrationDTO->id;
 
-            if (!empty($filteredUpdateData)) {
+            if (! empty($filteredUpdateData)) {
                 $edit = Registration::where('id', $registrationId)
                     ->update($filteredUpdateData);
 
                 if ($edit > 0) {
                     $updatedData = Registration::find($registrationId);
 
-                    $formatedUpdatedData = new RegistrationDTO();
+                    $formatedUpdatedData = new RegistrationDTO;
                     $formatedUpdatedData->id = $updatedData->id;
 
-                    $patient = new PatientDTO();
+                    $patient = new PatientDTO;
                     $patient->id = $updatedData->patient_id;
 
-                    $doctor = new UserDTO();
-                    if($updatedData->doctor_id) {
+                    $doctor = new UserDTO;
+                    if ($updatedData->doctor_id) {
                         $doctor->id = $updatedData->doctor_id;
                     }
 
@@ -397,30 +397,26 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 return null;
             }
         } catch (\Throwable $th) {
-            dd($th);
             return null;
         }
     }
 
-    function getWhereCheckDateIsNull(): array
+    public function getWhereCheckDateIsNull(): array
     {
         try {
             $user = Auth::user();
 
-            // dd($user->hasRole('doctor'));
             $nullCheckDateRegistrationsCollections = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit'])->when($user->hasRole('doctor'), function ($query) {
                 return $query->whereDate('created_at', today());
             })
                 ->whereNull('check_date')
                 ->get();
 
-
-            // dd($nullCheckDateRegistrationsCollections);
             $formatedRegistrations = $nullCheckDateRegistrationsCollections->map(function ($registration) {
-                $formatedRegistration = new RegistrationDTO();
+                $formatedRegistration = new RegistrationDTO;
                 $formatedRegistration->id = $registration->id;
 
-                $patient = new PatientDTO();
+                $patient = new PatientDTO;
                 $patient->id = $registration->patient->id;
                 $patient->name = $registration->patient->fullname;
                 $patient->age = $registration->patient->getAgeAttribute();
@@ -434,7 +430,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $patient->createdAt = $registration->patient->created_at;
                 $patient->updatedAt = $registration->patient->updated_at;
 
-                $doctor = new UserDTO();
+                $doctor = new UserDTO;
                 if ($registration->doctor) {
                     $doctor->id = $registration->doctor->id;
                     $doctor->username = $registration->doctor->fullname;
@@ -448,18 +444,18 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $medicineStockTransactions = [];
                 if ($registration->medicineStockTransactions) {
                     foreach ($registration->medicineStockTransactions as $transaction) {
-                        $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
+                        $medicineStockTransactionDTO = new MedicineStockTransactionDTO;
                         $medicineStockTransactionDTO->id = $transaction->id;
 
                         // Map inventory officer to UserDTO
-                        $inventoryOfficer = new UserDTO();
+                        $inventoryOfficer = new UserDTO;
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
 
                         // Map medicine to MedicineDTO
-                        $medicine = new MedicineDTO();
+                        $medicine = new MedicineDTO;
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
@@ -491,13 +487,14 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             });
 
             $registrations = $formatedRegistrations->toArray();
+
             return $registrations;
         } catch (\Exception $e) {
             return [];
         }
     }
 
-    function getWhereCheckDateIsNotNull($startDate, $endDate): array
+    public function getWhereCheckDateIsNotNull($startDate, $endDate): array
     {
         try {
             $notNullCheckDateRegistrationsCollections = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit'])
@@ -510,12 +507,12 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 })
                 ->orderBy('check_date', 'desc')
                 ->get();
-                
+
             $formatedRegistrations = $notNullCheckDateRegistrationsCollections->map(function ($registration) {
-                $formatedRegistration = new RegistrationDTO();
+                $formatedRegistration = new RegistrationDTO;
                 $formatedRegistration->id = $registration->id;
 
-                $patient = new PatientDTO();
+                $patient = new PatientDTO;
                 $patient->id = $registration->patient->id;
                 $patient->name = $registration->patient->fullname;
                 $patient->age = $registration->patient->getAgeAttribute();
@@ -529,7 +526,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $patient->createdAt = $registration->patient->created_at;
                 $patient->updatedAt = $registration->patient->updated_at;
 
-                $doctor = new UserDTO();
+                $doctor = new UserDTO;
                 if ($registration->doctor) {
                     $doctor = UserRepositoryEloquent::mapUserModelToUserDto($registration->doctor);
                 }
@@ -537,18 +534,18 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $medicineStockTransactions = [];
                 if ($registration->medicineStockTransactions) {
                     foreach ($registration->medicineStockTransactions as $transaction) {
-                        $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
+                        $medicineStockTransactionDTO = new MedicineStockTransactionDTO;
                         $medicineStockTransactionDTO->id = $transaction->id;
 
                         // Map inventory officer to UserDTO
-                        $inventoryOfficer = new UserDTO();
+                        $inventoryOfficer = new UserDTO;
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
 
                         // Map medicine to MedicineDTO
-                        $medicine = new MedicineDTO();
+                        $medicine = new MedicineDTO;
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
@@ -581,14 +578,14 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             });
 
             $registrations = $formatedRegistrations->toArray();
+
             return $registrations;
         } catch (\Exception $e) {
             return [];
         }
     }
 
-
-    function getByRangeDate(CarbonInterface $startDate, CarbonInterface $endDate): array
+    public function getByRangeDate(CarbonInterface $startDate, CarbonInterface $endDate): array
     {
         try {
             $registrationsCollections = Registration::with(['patient', 'doctor', 'medicineStockTransactions.inventoryOfficer', 'medicineStockTransactions.medicine.unit'])
@@ -596,10 +593,10 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 ->get();
 
             $formatedRegistrations = $registrationsCollections->map(function ($registration) {
-                $formatedRegistration = new RegistrationDTO();
+                $formatedRegistration = new RegistrationDTO;
                 $formatedRegistration->id = $registration->id;
 
-                $patient = new PatientDTO();
+                $patient = new PatientDTO;
                 $patient->id = $registration->patient->id;
                 $patient->name = $registration->patient->fullname;
                 $patient->age = $registration->patient->getAgeAttribute();
@@ -612,9 +609,9 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $patient->history = $registration->patient->history;
                 $patient->createdAt = $registration->patient->created_at;
                 $patient->updatedAt = $registration->patient->updated_at;
-                
+
                 if ($registration->doctor) {
-                    $doctor = new UserDTO();
+                    $doctor = new UserDTO;
                     $doctor = UserRepositoryEloquent::mapUserModelToUserDto($registration->doctor);
                     $formatedRegistration->doctor = $doctor;
                 }
@@ -622,16 +619,16 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                 $medicineStockTransactions = [];
                 if ($registration->medicineStockTransactions) {
                     foreach ($registration->medicineStockTransactions as $transaction) {
-                        $medicineStockTransactionDTO = new MedicineStockTransactionDTO();
+                        $medicineStockTransactionDTO = new MedicineStockTransactionDTO;
                         $medicineStockTransactionDTO->id = $transaction->id;
 
-                        $inventoryOfficer = new UserDTO();
+                        $inventoryOfficer = new UserDTO;
                         if ($transaction->inventoryOfficer) {
                             $inventoryOfficer = UserRepositoryEloquent::mapUserModelToUserDto($transaction->inventoryOfficer);
                         }
                         $medicineStockTransactionDTO->inventoryOfficer = $inventoryOfficer;
 
-                        $medicine = new MedicineDTO();
+                        $medicine = new MedicineDTO;
                         if ($transaction->medicine) {
                             $medicine = MedicineRepositoryEloquent::mapMedicineModelToMedicineDto($transaction->medicine);
                         }
@@ -663,6 +660,7 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
             });
 
             $registrations = $formatedRegistrations->toArray();
+
             return $registrations;
         } catch (\Exception $e) {
             return [];

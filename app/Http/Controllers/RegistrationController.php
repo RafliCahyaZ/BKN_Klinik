@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 
 class RegistrationController extends Controller
 {
-
     public function __construct(
         private PatientRepository $patientRepository,
         private RegistrationRepository $registrationRepository
@@ -19,41 +18,41 @@ class RegistrationController extends Controller
     {
         $patient = $this->patientRepository->getById($patientId);
 
-        if (!$patient) {
+        if (! $patient) {
             abort(404);
         }
 
         return view(
-            "dashboard.registration.create",
+            'dashboard.registration.create',
             [
-                "patient" => $patient
+                'patient' => $patient,
             ]
         );
     }
 
     public function print()
     {
-        return view("dashboard.registration.print");
+        return view('dashboard.registration.print');
     }
 
     public function store($patientId, Request $request)
     {
         $patient = $this->patientRepository->getById($patientId);
 
-        if (!$patient) {
+        if (! $patient) {
             abort(404);
         }
 
-        $registrationDto = new RegistrationDTO();
+        $registrationDto = new RegistrationDTO;
         $registrationDto->patient = $patient;
-        $registrationDto->complaint = $request["complaint"];
+        $registrationDto->complaint = $request['complaint'];
 
         $insertResult = $this->registrationRepository->insert($registrationDto);
 
-        if (!$insertResult) {
+        if (! $insertResult) {
             return back()->withInput();
         }
 
-        return redirect()->route("patient.queue");
+        return redirect()->route('patient.queue');
     }
 }

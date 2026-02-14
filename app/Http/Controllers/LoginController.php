@@ -8,7 +8,6 @@ use App\Repository\LoginLogRepository;
 use App\Repository\UserRepository;
 use App\Service\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -20,7 +19,7 @@ class LoginController extends Controller
 
     public function index()
     {
-        return view("auth.login");
+        return view('auth.login');
     }
 
     public function create(Request $request, AuthService $authService)
@@ -29,29 +28,28 @@ class LoginController extends Controller
             'username' => ['required', 'string', 'min:3', 'max:20'],
             'password' => ['required', 'string', 'min:8', 'max:64'],
         ]);
-        
+
         $user = $this->userRepository->getByUsername($validated['username']);
         $isActive = $user?->isActive ?? false;
 
-        
-        if (!$user || !$isActive) {
+        if (! $user || ! $isActive) {
 
-            $loginLogDTO = new LoginLogDTO();
+            $loginLogDTO = new LoginLogDTO;
             $loginLogDTO->ipAddress = $request->ip();
             $loginLogDTO->usernameAttempt = $validated['username'];
             $loginLogDTO->deviceInfo = $request->header('User-Agent');
 
             $this->loginLogRepository->insert($loginLogDTO);
-            return back()->with("failed", "Akun tidak ditemukan atau terkunci !. Silakan hubungi administrator.");
+
+            return back()->with('failed', 'Akun tidak ditemukan atau terkunci !. Silakan hubungi administrator.');
         }
-        
+
         if ($authService->attempt($validated['username'], $validated['password'])) {
             return $this->handleSuccessLogin($request, $user);
         }
 
         return $this->handleFailedLogin($request, $user);
 
-       
     }
 
     private function handleSuccessLogin(Request $request, UserDTO $user)
@@ -59,7 +57,7 @@ class LoginController extends Controller
         $request->session()->regenerate();
         $this->userRepository->resetFailedLoginAttempts($user->id);
 
-        $loginLogDTO = new LoginLogDTO();
+        $loginLogDTO = new LoginLogDTO;
         $loginLogDTO->userId = $user->id;
         $loginLogDTO->ipAddress = $request->ip();
         $loginLogDTO->usernameAttempt = $user->username;
@@ -69,10 +67,11 @@ class LoginController extends Controller
 
         $this->loginLogRepository->insert($loginLogDTO);
         $this->userRepository->updateLastLoginAt($user->id, now());
+
         return redirect()->intended('/');
     }
 
-    private function handleFailedLogin(Request $request,UserDTO $user)
+    private function handleFailedLogin(Request $request, UserDTO $user)
     {
         $failedAttempts = $this->userRepository->getFailedLoginAttempsById($user->id);
 
@@ -82,16 +81,17 @@ class LoginController extends Controller
 
             if ($failedAttempts >= 3) {
                 $this->userRepository->deactivate($user->id);
-                return back()->with("failed", "Akun anda terkunci karena terlalu banyak percobaan login gagal. Silakan hubungi administrator.");
+
+                return back()->with('failed', 'Akun anda terkunci karena terlalu banyak percobaan login gagal. Silakan hubungi administrator.');
             }
         }
-        $loginLogDTO = new LoginLogDTO();
+        $loginLogDTO = new LoginLogDTO;
         $loginLogDTO->ipAddress = $request->ip();
         $loginLogDTO->usernameAttempt = $user->username;
         $loginLogDTO->deviceInfo = $request->header('User-Agent');
         $this->loginLogRepository->insert($loginLogDTO);
 
-        return back()->with("failed", "Login failed");
+        return back()->with('failed', 'Login failed');
     }
 
     public function logout(Request $request)
@@ -101,6 +101,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route("login")->with("success", "Berhasil Logout");
+        return redirect()->route('login')->with('success', 'Berhasil Logout');
     }
 }

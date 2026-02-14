@@ -4,17 +4,16 @@ namespace App\Repository;
 
 use App\DTO\DiagnosisDTO;
 use App\Models\Diagnosis;
-use App\Repository\DiagnosisRepository;
 
 class DiagnosisRepositoryEloquent implements DiagnosisRepository
 {
-    function getAll(): array
+    public function getAll(): array
     {
         try {
             $diagnosis_collections = Diagnosis::all();
 
             $formated_diagnosis = $diagnosis_collections->map(function ($patient) {
-                $diagnosisDto = new DiagnosisDTO();
+                $diagnosisDto = new DiagnosisDTO;
                 $diagnosisDto->id = $patient->id;
                 $diagnosisDto->icdCode = $patient->icd_code;
                 $diagnosisDto->diseaseName = $patient->disease_name;
@@ -25,13 +24,14 @@ class DiagnosisRepositoryEloquent implements DiagnosisRepository
             });
 
             $diagnoses = $formated_diagnosis->toArray();
+
             return $diagnoses;
         } catch (\Throwable $th) {
             return [];
         }
     }
 
-    function insert(DiagnosisDTO $diagnosisDTO): ?DiagnosisDTO
+    public function insert(DiagnosisDTO $diagnosisDTO): ?DiagnosisDTO
     {
         try {
             $diagnosis = Diagnosis::create([
@@ -45,11 +45,11 @@ class DiagnosisRepositoryEloquent implements DiagnosisRepository
 
             return $diagnosisDTO;
         } catch (\Throwable $th) {
-            return new DiagnosisDTO();
+            return new DiagnosisDTO;
         }
     }
 
-    function edit(string $id, DiagnosisDTO $diagnosisDTO): ?DiagnosisDTO
+    public function edit(string $id, DiagnosisDTO $diagnosisDTO): ?DiagnosisDTO
     {
         try {
             $updateData = [
@@ -59,7 +59,7 @@ class DiagnosisRepositoryEloquent implements DiagnosisRepository
             $filteredUpdateData = array_filter($updateData);
             $diagnosisId = $id;
 
-            if (!empty($filteredUpdateData)) {
+            if (! empty($filteredUpdateData)) {
 
                 $edit = Diagnosis::where('id', $diagnosisId)
                     ->update($filteredUpdateData);
@@ -67,7 +67,7 @@ class DiagnosisRepositoryEloquent implements DiagnosisRepository
                 if ($edit > 0) {
                     $updatedData = Diagnosis::find($id);
 
-                    $formatedUpdatedData = new DiagnosisDTO();
+                    $formatedUpdatedData = new DiagnosisDTO;
                     $formatedUpdatedData->id = $updatedData->id;
                     $formatedUpdatedData->icdCode = $updatedData->icd_code;
                     $formatedUpdatedData->diseaseName = $updatedData->disease_name;
@@ -86,46 +86,48 @@ class DiagnosisRepositoryEloquent implements DiagnosisRepository
         }
     }
 
-    function getById(string $id): ?DiagnosisDTO
+    public function getById(string $id): ?DiagnosisDTO
     {
         try {
             $diagnosis = Diagnosis::find($id);
-            if (!$diagnosis) {
+            if (! $diagnosis) {
                 return null;
             }
-            $formatedDiagnosis = new DiagnosisDTO();
+            $formatedDiagnosis = new DiagnosisDTO;
             $formatedDiagnosis->id = $diagnosis->id;
             $formatedDiagnosis->icdCode = $diagnosis->icd_code;
             $formatedDiagnosis->diseaseName = $diagnosis->disease_name;
             $formatedDiagnosis->createdAt = $diagnosis->created_at;
             $formatedDiagnosis->updatedAt = $diagnosis->updated_at;
+
             return $formatedDiagnosis;
         } catch (\Throwable $th) {
             return null;
         }
     }
 
-
-    function getLatestId(): int
+    public function getLatestId(): int
     {
         try {
             $latestId = Diagnosis::max('id');
-            if (!$latestId) {
+            if (! $latestId) {
                 return 0;
             }
+
             return $latestId;
         } catch (\Throwable $th) {
             return 0;
         }
     }
 
-    function delete(string $id): bool
+    public function delete(string $id): bool
     {
         try {
             $diagnosis = Diagnosis::find($id);
 
             if ($diagnosis) {
                 $result = $diagnosis->delete();
+
                 return $result;
             }
 

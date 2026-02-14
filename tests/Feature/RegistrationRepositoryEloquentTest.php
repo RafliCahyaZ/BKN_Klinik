@@ -2,27 +2,26 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
-use App\Repository\RegistrationRepositoryEloquent;
-use App\Repository\UserRepositoryEloquent;
-use App\Repository\PatientRepositoryEloquent;
-use App\Repository\MedicineRepositoryEloquent;
-use App\Repository\MedicineStockTransactionRepositoryEloquent;
+use App\DTO\MedicineDTO;
+use App\DTO\MedicineStockTransactionDTO;
+use App\DTO\PatientDTO;
+use App\DTO\RegistrationDTO;
+use App\DTO\UnitDTO;
+use App\DTO\UserDTO;
+use App\Models\Unit;
 use App\Repository\AppointmentRepositoryEloquent;
 use App\Repository\DiagnosisRepositoryEloquent;
+use App\Repository\MedicineRepositoryEloquent;
+use App\Repository\MedicineStockTransactionRepositoryEloquent;
+use App\Repository\PatientRepositoryEloquent;
+use App\Repository\RegistrationRepositoryEloquent;
 use App\Repository\TreatmentRepositoryEloquent;
-use App\DTO\RegistrationDTO;
-use App\DTO\PatientDTO;
-use App\DTO\UserDTO;
-use App\DTO\MedicineDTO;
-use App\DTO\UnitDTO;
-use App\DTO\MedicineStockTransactionDTO;
-use App\Type\UserRole;
+use App\Repository\UserRepositoryEloquent;
 use App\Type\TransactionType;
+use App\Type\UserRole;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
-use App\Models\Unit;
+use Tests\TestCase;
 
 use function Symfony\Component\Clock\now;
 
@@ -31,34 +30,44 @@ class RegistrationRepositoryEloquentTest extends TestCase
     use RefreshDatabase;
 
     protected RegistrationRepositoryEloquent $registrationRepository;
+
     protected UserRepositoryEloquent $userRepository;
+
     protected PatientRepositoryEloquent $patientRepository;
+
     protected MedicineRepositoryEloquent $medicineRepository;
+
     protected MedicineStockTransactionRepositoryEloquent $medicineStockTransactionRepository;
+
     protected AppointmentRepositoryEloquent $appointmentRepository;
+
     protected DiagnosisRepositoryEloquent $diagnosisRepository;
+
     protected TreatmentRepositoryEloquent $treatmentRepository;
 
     protected PatientDTO $patientDTO;
+
     protected UserDTO $doctorDTO;
+
     protected UserDTO $inventoryOfficerDTO;
+
     protected MedicineDTO $medicineDTO;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->registrationRepository = new RegistrationRepositoryEloquent();
-        $this->userRepository = new UserRepositoryEloquent();
-        $this->patientRepository = new PatientRepositoryEloquent();
-        $this->medicineRepository = new MedicineRepositoryEloquent();
+        $this->registrationRepository = new RegistrationRepositoryEloquent;
+        $this->userRepository = new UserRepositoryEloquent;
+        $this->patientRepository = new PatientRepositoryEloquent;
+        $this->medicineRepository = new MedicineRepositoryEloquent;
         $this->medicineStockTransactionRepository = new MedicineStockTransactionRepositoryEloquent($this->medicineRepository, $this->userRepository);
-        $this->appointmentRepository = new AppointmentRepositoryEloquent();
-        $this->diagnosisRepository = new DiagnosisRepositoryEloquent();
-        $this->treatmentRepository = new TreatmentRepositoryEloquent();
+        $this->appointmentRepository = new AppointmentRepositoryEloquent;
+        $this->diagnosisRepository = new DiagnosisRepositoryEloquent;
+        $this->treatmentRepository = new TreatmentRepositoryEloquent;
 
         // Create a patient using PatientRepository
-        $patientDTO = new PatientDTO();
+        $patientDTO = new PatientDTO;
         $patientDTO->name = 'John Doe';
         $patientDTO->medicalRecordNumber = 'MRN-001';
         $patientDTO->medicalRecordFileUrl = 'files/mrn-001.pdf';
@@ -72,7 +81,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->patientDTO = $this->patientRepository->insert($patientDTO);
 
         // Create a doctor using UserRepository
-        $doctorDTO = new UserDTO();
+        $doctorDTO = new UserDTO;
         $doctorDTO->username = 'doctor1';
         $doctorDTO->fullname = 'Dr. Jane Smith';
         $doctorDTO->email = 'doctor@example.com';
@@ -83,7 +92,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->doctorDTO = $this->userRepository->insert($doctorDTO);
 
         // Create an inventory officer using UserRepository
-        $inventoryOfficerDTO = new UserDTO();
+        $inventoryOfficerDTO = new UserDTO;
         $inventoryOfficerDTO->username = 'inventory1';
         $inventoryOfficerDTO->fullname = 'Inventory Officer';
         $inventoryOfficerDTO->email = 'inventory@example.com';
@@ -94,15 +103,15 @@ class RegistrationRepositoryEloquentTest extends TestCase
 
         // Create unit first (required for medicine)
         $unit = Unit::create([
-            'name' => 'Tablet'
+            'name' => 'Tablet',
         ]);
 
-        $unitDTO = new UnitDTO();
+        $unitDTO = new UnitDTO;
         $unitDTO->id = $unit->id;
         $unitDTO->name = $unit->name;
 
         // Create a medicine using MedicineRepository
-        $medicineDTO = new MedicineDTO();
+        $medicineDTO = new MedicineDTO;
         $medicineDTO->name = 'Paracetamol';
         $medicineDTO->stock = 100;
         $medicineDTO->unit = $unitDTO;
@@ -113,7 +122,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
     // Helper method to create medicine stock transaction
     protected function createMedicineStockTransaction(RegistrationDTO $registrationDTO): ?MedicineStockTransactionDTO
     {
-        $transactionDTO = new MedicineStockTransactionDTO();
+        $transactionDTO = new MedicineStockTransactionDTO;
         $transactionDTO->inventoryOfficer = $this->inventoryOfficerDTO;
         $transactionDTO->medicine = $this->medicineDTO;
         $transactionDTO->registration = $registrationDTO; // Changed: registrationId is now RegistrationDTO or null, not string
@@ -126,9 +135,9 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test untuk insert registration
-    public function testInsertRegistrationSuccess(): void
+    public function test_insert_registration_success(): void
     {
-        $registrationDTO = new RegistrationDTO();
+        $registrationDTO = new RegistrationDTO;
         $registrationDTO->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO->complaint = 'Sakit kepala dan demam';
 
@@ -142,9 +151,9 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test insert registration gagal karena patient tidak ada
-    public function testInsertRegistrationWithNonExistentPatient(): void
+    public function test_insert_registration_with_non_existent_patient(): void
     {
-        $patientDTO = new PatientDTO();
+        $patientDTO = new PatientDTO;
         $patientDTO->id = '9999'; // Non-existent patient ID\
         $patientDTO->name = 'Non Existent';
         $patientDTO->medicalRecordNumber = 'MRN-9999';
@@ -156,7 +165,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $patientDTO->gender = 'unknown';
         $patientDTO->history = 'N/A';
 
-        $doctorDTO = new UserDTO();
+        $doctorDTO = new UserDTO;
         $doctorDTO->id = $this->doctorDTO->id;
         $doctorDTO->username = $this->doctorDTO->username;
         $doctorDTO->fullname = $this->doctorDTO->fullname;
@@ -164,7 +173,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $doctorDTO->password = $this->doctorDTO->password;
         $doctorDTO->role = $this->doctorDTO->role;
 
-        $registrationDTO = new RegistrationDTO();
+        $registrationDTO = new RegistrationDTO;
         $registrationDTO->patient = $patientDTO;
         $registrationDTO->complaint = 'Sakit kepala dan demam';
         $registrationDTO->checkDate = Carbon::now();
@@ -175,16 +184,16 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test untuk get all registrations
-    public function testGetAllRegistrations(): void
+    public function test_get_all_registrations(): void
     {
         // Insert some registrations first
         for ($i = 1; $i <= 3; $i++) {
-            $registrationDTO = new RegistrationDTO();
+            $registrationDTO = new RegistrationDTO;
             $registrationDTO->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
             $registrationDTO->complaint = "Complaint $i";
 
             $inserted = $this->registrationRepository->insert($registrationDTO);
-            
+
             // Add medicine stock transaction for each registration
             if ($i <= 2) { // Only add transaction for first 2 registrations
                 $this->createMedicineStockTransaction($inserted);
@@ -196,35 +205,35 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertCount(3, $registrations);
         $this->assertInstanceOf(RegistrationDTO::class, $registrations[0]);
         $this->assertInstanceOf(PatientDTO::class, $registrations[0]->patient);
-        
+
         // Test medicineStockTransactions array exists
         for ($i = 0; $i <= 2; $i++) {
             $this->assertNotNull($registrations[$i]->patient->id);
             $this->assertIsArray($registrations[$i]->medicineStockTransactions);
         }
-        
+
         // Test first 2 registrations have medicine transactions
         $this->assertCount(1, $registrations[0]->medicineStockTransactions);
         $this->assertCount(1, $registrations[1]->medicineStockTransactions);
         $this->assertCount(0, $registrations[2]->medicineStockTransactions); // Third one should be empty
-        
+
         // Verify the transaction data structure with objects
         $this->assertInstanceOf(MedicineStockTransactionDTO::class, $registrations[0]->medicineStockTransactions[0]);
-        
+
         // Check inventoryOfficer is UserDTO object
         $this->assertInstanceOf(UserDTO::class, $registrations[0]->medicineStockTransactions[0]->inventoryOfficer);
         $this->assertEquals($this->inventoryOfficerDTO->id, $registrations[0]->medicineStockTransactions[0]->inventoryOfficer->id);
-        
+
         // Check medicine is MedicineDTO object
         $this->assertInstanceOf(MedicineDTO::class, $registrations[0]->medicineStockTransactions[0]->medicine);
         $this->assertEquals($this->medicineDTO->id, $registrations[0]->medicineStockTransactions[0]->medicine->id);
         $this->assertEquals($this->medicineDTO->name, $registrations[0]->medicineStockTransactions[0]->medicine->name);
-        
+
         $this->assertEquals(TransactionType::OUT, $registrations[0]->medicineStockTransactions[0]->type);
     }
 
     // test untuk getall registrations ketika tidak ada data
-    public function testGetAllRegistrationsWhenNoData(): void
+    public function test_get_all_registrations_when_no_data(): void
     {
         $registrations = $this->registrationRepository->getAll();
         $this->assertIsArray($registrations);
@@ -232,9 +241,9 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test getById registration
-    public function testGetByIdRegistration(): void
+    public function test_get_by_id_registration(): void
     {
-        $registrationDTO = new RegistrationDTO();
+        $registrationDTO = new RegistrationDTO;
         $registrationDTO->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO->complaint = 'Batuk dan pilek';
@@ -254,27 +263,25 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertEquals($this->patientDTO->id, $fetchedRegistrationDTO->patient->id);
         $this->assertInstanceOf(RegistrationDTO::class, $fetchedRegistrationDTO);
         $this->assertInstanceOf(PatientDTO::class, $fetchedRegistrationDTO->patient);
-        
+
         // Test medicineStockTransactions with objects
         $this->assertIsArray($fetchedRegistrationDTO->medicineStockTransactions);
         $this->assertCount(1, $fetchedRegistrationDTO->medicineStockTransactions);
         $this->assertInstanceOf(MedicineStockTransactionDTO::class, $fetchedRegistrationDTO->medicineStockTransactions[0]);
-        
+
         // Check inventoryOfficer is UserDTO object
         $this->assertInstanceOf(UserDTO::class, $fetchedRegistrationDTO->medicineStockTransactions[0]->inventoryOfficer);
         $this->assertEquals($this->inventoryOfficerDTO->id, $fetchedRegistrationDTO->medicineStockTransactions[0]->inventoryOfficer->id);
-        
+
         // Check medicine is MedicineDTO object
         $this->assertInstanceOf(MedicineDTO::class, $fetchedRegistrationDTO->medicineStockTransactions[0]->medicine);
         $this->assertEquals($this->medicineDTO->id, $fetchedRegistrationDTO->medicineStockTransactions[0]->medicine->id);
-        
+
         $this->assertEquals($insertedRegistrationId, $fetchedRegistrationDTO->id);
     }
 
-    
-
     // test getById registration yang tidak ada
-    public function testGetByIdNonExistentRegistration(): void
+    public function test_get_by_id_non_existent_registration(): void
     {
         $nonExistentRegistrationId = '9999';
         $fetchedRegistrationDTO = $this->registrationRepository->getById($nonExistentRegistrationId);
@@ -282,29 +289,29 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test insert registration dengan multiple patients
-    public function testInsertMultipleRegistrationsForSamePatient(): void
+    public function test_insert_multiple_registrations_for_same_patient(): void
     {
         // First registration
-        $registrationDTO1 = new RegistrationDTO();
+        $registrationDTO1 = new RegistrationDTO;
         $registrationDTO1->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO1->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO1->complaint = 'First visit - Demam';
 
         $insertedRegistration1 = $this->registrationRepository->insert($registrationDTO1);
         $this->assertNotNull($insertedRegistration1);
-        
+
         // Add transaction for first registration
         $this->createMedicineStockTransaction($insertedRegistration1);
 
         // Second registration for same patient
-        $registrationDTO2 = new RegistrationDTO();
+        $registrationDTO2 = new RegistrationDTO;
         $registrationDTO2->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO2->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO2->complaint = 'Second visit - Kontrol';
 
         $insertedRegistration2 = $this->registrationRepository->insert($registrationDTO2);
         $this->assertNotNull($insertedRegistration2);
-        
+
         // Add transaction for second registration
         $this->createMedicineStockTransaction($insertedRegistration2);
 
@@ -313,7 +320,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertCount(2, $allRegistrations);
         $this->assertEquals($this->patientDTO->id, $allRegistrations[0]->patient->id);
         $this->assertEquals($this->patientDTO->id, $allRegistrations[1]->patient->id);
-        
+
         // Verify both have medicine transactions
         $this->assertIsArray($allRegistrations[0]->medicineStockTransactions);
         $this->assertIsArray($allRegistrations[1]->medicineStockTransactions);
@@ -322,10 +329,10 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test untuk insert registration dengan berbagai patient
-    public function testInsertRegistrationWithDifferentPatients(): void
+    public function test_insert_registration_with_different_patients(): void
     {
         // Create second patient using PatientRepository
-        $patientDTO2 = new PatientDTO();
+        $patientDTO2 = new PatientDTO;
         $patientDTO2->name = 'Jane Smith';
         $patientDTO2->medicalRecordNumber = 'MRN-002';
         $patientDTO2->medicalRecordFileUrl = 'files/mrn-002.pdf';
@@ -339,7 +346,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $insertedPatient2 = $this->patientRepository->insert($patientDTO2);
 
         // First registration with first patient
-        $registrationDTO1 = new RegistrationDTO();
+        $registrationDTO1 = new RegistrationDTO;
         $registrationDTO1->patient = $this->patientDTO; // Gunakan DTO dari setUp
         $registrationDTO1->doctor = $this->doctorDTO; // Gunakan DTO dari setUp
         $registrationDTO1->complaint = 'Patient 1 - Demam';
@@ -348,7 +355,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertNotNull($insertedRegistration1);
 
         // Second registration with second patient
-        $registrationDTO2 = new RegistrationDTO();
+        $registrationDTO2 = new RegistrationDTO;
         $registrationDTO2->patient = $insertedPatient2; // Gunakan DTO hasil insert
         $registrationDTO2->doctor = $this->doctorDTO; // Gunakan DTO hasil insert
         $registrationDTO2->complaint = 'Patient 2 - Sakit perut';
@@ -365,7 +372,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test untuk verifikasi doctor tersedia
-    public function testDoctorIsAvailable(): void
+    public function test_doctor_is_available(): void
     {
         $this->assertNotNull($this->doctorDTO);
         $this->assertNotNull($this->doctorDTO->id);
@@ -377,7 +384,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // test untuk verifikasi patient tersedia
-    public function testPatientIsAvailable(): void
+    public function test_patient_is_available(): void
     {
         $this->assertNotNull($this->patientDTO);
         $this->assertNotNull($this->patientDTO->id);
@@ -387,34 +394,33 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertNotNull($this->patientDTO->updatedAt);
     }
 
-
     // test getByRangeDate
-    public function testGetByRangeDate(): void
+    public function test_get_by_range_date(): void
     {
         // 1. Insert 19 data (H-20 sampai H-2)
         for ($i = 20; $i > 1; $i--) {
             // Tentukan waktu palsu
             $fakeDate = \Illuminate\Support\Carbon::now()->subDays($i);
             \Illuminate\Support\Carbon::setTestNow($fakeDate); // INI YANG PENTING
-            $registrationDTO = new RegistrationDTO();
+            $registrationDTO = new RegistrationDTO;
             $registrationDTO->patient = $this->patientDTO;
             $registrationDTO->doctor = $this->doctorDTO;
-            $registrationDTO->complaint = 'Patient ' . $i . ' - Demam';
+            $registrationDTO->complaint = 'Patient '.$i.' - Demam';
 
             $inserted = $this->registrationRepository->insert($registrationDTO);
-            
+
             // Add medicine transaction for some registrations
             if ($i % 3 == 0) { // Add transaction every 3rd registration
                 $this->createMedicineStockTransaction($inserted);
             }
-            
+
             \Illuminate\Support\Carbon::setTestNow(); // Kembali ke sekarang
         }
 
         // 2. Data H-0 (Hari ini)
         \Illuminate\Support\Carbon::setTestNow(); // Kembali ke sekarang
 
-        $registrationDTO = new RegistrationDTO();
+        $registrationDTO = new RegistrationDTO;
         $registrationDTO->patient = $this->patientDTO;
         $registrationDTO->doctor = $this->doctorDTO;
         $registrationDTO->complaint = 'Patient Hari Ini - Demam';
@@ -427,17 +433,17 @@ class RegistrationRepositoryEloquentTest extends TestCase
 
         // Ambil data dari Repository
         $results = $this->registrationRepository->getByRangeDate($startDate, $endDate);
-        
+
         // Assert-nya 19 karena data H-0 tidak masuk dalam range (karena endDate adalah H-1)
         $this->assertCount(19, $results);
-        
+
         // Verify medicineStockTransactions exists in results
         foreach ($results as $registration) {
             $this->assertIsArray($registration->medicineStockTransactions);
         }
-        
+
         // Count how many have transactions (should be 6: days 18, 15, 12, 9, 6, 3)
-        $withTransactions = array_filter($results, function($reg) {
+        $withTransactions = array_filter($results, function ($reg) {
             return count($reg->medicineStockTransactions) > 0;
         });
         $this->assertCount(6, $withTransactions);
@@ -446,12 +452,11 @@ class RegistrationRepositoryEloquentTest extends TestCase
         \Illuminate\Support\Carbon::setTestNow();
     }
 
-
     // test untuk edit data
-    public function testEditRegistration(): void
+    public function test_edit_registration(): void
     {
         // Insert initial registration
-        $registrationDTO = new RegistrationDTO();
+        $registrationDTO = new RegistrationDTO;
         $registrationDTO->patient = $this->patientDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO->doctor = $this->doctorDTO; // Langsung gunakan DTO dari setUp
         $registrationDTO->complaint = 'Sakit kepala';
@@ -459,7 +464,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
 
         $insertedRegistrationDTO = $this->registrationRepository->insert($registrationDTO);
         $this->assertNotNull($insertedRegistrationDTO);
-        
+
         // Add medicine transaction
         $this->createMedicineStockTransaction($insertedRegistrationDTO);
 
@@ -474,86 +479,86 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertInstanceOf(RegistrationDTO::class, $editedRegistrationDTO);
         $this->assertInstanceOf(PatientDTO::class, $editedRegistrationDTO->patient);
     }
-    
+
     // New test: Get registrations where check_date is null with medicine transactions
-    public function testGetWhereCheckDateIsNullWithMedicineTransactions(): void
+    public function test_get_where_check_date_is_null_with_medicine_transactions(): void
     {
         // Insert registrations with null check_date
         for ($i = 1; $i <= 3; $i++) {
-            $registrationDTO = new RegistrationDTO();
+            $registrationDTO = new RegistrationDTO;
             $registrationDTO->patient = $this->patientDTO;
             $registrationDTO->complaint = "Complaint $i";
             $registrationDTO->checkDate = null; // Explicitly null
 
             $inserted = $this->registrationRepository->insert($registrationDTO);
-            
+
             // Add medicine transaction for first 2
             if ($i <= 2) {
                 $this->createMedicineStockTransaction($inserted);
             }
         }
-        
+
         // Insert one with check_date (should not appear in results)
-        $registrationWithDate = new RegistrationDTO();
+        $registrationWithDate = new RegistrationDTO;
         $registrationWithDate->patient = $this->patientDTO;
-        $registrationWithDate->complaint = "With date";
+        $registrationWithDate->complaint = 'With date';
         $registrationWithDate->checkDate = Carbon::now();
         $this->registrationRepository->insert($registrationWithDate);
 
         $results = $this->registrationRepository->getWhereCheckDateIsNull();
-        
+
         $this->assertIsArray($results);
         $this->assertCount(3, $results);
-        
+
         // Verify medicineStockTransactions
         foreach ($results as $registration) {
             $this->assertIsArray($registration->medicineStockTransactions);
         }
-        
+
         $this->assertCount(1, $results[0]->medicineStockTransactions);
         $this->assertCount(1, $results[1]->medicineStockTransactions);
         $this->assertCount(0, $results[2]->medicineStockTransactions);
-        
+
         // Verify structure with objects
         $this->assertInstanceOf(UserDTO::class, $results[0]->medicineStockTransactions[0]->inventoryOfficer);
         $this->assertInstanceOf(MedicineDTO::class, $results[0]->medicineStockTransactions[0]->medicine);
     }
-    
+
     // New test: Get registrations where check_date is not null with medicine transactions
-    public function testGetWhereCheckDateIsNotNullWithMedicineTransactions(): void
+    public function test_get_where_check_date_is_not_null_with_medicine_transactions(): void
     {
         // Insert registrations with check_date
         for ($i = 1; $i <= 3; $i++) {
-            $registrationDTO = new RegistrationDTO();
+            $registrationDTO = new RegistrationDTO;
             $registrationDTO->patient = $this->patientDTO;
             $registrationDTO->doctor = $this->doctorDTO;
             $registrationDTO->complaint = "Complaint $i";
             $registrationDTO->checkDate = Carbon::now()->subDays($i);
 
             $inserted = $this->registrationRepository->insert($registrationDTO);
-            
+
             // Add medicine transaction for all
             $this->createMedicineStockTransaction($inserted);
         }
-        
+
         // Insert one with null check_date (should not appear in results)
-        $registrationWithoutDate = new RegistrationDTO();
+        $registrationWithoutDate = new RegistrationDTO;
         $registrationWithoutDate->patient = $this->patientDTO;
-        $registrationWithoutDate->complaint = "Without date";
+        $registrationWithoutDate->complaint = 'Without date';
         $registrationWithoutDate->checkDate = null;
         $this->registrationRepository->insert($registrationWithoutDate);
 
         $results = $this->registrationRepository->getWhereCheckDateIsNotNull();
-        
+
         $this->assertIsArray($results);
         $this->assertCount(3, $results);
-        
+
         // Verify all have medicineStockTransactions with correct structure
         foreach ($results as $registration) {
             $this->assertIsArray($registration->medicineStockTransactions);
             $this->assertCount(1, $registration->medicineStockTransactions);
             $this->assertInstanceOf(MedicineStockTransactionDTO::class, $registration->medicineStockTransactions[0]);
-            
+
             // Verify objects
             $this->assertInstanceOf(UserDTO::class, $registration->medicineStockTransactions[0]->inventoryOfficer);
             $this->assertInstanceOf(MedicineDTO::class, $registration->medicineStockTransactions[0]->medicine);
@@ -561,10 +566,10 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // Test untuk verifikasi diagnosis dan treatment yang di-attach pada registration
-    public function testGetByIdWithDiagnosesAndTreatments(): void
+    public function test_get_by_id_with_diagnoses_and_treatments(): void
     {
         // Insert registration
-        $registrationDTO = new RegistrationDTO();
+        $registrationDTO = new RegistrationDTO;
         $registrationDTO->patient = $this->patientDTO;
         $registrationDTO->doctor = $this->doctorDTO;
         $registrationDTO->complaint = 'Demam tinggi dan batuk';
@@ -574,33 +579,33 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertNotNull($insertedRegistration);
 
         // Create diagnoses using DiagnosisRepository
-        $diagnosisDTO1 = new \App\DTO\DiagnosisDTO();
+        $diagnosisDTO1 = new \App\DTO\DiagnosisDTO;
         $diagnosisDTO1->icdCode = 'A000';
         $diagnosisDTO1->diseaseName = 'Cholera due to Vibrio cholerae';
         $insertedDiagnosis1 = $this->diagnosisRepository->insert($diagnosisDTO1);
 
-        $diagnosisDTO2 = new \App\DTO\DiagnosisDTO();
+        $diagnosisDTO2 = new \App\DTO\DiagnosisDTO;
         $diagnosisDTO2->icdCode = 'A001';
         $diagnosisDTO2->diseaseName = 'Cholera due to Vibrio cholerae El Tor';
         $insertedDiagnosis2 = $this->diagnosisRepository->insert($diagnosisDTO2);
 
-        $diagnosisDTO3 = new \App\DTO\DiagnosisDTO();
+        $diagnosisDTO3 = new \App\DTO\DiagnosisDTO;
         $diagnosisDTO3->icdCode = 'J00';
         $diagnosisDTO3->diseaseName = 'Acute nasopharyngitis (common cold)';
         $insertedDiagnosis3 = $this->diagnosisRepository->insert($diagnosisDTO3);
 
         // Create treatments using TreatmentRepository
-        $treatmentDTO1 = new \App\DTO\TreatmentDTO();
+        $treatmentDTO1 = new \App\DTO\TreatmentDTO;
         $treatmentDTO1->treatmentCode = 'T001';
         $treatmentDTO1->treatmentName = 'Konsultasi Dokter Umum';
         $insertedTreatment1 = $this->treatmentRepository->insert($treatmentDTO1);
 
-        $treatmentDTO2 = new \App\DTO\TreatmentDTO();
+        $treatmentDTO2 = new \App\DTO\TreatmentDTO;
         $treatmentDTO2->treatmentCode = 'T002';
         $treatmentDTO2->treatmentName = 'Pemeriksaan Fisik';
         $insertedTreatment2 = $this->treatmentRepository->insert($treatmentDTO2);
 
-        $treatmentDTO3 = new \App\DTO\TreatmentDTO();
+        $treatmentDTO3 = new \App\DTO\TreatmentDTO;
         $treatmentDTO3->treatmentCode = 'T003';
         $treatmentDTO3->treatmentName = 'Pemberian Obat Oral';
         $insertedTreatment3 = $this->treatmentRepository->insert($treatmentDTO3);
@@ -626,7 +631,6 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $this->assertInstanceOf(RegistrationDTO::class, $fetchedRegistration);
 
         // Verify diagnoses
-        // dd($fetchedRegistration->diagnoses);
         $this->assertIsArray($fetchedRegistration->diagnoses);
         $this->assertCount(3, $fetchedRegistration->diagnoses, 'Should have 3 diagnoses attached');
 
@@ -666,14 +670,14 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // Test 1: Get registrations by patient_id with multiple registrations
-    public function testGetByPatientIdWithMultipleRegistrations(): void
+    public function test_get_by_patient_id_with_multiple_registrations(): void
     {
         // Create multiple registrations for the same patient at different times
         $registrations = [];
-        
+
         // Registration 1 - 10 days ago
         \Illuminate\Support\Carbon::setTestNow(\Illuminate\Support\Carbon::now()->subDays(10));
-        $registrationDTO1 = new RegistrationDTO();
+        $registrationDTO1 = new RegistrationDTO;
         $registrationDTO1->patient = $this->patientDTO;
         $registrationDTO1->doctor = $this->doctorDTO;
         $registrationDTO1->complaint = 'First visit - Demam';
@@ -686,7 +690,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
 
         // Registration 2 - 5 days ago
         \Illuminate\Support\Carbon::setTestNow(\Illuminate\Support\Carbon::now()->subDays(5));
-        $registrationDTO2 = new RegistrationDTO();
+        $registrationDTO2 = new RegistrationDTO;
         $registrationDTO2->patient = $this->patientDTO;
         $registrationDTO2->doctor = $this->doctorDTO;
         $registrationDTO2->complaint = 'Second visit - Batuk';
@@ -698,7 +702,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         \Illuminate\Support\Carbon::setTestNow();
 
         // Registration 3 - Today (most recent)
-        $registrationDTO3 = new RegistrationDTO();
+        $registrationDTO3 = new RegistrationDTO;
         $registrationDTO3->patient = $this->patientDTO;
         $registrationDTO3->doctor = $this->doctorDTO;
         $registrationDTO3->complaint = 'Third visit - Kontrol';
@@ -709,7 +713,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $registrations[] = $inserted3;
 
         // Create registration for different patient (should not appear in results)
-        $otherPatientDTO = new PatientDTO();
+        $otherPatientDTO = new PatientDTO;
         $otherPatientDTO->name = 'Other Patient';
         $otherPatientDTO->medicalRecordNumber = 'MRN-999';
         $otherPatientDTO->medicalRecordFileUrl = 'files/mrn-999.pdf';
@@ -720,7 +724,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $otherPatientDTO->history = 'No history';
         $insertedOtherPatient = $this->patientRepository->insert($otherPatientDTO);
 
-        $otherRegistrationDTO = new RegistrationDTO();
+        $otherRegistrationDTO = new RegistrationDTO;
         $otherRegistrationDTO->patient = $insertedOtherPatient;
         $otherRegistrationDTO->doctor = $this->doctorDTO;
         $otherRegistrationDTO->complaint = 'Other patient complaint';
@@ -794,10 +798,10 @@ class RegistrationRepositoryEloquentTest extends TestCase
     }
 
     // Test 2: Get registrations by patient_id with no data
-    public function testGetByPatientIdWithNoRegistrations(): void
+    public function test_get_by_patient_id_with_no_registrations(): void
     {
         // Create a patient without any registrations
-        $patientDTO = new PatientDTO();
+        $patientDTO = new PatientDTO;
         $patientDTO->name = 'Patient Without Registrations';
         $patientDTO->medicalRecordNumber = 'MRN-888';
         $patientDTO->medicalRecordFileUrl = 'files/mrn-888.pdf';
@@ -809,7 +813,7 @@ class RegistrationRepositoryEloquentTest extends TestCase
         $insertedPatient = $this->patientRepository->insert($patientDTO);
 
         // Create registrations for different patient (should not appear in results)
-        $registrationDTO = new RegistrationDTO();
+        $registrationDTO = new RegistrationDTO;
         $registrationDTO->patient = $this->patientDTO; // Different patient
         $registrationDTO->doctor = $this->doctorDTO;
         $registrationDTO->complaint = 'Other patient complaint';

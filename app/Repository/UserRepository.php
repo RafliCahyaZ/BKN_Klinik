@@ -19,13 +19,13 @@ interface UserRepository
     public function getByRole(UserRole $role): array;
 
     public function getLatestId(): int;
-    
+
     public function insert(UserDTO $userDTO): ?UserDTO;
-    
+
     public function edit(string $id, UserDTO $userDTO): ?UserDTO;
 
     public function updateLastLoginAt(string $id, Carbon $lastLoginAt): bool;
-    
+
     public function activate(string $id): ?UserDTO;
 
     public function deactivate(string $id): ?UserDTO;
@@ -33,6 +33,6 @@ interface UserRepository
     public function resetFailedLoginAttempts(string $id): bool;
 
     public function updateFailedLoginAttemptsById(string $id, int $failedLoginAttempts): bool;
-    
+
     public function delete(string $id): bool;
 }

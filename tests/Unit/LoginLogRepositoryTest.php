@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\DTO\LoginLogDTO;
-use App\DTO\UserDTO;
 use App\Models\LoginLog;
 use App\Models\User;
 use App\Repository\LoginLogRepositoryEloquent;
@@ -17,13 +16,14 @@ class LoginLogRepositoryTest extends TestCase
     use RefreshDatabase;
 
     private LoginLogRepositoryEloquent $repository;
+
     private User $testUser;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new LoginLogRepositoryEloquent();
-        
+        $this->repository = new LoginLogRepositoryEloquent;
+
         // Create test user
         $this->testUser = User::create([
             'username' => 'testuser',
@@ -36,7 +36,7 @@ class LoginLogRepositoryTest extends TestCase
 
     public function test_can_insert_login_log()
     {
-        $dto = new LoginLogDTO();
+        $dto = new LoginLogDTO;
         $dto->userId = $this->testUser->id;
         $dto->ipAddress = '127.0.0.1';
         $dto->usernameAttempt = 'test@example.com';

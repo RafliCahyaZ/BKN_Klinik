@@ -5,17 +5,16 @@ namespace App\Repository;
 use App\DTO\MedicineDTO;
 use App\DTO\UnitDTO;
 use App\Models\Medicine;
-use App\Repository\MedicineRepository;
 
 class MedicineRepositoryEloquent implements MedicineRepository
 {
     public static function mapMedicineModelToMedicineDto($medicine): MedicineDTO
     {
-        $unitDTO = new UnitDTO();
+        $unitDTO = new UnitDTO;
         $unitDTO->id = $medicine->unit->id;
         $unitDTO->name = $medicine->unit->name;
 
-        $medicineDTO = new MedicineDTO();
+        $medicineDTO = new MedicineDTO;
         $medicineDTO->id = $medicine->id;
         $medicineDTO->name = $medicine->name;
         $medicineDTO->stock = $medicine->stock;
@@ -70,11 +69,11 @@ class MedicineRepositoryEloquent implements MedicineRepository
                 'stock' => $medicineDTO->stock ?? null,
                 'unit_id' => $medicineDTO->unit->id ?? null,
             ];
-            
+
             $filteredUpdateData = array_filter($updateData);
             $medicineId = $id;
 
-            if (!empty($filteredUpdateData)) {
+            if (! empty($filteredUpdateData)) {
 
                 $edit = Medicine::where('id', $medicineId)
                     ->update($filteredUpdateData);
@@ -82,10 +81,10 @@ class MedicineRepositoryEloquent implements MedicineRepository
                 if ($edit > 0) {
                     $updatedData = Medicine::with(['unit'])->find($id);
 
-                    $unitDTO = new UnitDTO();
+                    $unitDTO = new UnitDTO;
                     $unitDTO->id = $updatedData->unit->id;
                     $unitDTO->name = $updatedData->unit->name;
-                    $formatedUpdatedData = new MedicineDTO();
+                    $formatedUpdatedData = new MedicineDTO;
                     $formatedUpdatedData->id = $updatedData->id;
                     $formatedUpdatedData->name = $updatedData->name;
                     $formatedUpdatedData->stock = $updatedData->stock;
@@ -98,7 +97,8 @@ class MedicineRepositoryEloquent implements MedicineRepository
                     return null;
                 }
             } else {
-                dd("no data to update");
+                dd('no data to update');
+
                 return null;
             }
         } catch (\Throwable $th) {
@@ -111,7 +111,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
         try {
             $medicine = Medicine::with(['unit'])->find($id);
 
-            if (!$medicine) {
+            if (! $medicine) {
                 return null;
             }
 
@@ -125,9 +125,10 @@ class MedicineRepositoryEloquent implements MedicineRepository
     {
         try {
             $latestId = Medicine::max('id');
-            if (!$latestId) {
+            if (! $latestId) {
                 return 0;
             }
+
             return $latestId;
         } catch (\Throwable $th) {
             return 0;
@@ -141,8 +142,10 @@ class MedicineRepositoryEloquent implements MedicineRepository
 
             if ($medicine) {
                 $result = $medicine->delete();
+
                 return $result;
             }
+
             return false;
         } catch (\Throwable $th) {
             return false;
