@@ -1,7 +1,40 @@
 @extends('layouts.dashboard')
 
 @section('content')
+<style>
+    #selectDiagnosisElement + .select2-container .select2-selection--single {
+        height: 40px !important;
+        line-height: 40px !important;
+    }
+    #selectDiagnosisElement + .select2-container .select2-selection__rendered {
+        line-height: 40px !important;
+    }
+    #selectDiagnosisElement + .select2-container .select2-selection__arrow {
+        height: 40px !important;
+    }
+
+    
+    #selectTreatmentElement + .select2-container .select2-selection--single {
+        height: 40px !important;
+        line-height: 40px !important;
+    }
+    #selectTreatmentElement + .select2-container .select2-selection__rendered {
+        line-height: 40px !important;
+    }
+    #selectTreatmentElement + .select2-container .select2-selection__arrow {
+        height: 40px !important;
+    }
+    
+</style>
+
     <x-dashboard-container title="Pemeriksaan Pasien">
+        @if(session('failed'))
+            <?php //dd(session('failed')); ?>
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <strong>Gagal!</strong> {{ session('failed') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
         <form method="post" action="{{ route('patient.appointment.action', $registration->id) }}">
             @csrf
             <table class="table table-striped">
@@ -31,11 +64,11 @@
                         <th>:</th>
                         <th>{{ $registration->patient->address }}</th>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <th>Keluhan</th>
                         <th>:</th>
                         <th>{{ $registration->complaint }}</th>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
             <h4>Data Medis Pasien</h4>
@@ -48,19 +81,25 @@
                     <li role="periksa">
                         <a href="#diagnosa" aria-controls="diagnosa" role="tab" data-toggle="tab">Diagnosa</a>
                     </li>
+                    <!--Pada Bagian Obat Ditambah Dosis dan
+                        Jumlah Obat yang ada di inventory berkurang setelah ada pemeriksaan -->
                     <li role="periksa">
-                        <a href="#tindakan" aria-controls="tindakan" role="tab" data-toggle="tab">Tindakan</a>
+                        <a  href="#tindakan" 
+                            aria-controls="tindakan" 
+                            role="tab" 
+                            data-toggle="tab">
+                                Tindakan (Ops)</a>
                     </li>
                     <li role="periksa">
-                        <a href="#terapi" aria-controls="terapi" role="tab" data-toggle="tab">Catatan</a>
+                        <a href="#terapi" aria-controls="terapi" role="tab" data-toggle="tab">Catatan (Ops)</a>
                     </li>
                     <li role="periksa">
-                        <a href="#medicine" aria-controls="medicine" role="tab" data-toggle="tab">Obat</a>
+                        <a href="#medicine" aria-controls="medicine" role="tab" data-toggle="tab">Obat (X)</a>
                     </li>
                 </ul>
             </div>
             <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="diagnosa">
+                <div role="tabpanel" class="tab-pane" id="diagnosa">
                     <table class="table">
                         <tbody>
                             <tr>
@@ -69,7 +108,7 @@
 
                             <tr>
                                 <th>
-                                    <select name="diagnosa" id="selectDiagnosisElement" class="form-control select2">
+                                    <select name="diagnosa" id="selectDiagnosisElement" class="form-control select2" style="height: 40px;">
                                         @foreach ($diagnoses as $index => $diagnosis)
                                             <option data-icd="{{ $diagnosis->icdCode }}" value="{{ $diagnosis->id }}">
                                                 {{ $diagnosis->diseaseName }}</option>
@@ -78,7 +117,7 @@
                                 </th>
                                 <th>
                                     <input type="button" name="" value="Tambah" id="submitDiagnosisButton"
-                                        class="btn btn-info">
+                                        class="btn btn-info" style="height:40px;">
                                 </th>
                             </tr>
                     </table>
@@ -106,7 +145,7 @@
                                 </th>
                                 <th>
                                     <input type="button" name="" value="Tambah" id="submitTreatmentButton"
-                                        class="btn btn-info">
+                                        class="btn btn-info" style="height: 40px;">
                                 </th>
                             </tr>
                     </table>
@@ -116,11 +155,11 @@
                     </table>
                 </div>
 
-                <div role="tabpanel" class="tab-pane" id="keluhan">
+                <div role="tabpanel" class="tab-pane active" id="keluhan">
                     <table class="table">
                         <tr>
                             <th>
-                                Keluhan Pasien
+                                Keluhan Pasien (bisa ditambahkan jika belum sesuai)
                             </th>
                         </tr>
                         <tr>
@@ -147,41 +186,114 @@
                 </div>
 
                 <div role="tabpanel" class="tab-pane" id="medicine">
+
+                    <div class="form-group row" style="margin-top : 15px">
+                        <label class="col-xs-3">Nama Obat</label>
+                        <div class="col-xs-9">
+                            <select name="medicine" id="selectMedicineElement" class="form-control select2">
+                                @foreach ($medicines as $index => $medicine)
+                                    <option data-quantity="{{ $medicine->unit->name }}"
+                                        data-icd="{{ $medicine->id }}" value="{{ $medicine->id }}"
+                                        data-stock="{{ $medicine->stock }}"
+                                        data-unit-name="{{ $medicine->unit->name }}">
+                                        {{ $medicine->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    
+
+                    <div class="form-group row">
+                        <label class="col-xs-3">Sisa Obat</label>
+                        <div class="col-xs-9">
+                            <input type="text" name="quantity" class="form-control"
+                                        id="medicineStockElement" placeholder="Jumlah Obat" required="required">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-xs-3">Jumlah Obat</label>
+                        <div class="col-xs-9">
+                            <input type="text" name="quantity" value="1" min="1" class="form-control"
+                                        id="inputQuantityElement" placeholder="Jumlah Obat" required="required">
+                        </div>
+                    </div>
+
+                    <!-- Baris 2 -->
+                    <div class="form-group row">
+                        <label class="col-xs-3">Dosis</label>
+                        <div class="col-xs-3">
+                            <input type="number" name="perhari" value="3" min="1" max="5" id="inputPerhariElement" class="form-control">
+                        </div>
+                        <div class="col-xs-1" style="text-align: center; line-height: 34px; font-weight: bold;">x</div>
+                        <div class="col-xs-3">
+                            <input type="number" name="hari" value="1" min="1"  id="inputHariElement" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-3"></div> <!-- Empty spacer matching label width -->
+                        <div class="col-xs-9">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-xs-3"></div> <!-- Empty spacer matching label width -->
+                        <div class="col-xs-9">
+                            <input type="button" name="" value="Tambah" id="submitMedicineButton"
+                                        class="btn btn-info">
+                        </div>
+                    </div>
+
                     <table class="table">
                         <tbody>
+                            <?php /*
                             <tr>
-                                <th colspan="2">Input Obat</th>
+                                <th colspan="4">Input Obat</th>
                             </tr>
                             <tr>
                                 <th>Nama Obat :</th>
-                                <th>
-                                    <select name="medicine" id="selectMedicineElement" class="form-control select2">
-                                        @foreach ($medicines as $index => $medicine)
-                                            <option data-quantity="{{ $medicine->unit->name }}"
-                                                data-icd="{{ $medicine->id }}" value="{{ $medicine->id }}"
-                                                data-stock="{{ $medicine->stock }}"
-                                                data-unit-name="{{ $medicine->unit->name }}">
-                                                {{ $medicine->name }}</option>
-                                        @endforeach
-                                    </select>
+                                <th colspan="3">
+                                    
                                     <p>
-                                        <span id="medicineStockElement"></span>
+                                        <!-- <span id="medicineStockElement"></span> -->
                                     </p>
                                 </th>
                             </tr>
                             <tr>
+                                <th>Sisa Obat :</th>
+                                <th colspan="3">
+                                    <input type="text" name="quantity" class="form-control"
+                                        id="medicineStockElement" placeholder="Jumlah Obat" required="required">
+                                </th>
+                            </tr>
+                            <tr>
                                 <th>Jumlah :</th>
-                                <th>
+                                <th colspan="3">
                                     <input type="number" name="quantity" value="1" min="1" class="form-control"
                                         id="inputQuantityElement" placeholder="Jumlah Obat" required="required">
                                 </th>
                             </tr>
                             <tr>
+                                <th>Dosis :</th>
+                                <th>
+                                    <input type="number" name="perhari" value="3" min="1" max="5" class="form-control"
+                                        id="inputPerhariElement"  required="required">
+                                </th>
+                                <th>
+                                    X
+                                </th>
+                                <th>
+                                    <input type="number" name="hari" value="1" min="1" class="form-control"
+                                        id="inputHariElement" required="required">
+                                </th>
+                            </tr>
+                            
+                            <tr>
                                 <th>
                                     <input type="button" name="" value="Tambah" id="submitMedicineButton"
                                         class="btn btn-info">
                                 </th>
-                            </tr>
+                            </tr>*/
+                            ?>
 
                     </table>
                     <table class="table table-striped">
@@ -263,7 +375,7 @@
                 const selected = {
                     value: this.selectElement.value,
                     text: this.selectElement.options[this.selectElement.selectedIndex].text,
-                    icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd
+                    icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd,
                 };
 
                 return selected
@@ -338,11 +450,16 @@
                 selectElement,
                 inputName,
                 inputQuantity,
-                stockElement
+                stockElement,
+                inputHariElement,
+                inputPerhariElement
             ) {
                 super(submitButton, tableElement, selectElement, inputName)
                 this.inputQuantity = inputQuantity
                 this.stockElement = stockElement
+                // Dosis
+                this.inputPerhariElement = inputPerhariElement
+
                 this.medicineSelected = null
                 this.bindEventStockListener();
             }
@@ -353,7 +470,11 @@
                     text: this.selectElement.options[this.selectElement.selectedIndex].text,
                     icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd,
                     stock: Number(this.selectElement.options[this.selectElement.selectedIndex].dataset.stock),
-                    quantity: Number(this.inputQuantity.value || 0)
+                    unitName: this.selectElement.options[this.selectElement.selectedIndex].dataset.unitName,
+                    quantity: Number(this.inputQuantity.value || 0),
+                    
+                    // Dosis
+                    perhari: Number(this.inputPerhariElement.value || 0),
                 };
                 return selected
             }
@@ -388,14 +509,26 @@
                         qtyInput.value = newQty;
 
                         const row = this.tableElement.querySelector(`tr[data-medicine-id="${this.selected.value}"]`);
-                        if (row) {
+                    // If (row) Sebelum Diubah
+                        /*if (row) {
                             const qtySpan = row.querySelector('.medicine-qty');
                             if (qtySpan) qtySpan.textContent = newQty;
                             const firstCell = row.querySelector('td');
                             if (firstCell) firstCell.innerHTML =
                                 `${this.selected.icd} - ${this.selected.text} | kuantitas: <span class="medicine-qty">${newQty}</span>`;
+                        }*/
+                    
+                        if (row) {
+                            const qtySpan = row.querySelector('.medicine-qty');
+                            if (qtySpan) {
+                                qtySpan.textContent = newQty;
+                            }
+                            const doseSpan = row.querySelector('.medicine-dose');
+                            if (doseSpan) {
+                                doseSpan.textContent =
+                                    `${this.selected.perhari}x sehari`;
+                            }
                         }
-
                         this.inputQuantity.value = 1;
                         return;
                     }
@@ -418,7 +551,8 @@
                     const selectedOption = this.selectElement.options[this.selectElement.selectedIndex];
                     const stock = selectedOption.dataset.stock;
                     const unitName = selectedOption.dataset.unitName;
-                    this.stockElement.textContent = `Sisa stock: ${stock} ${unitName}`;
+                    // this.stockElement.textContent = `Sisa stock: ${stock} ${unitName}`;
+                    this.stockElement.value = `${stock} ${unitName}`;
                     this.inputQuantity.max = stock;
                 };
 
@@ -426,7 +560,7 @@
 
                 changeStock();
             }
-
+                /* AppendInputElement Sebelum Di Ubah Atau yang Asli
             appendInputElement() {
                 const idInput = this.createInputElement(`${this.inputName}[${this.counter}]['id']`, this.selected
                     .value);
@@ -439,8 +573,50 @@
                 quantityInput.setAttribute('data-medicine-id', this.selected.value);
                 quantityInput.setAttribute('data-attached-id', this.selected.value);
                 this.dynamicDataContainer.appendChild(quantityInput);
-            }
+            } */ 
+        
+            appendInputElement() {
 
+                // ID Obat
+                const idInput = this.createInputElement(
+                    `${this.inputName}[${this.counter}]['id']`,
+                    this.selected.value
+                );
+                idInput.setAttribute('data-medicine-id', this.selected.value);
+                idInput.setAttribute('data-attached-id', this.selected.value);
+                this.dynamicDataContainer.appendChild(idInput);
+
+
+                // Jumlah Obat
+                const quantityInput = this.createInputElement(
+                    `${this.inputName}[${this.counter}]['quantity']`,
+                    this.selected.quantity
+                );
+                quantityInput.setAttribute('data-medicine-id', this.selected.value);
+                quantityInput.setAttribute('data-attached-id', this.selected.value);
+                this.dynamicDataContainer.appendChild(quantityInput);
+
+
+                // Dosis per hari
+                const perhariInput = this.createInputElement(
+                    `${this.inputName}[${this.counter}]['perhari']`,
+                    this.selected.perhari
+                );
+                perhariInput.setAttribute('data-medicine-id', this.selected.value);
+                perhariInput.setAttribute('data-attached-id', this.selected.value);
+                this.dynamicDataContainer.appendChild(perhariInput);
+
+
+                // Lama penggunaan (hari)
+                const hariInput = this.createInputElement(
+                    `${this.inputName}[${this.counter}]['hari']`,
+                    this.selected.hari
+                );
+                hariInput.setAttribute('data-medicine-id', this.selected.value);
+                hariInput.setAttribute('data-attached-id', this.selected.value);
+                this.dynamicDataContainer.appendChild(hariInput);
+            }
+            /* createAppendElement Sebelum Di Ubah Atau yang Asli
             createAppendElement() {
                 const appendedElement = `
                 <tr data-medicine-id="${this.selected.value}" data-attached-id="${this.selected.value}">
@@ -450,6 +626,27 @@
                     </td>
                 </tr>
             `
+                return appendedElement;
+            }
+        } */
+
+            createAppendElement() {
+                const appendedElement = `
+                    <tr data-medicine-id="${this.selected.value}" data-attached-id="${this.selected.value}">
+                        <td>
+                            ${this.selected.text} - ${this.selected.quantity} ${this.selected.unitName}
+                            — ${this.selected.perhari}x sehari
+                        </td>
+
+                        <td>
+                            <a href="#" 
+                            class="btn btn-sm btn-danger attach-remove-btn" 
+                            title="Hapus Obat">
+                                <i class="glyphicon glyphicon-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                `;
 
                 return appendedElement;
             }
@@ -514,14 +711,31 @@
         const selectMedicineElement = document.getElementById("selectMedicineElement");
         const stockElement = document.getElementById("medicineStockElement");
         const inputQuantityElement = document.getElementById("inputQuantityElement");
+        const inputHariElement = document.getElementById("inputHariElement");
+        const inputPerhariElement = document.getElementById("inputPerhariElement");
 
-        const medicineAttachManager = new MedicineAttachManager(submitMedicineButton, medicineTable, selectMedicineElement,
-            'medicine_ids', inputQuantityElement, stockElement);
+        //asli
+        //const medicineAttachManager = new MedicineAttachManager(submitMedicineButton, medicineTable, selectMedicineElement,
+        //'medicine_ids', inputQuantityElement, stockElement);
+        
+        const medicineAttachManager = new MedicineAttachManager(
+            submitMedicineButton, 
+            medicineTable, 
+            selectMedicineElement,
+            'medicine_ids', 
+            inputQuantityElement, 
+            stockElement,
+            inputHariElement, // Dosis
+            inputPerhariElement // Dosis
+        );
+        //ubah disini untuk tambah dosis
 
         const statusButtonObserver = new StatusButtonObserver(document.getElementById("submit"))
 
         diagnosisAttachManager.subscribeTo(statusButtonObserver)
-        treatmentAttachManager.subscribeTo(statusButtonObserver)
-        medicineAttachManager.subscribeTo(statusButtonObserver)
+
+        //Nif. Didisable supaya ga harus isi treatment dan obat
+        //treatmentAttachManager.subscribeTo(statusButtonObserver)
+        //medicineAttachManager.subscribeTo(statusButtonObserver)
     </script>
 @endpush

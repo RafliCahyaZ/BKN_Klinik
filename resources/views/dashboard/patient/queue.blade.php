@@ -44,7 +44,7 @@
                                             @csrf
                                             @method('POST')
                                             <button class="btn btn-danger btn-sm">
-                                                <i class="glyphicon glyphicon-remove"></i>
+                                                <i class="glyphicon glyphicon-remove"></i> Batalkan
                                             </button>
                                         </form>
                                     @endif

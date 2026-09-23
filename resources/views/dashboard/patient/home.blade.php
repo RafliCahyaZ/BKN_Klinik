@@ -29,14 +29,9 @@
                                 <tr>
                                 <th>No</th>
                                 <th>No. Rekam</th>
-                                <th>ID Pasien</th>
                                 <th>Nama Pasien</th>
                                 <th>JK</th>
                                 <th>Umur</th>
-                                <th>Riwayat Penyakit</th>
-                                <th>Berkas RM</th>
-                                <th>Alamat</th>
-                                <th>Telp</th>
                                 <th>Tanggal Register</th>
                                 @canany(['delete-patient', 'edit-patient', 'create-patient','get-history-appointment'])
                                     <th>Kelola</th>
@@ -48,17 +43,12 @@
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $patient->medicalRecordNumber }}</td>
-                                <td>{{ $patient->id }}</td>
                                 <td>{{ $patient->name }}</td>
-                                <td>{{ ($patient->gender === "F") ? "Perempuan" : "Laki-laki" }}</td>
+                                <td>{{ ($patient->gender === "F") ? "Wanita" : "Pria" }}</td>
                                 <td>{{ $patient->age }}</td>
-                                <td>{{ $patient->history }}</td>
-                                <td><img style="max-width: 80px; max-height: 80px;" src="{{ $patient->medicalRecordFileUrl }}" alt="RM File" /></td>
-                                <td>{{ $patient->address }}</td>
-                                <td>{{ $patient->telpNumber }}</td>
-                                <td>{{ $patient->createdAt->timezone('Asia/Jakarta')->format('d-m-Y H:i:s') }}</td>
+                                <td>{{ $patient->createdAt->timezone('Asia/Jakarta')->format('d-m-Y') }}</td>
                                 @canany(['delete-patient', 'edit-patient', 'create-patient','get-history-appointment'])
-                                <td width="15%" class="d-flex">
+                                <td width="20%" class="d-flex">
                                 @can('edit-patient')
                                     <a href="{{ route("patient.edit.view", $patient->id) }}" class="btn btn-sm btn-info" title="Ubah Pasien"><i class="glyphicon glyphicon-pencil"></i></a>
                                 @endcan
@@ -79,11 +69,11 @@
                                 @endcan
 
                                 @can('create-appointment')
-                                <a href="{{ route("registration.create", $patient->id) }}" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i></a>
+                                <a href="{{ route("registration.create", $patient->id) }}" class="btn btn-sm btn-success" title="Registrasi Pasien"><i class="glyphicon glyphicon-download-alt"></i> Daftarkan</a>
                                 @endcan
 
                                 
-                                    <a class="btn btn-sm btn-warning" href="{{ route("patient.user.history", $patient->id) }}"><i class="fa fa-history"></i></a>
+                                    <a class="btn btn-sm btn-warning" href="{{ route("patient.user.history", $patient->id) }}" title="Riwayat Pasien"><i class="fa fa-history"></i></a>
 
                                 </td>
                                 @endcanany

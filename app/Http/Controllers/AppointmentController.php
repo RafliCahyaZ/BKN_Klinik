@@ -13,6 +13,7 @@ use App\Repository\MedicineRepository;
 use App\Repository\RegistrationRepository;
 use App\Repository\TreatmentRepository;
 use App\Service\PatientExaminationServiceEloquent;
+use App\Service\PatientExaminationMedicineServiceEloquent;
 use App\Type\TransactionType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -25,7 +26,8 @@ class AppointmentController extends Controller
         private DiagnosisRepository $diagnosisRepository,
         private TreatmentRepository $treatmentRepository,
         private MedicineRepository $medicineRepository,
-        private PatientExaminationServiceEloquent $patientExaminationService
+        private PatientExaminationServiceEloquent $patientExaminationService,
+        private PatientExaminationMedicineServiceEloquent $patientExaminationMedicineService
     ) {}
 
     public function create($id)
@@ -54,6 +56,77 @@ class AppointmentController extends Controller
         ]);
     }
 
+    public function createActionWithoutObat($id, Request $request)
+    {
+        try {
+            $registration = $this->registrationRepository->getById($id);
+
+            if (! $registration) {
+                abort(404);
+            }
+
+            $user = Auth::user();
+
+            $doctor = new UserDTO;
+            $doctor->id = $user->id;
+            $registration->checkDate = Carbon::now();
+            $registration->doctor = $doctor;
+            $registration->receipt = $request['receipt'];
+            $registration->complaint = $request['keluhan'];
+
+            $diagnoses = collect($request['diagnosis_ids'])->map(function ($item) {
+                $diagnosisDto = new DiagnosisDTO;
+                $diagnosisDto->id = $item;
+
+                return $diagnosisDto;
+            });
+
+            if(!is_null($request['treatment_ids'])) { //jika tindakan ada yang dipilih
+                $treatments = collect($request['treatment_ids'])->map(function ($item) {
+                    $treatmentDto = new TreatmentDTO;
+                    $treatmentDto->id = $item;
+
+                    return $treatmentDto;
+                });
+            } else {
+                $nilai = collect(array('1')); // jika tindakan tidak dipilih maka defaultnya adalah konsultasi umum
+                $treatments = $nilai->map(function ($item) {
+                    $treatmentDto = new TreatmentDTO;
+                    $treatmentDto->id = $item;
+
+                    return $treatmentDto;
+                });
+            }
+            // dd($treatments);
+
+            $patientExaminationResult = $this->patientExaminationMedicineService->execute(
+                $registration,
+                $diagnoses->toArray(),
+                $treatments->toArray(), 
+                []
+            );
+
+            // dd($patientExaminationResult);
+
+            if (!$patientExaminationResult) {
+                return back()->with('failed', 'Failed make appointment');
+            }
+
+            return redirect()->route('patient.history.show', $id)->with('success', 'Berhasil melakukan pemeriksaan');
+        } catch (\Throwable $th) {
+            // dd($request);
+            // return back()->with('failed', 'Terjadi kesalahan saat menyimpan data pemeriksaan');
+            return back()->with('failed', [
+                'message' => $th->getMessage(),
+                'file'    => $th->getFile(),
+                'line'    => $th->getLine(),
+            ]);
+        }
+    }
+
+    // Disable supaya ga perlu input data obat
+    // Nif - 17 April 2026
+    // Aslinya public function createAction($id, Request $request)
     public function createAction($id, Request $request)
     {
         try {
@@ -79,50 +152,78 @@ class AppointmentController extends Controller
                 return $diagnosisDto;
             });
 
-            $treatments = collect($request['treatment_ids'])->map(function ($item) {
-                $treatmentDto = new TreatmentDTO;
-                $treatmentDto->id = $item;
+            if(!is_null($request['treatment_ids'])) { //jika tindakan ada yang dipilih
+                $treatments = collect($request['treatment_ids'])->map(function ($item) {
+                    $treatmentDto = new TreatmentDTO;
+                    $treatmentDto->id = $item;
 
-                return $treatmentDto;
-            });
+                    return $treatmentDto;
+                });
+            } else {
+                $nilai = collect(array('99')); // jika tindakan tidak dipilih maka defaultnya adalah konsultasi umum
+                $treatments = $nilai->map(function ($item) {
+                    $treatmentDto = new TreatmentDTO;
+                    $treatmentDto->id = $item;
 
-            $aggregatedmedicineIds = $this->aggregateMedicineIds($request['medicine_ids']);
+                    return $treatmentDto;
+                });
+                //$treatments = [];
+            }
 
-            $medicineAvailables = [];
+            // dd($request['medicine_ids']);
+            if (!is_null($request['medicine_ids'])) { //ketika ada obat yang dipilih
+                $aggregatedmedicineIds = $this->aggregateMedicineIds($request['medicine_ids']);
 
-            foreach ($aggregatedmedicineIds as $medicine) {
-                $medicineAvailable = $this->isMedicineStockAvailable(
-                    $medicine["'id'"],
-                    $medicine["'quantity'"]
-                );
-                if (is_null($medicineAvailable)) {
-                    return redirect()->back()->with('error_alert', 'Maaf, obat tidak ditemukan!')->withInput();
+                $medicineAvailables = [];
+
+                foreach ($aggregatedmedicineIds as $medicine) {
+                    $medicineAvailable = $this->isMedicineStockAvailable(
+                        $medicine["'id'"],
+                        $medicine["'quantity'"]
+                    );
+                    if (is_null($medicineAvailable)) {
+                        return redirect()->back()->with('error_alert', 'Maaf, obat tidak ditemukan!')->withInput();
+                    }
+                    $medicineAvailables[] = $medicineAvailable;
                 }
-                $medicineAvailables[] = $medicineAvailable;
+
+                $medicineInputs = $aggregatedmedicineIds;
+                foreach ($medicineAvailables as $index => $medicineAvailable) {
+                    $medicineInputs[$index]["'stock'"] = $medicineAvailables[$index]->stock;
+                }
+
+                $medicinesTransaction = $this->mapInputToMedicineStockTransactionDTO($id, $medicineInputs);
+
+                // dd($medicinesTransaction);
+                $patientExaminationResult = $this->patientExaminationMedicineService->execute(
+                    $registration,
+                    $diagnoses->toArray(),
+                    $treatments->toArray(),
+                    $medicinesTransaction
+                );
+            } else { //ketika tidak pilih obat
+                $patientExaminationResult = $this->patientExaminationService->execute(
+                    $registration,
+                    $diagnoses->toArray(),
+                    $treatments->toArray()
+                );
             }
 
-            $medicineInputs = $aggregatedmedicineIds;
-            foreach ($medicineAvailables as $index => $medicineAvailable) {
-                $medicineInputs[$index]["'stock'"] = $medicineAvailables[$index]->stock;
-            }
+            // dd($patientExaminationResult);
 
-            $medicinesTransaction = $this->mapInputToMedicineStockTransactionDTO($id, $medicineInputs);
-
-            $patientExaminationResult = $this->patientExaminationService->execute(
-                $registration,
-
-                $diagnoses->toArray(),
-                $treatments->toArray(),
-                $medicinesTransaction
-            );
-
-            if (! $patientExaminationResult) {
+            if (!$patientExaminationResult) {
                 return back()->with('failed', 'Failed make appointment');
             }
 
             return redirect()->route('patient.history.show', $id)->with('success', 'Berhasil melakukan pemeriksaan');
         } catch (\Throwable $th) {
-            return back()->with('failed', 'Terjadi kesalahan saat melakukan pemeriksaan');
+            // dd($request);
+            // return back()->with('failed', 'Terjadi kesalahan saat menyimpan data pemeriksaan');
+            return back()->with('failed', [
+                'message' => $th->getMessage(),
+                'file'    => $th->getFile(),
+                'line'    => $th->getLine(),
+            ]);
         }
     }
 

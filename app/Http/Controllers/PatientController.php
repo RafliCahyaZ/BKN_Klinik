@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Support\Facades\DB;
+
 class PatientController extends Controller
 {
     public function __construct(
@@ -41,13 +43,19 @@ class PatientController extends Controller
     public function index(PatientRepository $patientRepository)
     {
         try {
+            DB::enableQueryLog();
+
             $patients = collect($patientRepository->getAll());
 
+            // dd($patients);
             $patients = $patients->map(function ($patient) {
                 $patient->medicalRecordFileUrl = Storage::disk('public')->url($patient->medicalRecordFileUrl);
 
                 return $patient;
             });
+
+            
+            // dd(DB::getQueryLog());
 
             return view('dashboard.patient.home', [
                 'patients' => $patientRepository->getAll(),

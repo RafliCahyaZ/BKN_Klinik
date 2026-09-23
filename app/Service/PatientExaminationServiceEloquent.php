@@ -18,7 +18,62 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
         private MedicineRepositoryEloquent $medicineRepository
     ) {}
 
-    public function execute(
+public function execute(
+        RegistrationDTO $registrationDto,
+        array $diagnoses,
+        array $treatments
+    ): bool {
+        try {
+            return DB::transaction(function () use (
+                $registrationDto,
+                $diagnoses,
+                $treatments
+            ) {
+
+                $editResult = true;
+                if (! $this->appointmentRepository->attachManyDiagnosesToRegistration($registrationDto, $diagnoses)) {
+                    $editResult = false;
+                }
+                // if (! $this->appointmentRepository->attachManyTreatmentsToRegistration($registrationDto, $treatments)) {
+                // //     $editResult = false;
+                // // }
+                if (sizeof($treatments) == 1) { //ketika user tidak memilih tindakan
+                    if ($treatments[0]->id == '99') {
+                        // dd($treatments[0]);
+                        //tidak perlu simpan tindakan krn tindakannya dummy
+                    } else {
+                        if (! $this->appointmentRepository->attachManyTreatmentsToRegistration($registrationDto, $treatments)) {
+                            $editResult = false;
+                        }
+                    }
+                } else {
+                    if (! $this->appointmentRepository->attachManyTreatmentsToRegistration($registrationDto, $treatments)) {
+                        $editResult = false;
+                    }
+                }
+                if (! $this->registrationRepository->edit($registrationDto)) {
+                    dd('failed edit registration in patient examination service');
+                    $editResult = false;
+                }
+
+                return $editResult;
+            });
+        } catch (\Throwable $th) {
+            //return false;
+            // dd($th);
+            return back()->with('failed', [
+                'message' => $th->getMessage(),
+                'file'    => $th->getFile(),
+                'line'    => $th->getLine(),
+            ]);
+        }
+
+    }
+
+    // Disable supaya ga perlu input data obat
+    // Nif - 17 April 2026
+    // Aslinya public function execute
+public function executeWithObat(
         RegistrationDTO $registrationDto,
         array $diagnoses,
         array $treatments,
@@ -85,12 +140,18 @@ class PatientExaminationServiceEloquent implements PatientExaminationService
                             break;
                         }
                     }
-                }
+                } 
 
                 return $editResult;
             });
         } catch (\Throwable $th) {
-            return false;
+            //return false;
+            // dd($th);
+            return back()->with('failed', [
+                'message' => $th->getMessage(),
+                'file'    => $th->getFile(),
+                'line'    => $th->getLine(),
+            ]);
         }
 
     }
