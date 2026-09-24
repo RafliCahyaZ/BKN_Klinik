@@ -226,9 +226,10 @@
                             <input type="number" name="perhari" value="3" min="1" max="5" id="inputPerhariElement" class="form-control">
                         </div>
                         <div class="col-xs-1" style="text-align: center; line-height: 34px; font-weight: bold;">x</div>
-                        <div class="col-xs-3">
+                        <div class="col-xs-1" style="text-align: center; line-height: 34px; font-weight: bold;"> Sehari</div>
+                        <!--  <div class="col-xs-3">
                             <input type="number" name="hari" value="1" min="1"  id="inputHariElement" class="form-control">
-                        </div>
+                        </div> -->
                     </div>
                     <div class="form-group row">
                         <div class="col-xs-3"></div> <!-- Empty spacer matching label width -->
@@ -607,14 +608,14 @@
                 this.dynamicDataContainer.appendChild(perhariInput);
 
 
-                // Lama penggunaan (hari)
+            /*    // Lama penggunaan (hari)
                 const hariInput = this.createInputElement(
                     `${this.inputName}[${this.counter}]['hari']`,
                     this.selected.hari
                 );
                 hariInput.setAttribute('data-medicine-id', this.selected.value);
                 hariInput.setAttribute('data-attached-id', this.selected.value);
-                this.dynamicDataContainer.appendChild(hariInput);
+                this.dynamicDataContainer.appendChild(hariInput); */
             }
             /* createAppendElement Sebelum Di Ubah Atau yang Asli
             createAppendElement() {
@@ -637,7 +638,6 @@
                             ${this.selected.text} - ${this.selected.quantity} ${this.selected.unitName}
                             — ${this.selected.perhari}x sehari
                         </td>
-
                         <td>
                             <a href="#" 
                             class="btn btn-sm btn-danger attach-remove-btn" 
