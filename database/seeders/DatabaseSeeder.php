@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             RegistrationSeeder::class,
             MedicineStockTransactionSeeder::class,
             RolePermissionSeeder::class,
+            RegistrationMedicineSeeder::class,
         ]);
     }
 }

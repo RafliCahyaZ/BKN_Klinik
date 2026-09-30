@@ -7,6 +7,7 @@ use App\Repository\AppointmentRepositoryEloquent;
 use App\Repository\MedicineRepositoryEloquent;
 use App\Repository\MedicineStockTransactionRepositoryEloquent;
 use App\Repository\RegistrationRepositoryEloquent;
+use App\Repository\RegistrationMedicineRepositoryEloquent;
 use Illuminate\Support\Facades\DB;
 
 class PatientExaminationMedicineServiceEloquent implements PatientExaminationMedicineService
@@ -15,7 +16,8 @@ class PatientExaminationMedicineServiceEloquent implements PatientExaminationMed
         private RegistrationRepositoryEloquent $registrationRepository,
         private AppointmentRepositoryEloquent $appointmentRepository,
         private MedicineStockTransactionRepositoryEloquent $medicineStockTransactionRepository,
-        private MedicineRepositoryEloquent $medicineRepository
+        private MedicineRepositoryEloquent $medicineRepository,
+        private RegistrationMedicineRepositoryEloquent $registrationMedicineRepository
     ) {}
 
 public function executeNonObat(
@@ -63,7 +65,8 @@ public function execute(
         RegistrationDTO $registrationDto,
         array $diagnoses,
         array $treatments,
-        array $medicineTransactions
+        array $medicineTransactions,
+        array $registrationMedicines
     ): bool {
         // dd($treatments[0]);
         try {
@@ -71,7 +74,8 @@ public function execute(
                 $registrationDto,
                 $diagnoses,
                 $treatments,
-                $medicineTransactions
+                $medicineTransactions,
+                $registrationMedicines
             ) {
 
                 $editResult = true;
@@ -114,6 +118,16 @@ public function execute(
                         ];
                     }
                     $medicineUpdates[$medicineId]['totalQuantity'] += $medicineStockTransactionDto->quantity;
+                }
+
+                if ($editResult) {
+                    foreach ($registrationMedicines as $registrationMedicineDTO) {
+                        if (is_null($this->registrationMedicineRepository->insert($registrationMedicineDTO))
+                        ) {
+                            $editResult = false;
+                            break;
+                        }
+                    }
                 }
 
                 if ($editResult) {

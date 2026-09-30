@@ -21,6 +21,7 @@ interface PatientExaminationMedicineService
         RegistrationDTO $registrationDto,
         array $diagnoses,
         array $treatments,
-        array $medicines
-    ): bool;
+        array $medicineTransactions,
+        array $registrationMedicines
+): bool;
 }

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\RegistrationMedicine;
 
 class Registration extends Model
 {
@@ -26,7 +27,10 @@ class Registration extends Model
     {
         return $this->hasMany(MedicineStockTransaction::class);
     }
-
+    public function registrationMedicines(): HasMany
+    {
+        return $this->hasMany(RegistrationMedicine::class);
+    }
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class);

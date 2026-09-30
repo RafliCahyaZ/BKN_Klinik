@@ -6,6 +6,7 @@ use App\DTO\DiagnosisDTO;
 use App\DTO\MedicineDTO;
 use App\DTO\MedicineStockTransactionDTO;
 use App\DTO\RegistrationDTO;
+use App\DTO\RegistrationMedicineDTO;
 use App\DTO\TreatmentDTO;
 use App\DTO\UserDTO;
 use App\Repository\DiagnosisRepository;
@@ -14,6 +15,7 @@ use App\Repository\RegistrationRepository;
 use App\Repository\TreatmentRepository;
 use App\Service\PatientExaminationServiceEloquent;
 use App\Service\PatientExaminationMedicineServiceEloquent;
+use App\Repository\RegistrationMedicineRepositoryEloquent;
 use App\Type\TransactionType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -27,6 +29,7 @@ class AppointmentController extends Controller
         private TreatmentRepository $treatmentRepository,
         private MedicineRepository $medicineRepository,
         private PatientExaminationServiceEloquent $patientExaminationService,
+        private RegistrationMedicineRepositoryEloquent $registrationMedicineRepository,
         private PatientExaminationMedicineServiceEloquent $patientExaminationMedicineService
     ) {}
 
@@ -97,16 +100,17 @@ class AppointmentController extends Controller
                     return $treatmentDto;
                 });
             }
-            // dd($treatments);
+            //dd($treatments);
 
             $patientExaminationResult = $this->patientExaminationMedicineService->execute(
                 $registration,
                 $diagnoses->toArray(),
-                $treatments->toArray(), 
+                $treatments->toArray(),
+                [],
                 []
             );
 
-            // dd($patientExaminationResult);
+            //dd($patientExaminationResult);
 
             if (!$patientExaminationResult) {
                 return back()->with('failed', 'Failed make appointment');
@@ -114,7 +118,7 @@ class AppointmentController extends Controller
 
             return redirect()->route('patient.history.show', $id)->with('success', 'Berhasil melakukan pemeriksaan');
         } catch (\Throwable $th) {
-            // dd($request);
+            //dd($request);
             // return back()->with('failed', 'Terjadi kesalahan saat menyimpan data pemeriksaan');
             return back()->with('failed', [
                 'message' => $th->getMessage(),
@@ -170,43 +174,72 @@ class AppointmentController extends Controller
                 //$treatments = [];
             }
 
-            //dd($request['medicine_ids']);
-            if (!is_null($request['medicine_ids'])) { //ketika ada obat yang dipilih
-                $aggregatedmedicineIds = $this->aggregateMedicineIds($request['medicine_ids']);
+            //dd($request['medicine_ids']); // Untuk debugging dosis
+
+            if (!is_null($request['medicine_ids'])) { // ketika ada obat yang dipilih
+
+                $aggregatedmedicineIds = $this->aggregateMedicineIds(
+                    $request['medicine_ids']
+                );
 
                 $medicineAvailables = [];
 
                 foreach ($aggregatedmedicineIds as $medicine) {
+
                     $medicineAvailable = $this->isMedicineStockAvailable(
                         $medicine["'id'"],
                         $medicine["'quantity'"]
                     );
+
                     if (is_null($medicineAvailable)) {
-                        return redirect()->back()->with('error_alert', 'Maaf, obat tidak ditemukan!')->withInput();
+                        return redirect()
+                            ->back()
+                            ->with('error_alert', 'Maaf, obat tidak ditemukan!')
+                            ->withInput();
                     }
+
                     $medicineAvailables[] = $medicineAvailable;
                 }
 
                 $medicineInputs = $aggregatedmedicineIds;
+
                 foreach ($medicineAvailables as $index => $medicineAvailable) {
-                    $medicineInputs[$index]["'stock'"] = $medicineAvailables[$index]->stock;
+                    $medicineInputs[$index]["'stock'"] =
+                        $medicineAvailables[$index]->stock;
                 }
 
-                $medicinesTransaction = $this->mapInputToMedicineStockTransactionDTO($id, $medicineInputs);
+                // Untuk transaksi stok
+                $medicinesTransaction =
+                    $this->mapInputToMedicineStockTransactionDTO(
+                        $id,
+                        $medicineInputs
+                    );
 
-                // dd($medicinesTransaction);
-                $patientExaminationResult = $this->patientExaminationMedicineService->execute(
-                    $registration,
-                    $diagnoses->toArray(),
-                    $treatments->toArray(),
-                    $medicinesTransaction
-                );
-            } else { //ketika tidak pilih obat
-                $patientExaminationResult = $this->patientExaminationService->execute(
-                    $registration,
-                    $diagnoses->toArray(),
-                    $treatments->toArray()
-                );
+                // Untuk resep/dosis pasien
+                $registrationMedicines =
+                    $this->mapInputToRegistrationMedicineDTO(
+                        $id,
+                        $medicineInputs
+                    );
+
+                $patientExaminationResult =
+                    $this->patientExaminationMedicineService->execute(
+                        $registration,
+                        $diagnoses->toArray(),
+                        $treatments->toArray(),
+                        $medicinesTransaction,
+                        $registrationMedicines
+                    );
+
+            } else {
+
+                // ketika tidak pilih obat
+                $patientExaminationResult =
+                    $this->patientExaminationService->execute(
+                        $registration,
+                        $diagnoses->toArray(),
+                        $treatments->toArray()
+                    );
             }
 
             // dd($patientExaminationResult);
@@ -305,4 +338,31 @@ class AppointmentController extends Controller
 
         return $medicineStocks;
     }
+    private function mapInputToRegistrationMedicineDTO(
+        $registrationId,
+        $medicineInputs
+    ) {
+        $registrationMedicines = [];
+
+        foreach ($medicineInputs as $medicineInput) {
+
+            $registrationMedicineDTO = new RegistrationMedicineDTO;
+
+            $registrationMedicineDTO->registrationId = $registrationId;
+
+            $registrationMedicineDTO->medicineId =
+                $medicineInput["'id'"];
+
+            $registrationMedicineDTO->quantity =
+                (int) $medicineInput["'quantity'"];
+
+            $registrationMedicineDTO->perhari =
+                (int) $medicineInput["'perhari'"];
+
+            $registrationMedicines[] = $registrationMedicineDTO;
+        }
+
+        return $registrationMedicines;
+    }
+
 }
