@@ -103,6 +103,8 @@ class RegistrationRepositoryEloquent implements RegistrationRepository
                         $medicineStockTransactionDTO->registration = null;
                         $medicineStockTransactionDTO->type = $transaction->type;
                         $medicineStockTransactionDTO->quantity = $transaction->quantity;
+                        $medicineStockTransactionDTO->frequency = $transaction->frequency;
+                        $medicineStockTransactionDTO->dose = $transaction->dose;
                         $medicineStockTransactionDTO->beginningStock = $transaction->beginning_stock;
                         $medicineStockTransactionDTO->lastStock = $transaction->last_stock;
                         $medicineStockTransactionDTO->notes = $transaction->notes;

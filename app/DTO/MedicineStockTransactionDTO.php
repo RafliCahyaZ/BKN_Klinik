@@ -19,6 +19,12 @@ class MedicineStockTransactionDTO
 
     public int $quantity;
 
+     // Frekuensi konsumsi obat per hari
+    public ?int $frequency = null;
+
+    // Dosis setiap kali konsumsi
+    public ?string $dose = null;
+
     public int $beginningStock;
 
     public int $lastStock;

@@ -13,7 +13,9 @@ class MedicineStockTransaction extends Model
         'medicine_id',
         'registration_id',
         'type',
-        'quantity',
+        'quantity',     //jumlah obat yang keluar atau masuk
+        'frequency',    //jumlah konsumsi obat per hari
+        'dose',         //jumlah obat setiap konsumsi
         'beginning_stock',
         'last_stock',
         'expired_date',

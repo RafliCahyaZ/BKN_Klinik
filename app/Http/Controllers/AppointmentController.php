@@ -170,7 +170,7 @@ class AppointmentController extends Controller
                 //$treatments = [];
             }
 
-            //dd($request['medicine_ids']);
+            // dd($request['medicine_ids']);
             if (!is_null($request['medicine_ids'])) { //ketika ada obat yang dipilih
                 $aggregatedmedicineIds = $this->aggregateMedicineIds($request['medicine_ids']);
 
@@ -187,6 +187,7 @@ class AppointmentController extends Controller
                     $medicineAvailables[] = $medicineAvailable;
                 }
 
+                //dd($aggregatedmedicineIds);
                 $medicineInputs = $aggregatedmedicineIds;
                 foreach ($medicineAvailables as $index => $medicineAvailable) {
                     $medicineInputs[$index]["'stock'"] = $medicineAvailables[$index]->stock;
@@ -209,7 +210,7 @@ class AppointmentController extends Controller
                 );
             }
 
-            // dd($patientExaminationResult);
+            //dd($patientExaminationResult); 
 
             if (!$patientExaminationResult) {
                 return back()->with('failed', 'Failed make appointment');
@@ -288,15 +289,23 @@ class AppointmentController extends Controller
             $medicineStockTransactionDto = new MedicineStockTransactionDTO;
             $medicineStockTransactionDto->inventoryOfficer = new UserDTO;
             $medicineStockTransactionDto->inventoryOfficer->id = Auth::id();
+
             $medicineStockTransactionDto->medicine = new MedicineDTO;
             $medicineStockTransactionDto->medicine->id = $medicineInput["'id'"];
             $medicineStockTransactionDto->medicine->stock = $medicineInput["'stock'"];
+
             $medicineStockTransactionDto->beginningStock = $medicineInput["'stock'"];
             $medicineStockTransactionDto->lastStock = $medicineInput["'stock'"] - $medicineInput["'quantity'"];
+
             $medicineStockTransactionDto->registration = new RegistrationDTO;
             $medicineStockTransactionDto->registration->id = $registrationId;
+
             $medicineStockTransactionDto->type = TransactionType::OUT;
             $medicineStockTransactionDto->quantity = $medicineInput["'quantity'"];
+
+            $medicineStockTransactionDto->frequency = $medicineInput["'perhari'"];
+            $medicineStockTransactionDto->dose = $medicineInput["'dosis'"];
+
             $medicineStockTransactionDto->createdAt = Carbon::now();
             $medicineStockTransactionDto->updatedAt = Carbon::now();
 

@@ -46,6 +46,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
 
                 $formatedTransaction->type = $transaction->type;
                 $formatedTransaction->quantity = $transaction->quantity;
+                $formatedTransaction->frequency = $transaction->frequency;
+                $formatedTransaction->dose = $transaction->dose;
                 $formatedTransaction->beginningStock = $transaction->beginning_stock;
                 $formatedTransaction->lastStock = $transaction->last_stock;
                 $formatedTransaction->notes = $transaction->notes;
@@ -74,6 +76,11 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 'registration_id' => $medicineStockTransactionDTO->registration ? $medicineStockTransactionDTO->registration->id : null,
                 'type' => $medicineStockTransactionDTO->type,
                 'quantity' => $medicineStockTransactionDTO->quantity,
+
+                // Frekuensi dan dosis obat
+                'frequency' => $medicineStockTransactionDTO->frequency,
+                'dose' => $medicineStockTransactionDTO->dose,
+
                 'beginning_stock' => $medicineStockTransactionDTO->beginningStock,
                 'last_stock' => $medicineStockTransactionDTO->lastStock,
                 'notes' => $medicineStockTransactionDTO->notes,
@@ -135,6 +142,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 'registration_id' => $medicineStockTransactionDTO->registration ? $medicineStockTransactionDTO->registration->id : null,
                 'type' => $medicineStockTransactionDTO->type ?? null,
                 'quantity' => $medicineStockTransactionDTO->quantity ?? null,
+                'frequency' => $medicineStockTransactionDTO->frequency ?? null,
+                'dose' => $medicineStockTransactionDTO->dose ?? null,
                 'beginning_stock' => $medicineStockTransactionDTO->beginningStock ?? null,
                 'last_stock' => $medicineStockTransactionDTO->lastStock ?? null,
                 'expired_date' => $medicineStockTransactionDTO->expiredDate ?? null,
@@ -176,6 +185,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
 
                     $formatedUpdatedData->type = $updatedData->type;
                     $formatedUpdatedData->quantity = $updatedData->quantity;
+                    $formatedUpdatedData->frequency = $updatedData->frequency;
+                    $formatedUpdatedData->dose = $updatedData->dose;
                     $formatedUpdatedData->beginningStock = $updatedData->beginning_stock;
                     $formatedUpdatedData->lastStock = $updatedData->last_stock;
                     $formatedUpdatedData->notes = $updatedData->notes;
@@ -225,6 +236,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
             $formatedTransaction->registration = $registration;
             $formatedTransaction->type = $transaction->type;
             $formatedTransaction->quantity = $transaction->quantity;
+            $formatedTransaction->frequency = $transaction->frequency;
+            $formatedTransaction->dose = $transaction->dose;
             $formatedTransaction->beginningStock = $transaction->beginning_stock;
             $formatedTransaction->lastStock = $transaction->last_stock;
             $formatedTransaction->notes = $transaction->notes;
@@ -299,6 +312,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 $formated_transaction->registration = $registration;
                 $formated_transaction->type = $transaction->type;
                 $formated_transaction->quantity = $transaction->quantity;
+                $formated_transaction->frequency = $transaction->frequency;
+                $formated_transaction->dose = $transaction->dose;
                 $formated_transaction->beginningStock = $transaction->beginning_stock;
                 $formated_transaction->lastStock = $transaction->last_stock;
                 $formated_transaction->notes = $transaction->notes;
@@ -345,6 +360,8 @@ class MedicineStockTransactionRepositoryEloquent implements MedicineStockTransac
                 $formatedTransaction->registration = $registration;
                 $formatedTransaction->type = $transaction->type;
                 $formatedTransaction->quantity = $transaction->quantity;
+                $formatedTransaction->frequency = $transaction->frequency;
+                $formatedTransaction->dose = $transaction->dose;
                 $formatedTransaction->beginningStock = $transaction->beginning_stock;
                 $formatedTransaction->lastStock = $transaction->last_stock;
                 $formatedTransaction->notes = $transaction->notes;

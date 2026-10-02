@@ -19,6 +19,8 @@ return new class extends Migration
             $table->enum('type', ['in', 'out', 'adjustment', 'return', 'expired']);
             $table->integer('beginning_stock');
             $table->integer('quantity');
+            $table->integer('frequency')->nullable();
+            $table->string('dose')->nullable();
             $table->integer('last_stock');
             $table->text('notes')->nullable();
             $table->timestamps();

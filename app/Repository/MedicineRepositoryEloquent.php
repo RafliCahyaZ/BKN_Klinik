@@ -68,6 +68,7 @@ class MedicineRepositoryEloquent implements MedicineRepository
                 'name' => $medicineDTO->name ?? null,
                 'stock' => $medicineDTO->stock ?? null,
                 'unit_id' => $medicineDTO->unit->id ?? null,
+                
             ];
 
             $filteredUpdateData = array_filter($updateData);

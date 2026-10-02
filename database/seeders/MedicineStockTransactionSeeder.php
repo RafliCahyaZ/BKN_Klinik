@@ -53,6 +53,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'registration_id' => $registration1->id,
             'type' => TransactionType::OUT,
             'quantity' => 10,
+            'frequency' => 3,            //frekuessi = jumlah konsumsi obat per hari
+            'dose' => '1 tablet',       //dosis = jumlah obat setiap konsumsi 
             'beginning_stock' => 100,
             'last_stock' => 90,
             'notes' => 'Obat untuk pasien Budi Santoso',
@@ -81,6 +83,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'registration_id' => $registration4->id,
             'type' => TransactionType::OUT,
             'quantity' => 15,
+            'frequency' => 2,           //frekuessi = jumlah konsumsi obat per hari
+            'dose' => '1 tablet',       //dosis = jumlah obat setiap konsumsi 
             'beginning_stock' => 50,
             'last_stock' => 35,
             'notes' => 'Obat untuk pasien Dewi Lestari',
@@ -123,6 +127,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'registration_id' => $registration1->id,
             'type' => TransactionType::OUT,
             'quantity' => 20,
+            'frequency' => 3,           //frekuessi = jumlah konsumsi obat per hari
+            'dose' => '1 tablet',       //dosis = jumlah obat setiap konsumsi
             'beginning_stock' => 75,
             'last_stock' => 55,
             'notes' => 'Vitamin untuk pasien Budi Santoso',
@@ -151,6 +157,8 @@ class MedicineStockTransactionSeeder extends Seeder
             'registration_id' => $registration3->id,
             'type' => TransactionType::OUT,
             'quantity' => 5,
+            'frequency' => 2,           //frekuessi = jumlah konsumsi obat per hari
+            'dose' => '1 tablet',       //dosis = jumlah obat setiap konsumsi
             'beginning_stock' => 20,
             'last_stock' => 15,
             'notes' => 'Insulin untuk pasien Ahmad Hidayat',

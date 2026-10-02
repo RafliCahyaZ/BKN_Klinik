@@ -109,7 +109,14 @@
                     <tbody id="diagnosisTable">
                         @foreach($registration->medicineStockTransactions as $key => $medicineStockTransaction)
                             <tr>
-                                <td colspan="2">{{ $medicineStockTransaction->medicine->name }} - {{ $medicineStockTransaction->quantity . " " . $medicineStockTransaction->medicine->unit->name }} </td>
+                                <td colspan="2">{{ $medicineStockTransaction->medicine->name }} 
+                                    - 
+                                    {{ $medicineStockTransaction->quantity . " " . $medicineStockTransaction->medicine->unit->name }} </td>
+
+                                    @if($medicineStockTransaction->dose && $medicineStockTransaction->frequency)
+                                        — {{ $medicineStockTransaction->dose }}
+                                        {{ $medicineStockTransaction->frequency }}x sehari
+                                    @endif
                             </tr>
                         @endforeach
                     </tbody>

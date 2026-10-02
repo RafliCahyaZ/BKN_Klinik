@@ -222,11 +222,25 @@
                     <!-- Baris 2 -->
                     <div class="form-group row">
                         <label class="col-xs-3">Dosis</label>
-                        <div class="col-xs-3">
-                            <input type="number" name="perhari" value="3" min="1" max="5" id="inputPerhariElement" class="form-control">
+                        <div class="col-xs-9">
+                            <input type="text" name="dosis" value="1 tablet" id="inputDosisElement" class="form-control" 
+                            placeholder="Contoh: 1 tablet, 5 ml, oles tipis" required="required">
                         </div>
-                        <div class="col-xs-1" style="text-align: center; line-height: 34px; font-weight: bold;">x</div>
-                        <div class="col-xs-1" style="text-align: center; line-height: 34px; font-weight: bold;"> Sehari</div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-xs-3">Frekuensi</label>
+                        <div class="col-xs-3">
+                            <input type="number" name="perhari" value="3" min="1" max="5" 
+                            id="inputPerhariElement" class="form-control" required="required">
+                        </div>
+                        <div class="col-xs-1" style="text-align: center; line-height: 34px; font-weight: bold;">
+                            x
+                        </div>
+                        <div class="col-xs-2" style="line-height: 34px; font-weight: bold;">
+                            Sehari
+                        </div>
+                    </div>
                         <!--  <div class="col-xs-3">
                             <input type="number" name="hari" value="1" min="1"  id="inputHariElement" class="form-control">
                         </div> -->
@@ -454,12 +468,21 @@
                 stockElement,
                 inputHariElement,
                 inputPerhariElement
+                inputDosisElement
             ) {
                 super(submitButton, tableElement, selectElement, inputName)
                 this.inputQuantity = inputQuantity
                 this.stockElement = stockElement
-                // Dosis
+
+                //Frekuensi
                 this.inputPerhariElement = inputPerhariElement
+
+                // Dosis
+                this.inputDosisElement = inputDosisElement
+
+                //this.inputHariElement = inputHariElement
+                this.medicineSelected = null
+                this.bindEventStockListener();
 
                 this.medicineSelected = null
                 this.bindEventStockListener();
@@ -473,12 +496,35 @@
                     stock: Number(this.selectElement.options[this.selectElement.selectedIndex].dataset.stock),
                     unitName: this.selectElement.options[this.selectElement.selectedIndex].dataset.unitName,
                     quantity: Number(this.inputQuantity.value || 0),
-                    
-                    // Dosis
+
+                    // Frekuensi
                     perhari: Number(this.inputPerhariElement.value || 0),
+
+                    // Dosis (string)
+                    dosis: this.inputDosisElement.value || '',
+
+                    //hari: Number(this.inputHariElement.value || 0), 
                 };
+
                 return selected
             }
+
+                // getSelected() Lama tanpa ada variable Dosis Obat
+            //getSelected() {
+                //const selected = {
+                    //value: this.selectElement.value,
+                    //text: this.selectElement.options[this.selectElement.selectedIndex].text,
+                    //icd: this.selectElement.options[this.selectElement.selectedIndex].dataset.icd,
+                    //stock: Number(this.selectElement.options[this.selectElement.selectedIndex].dataset.stock),
+                    //unitName: this.selectElement.options[this.selectElement.selectedIndex].dataset.unitName,
+                    //quantity: Number(this.inputQuantity.value || 0),
+                    
+                    // Dosis
+                    //perhari: Number(this.inputPerhariElement.value || 0),
+                    //hari: Number(this.inputHariElement.value || 0), 
+                //};
+                //return selected
+            //}
 
             submitButtonEventListener() {
                 this.selected = this.getSelected();
@@ -598,7 +644,7 @@
                 this.dynamicDataContainer.appendChild(quantityInput);
 
 
-                // Dosis per hari
+                // Dosis per hari ()
                 const perhariInput = this.createInputElement(
                     `${this.inputName}[${this.counter}]['perhari']`,
                     this.selected.perhari
@@ -606,6 +652,16 @@
                 perhariInput.setAttribute('data-medicine-id', this.selected.value);
                 perhariInput.setAttribute('data-attached-id', this.selected.value);
                 this.dynamicDataContainer.appendChild(perhariInput);
+
+                // Dosis Per Minum
+                const dosisInput = this.createInputElement(
+                    `${this.inputName}[${this.counter}]['dosis']`,
+                    this.selected.dosis
+                );
+
+                dosisInput.setAttribute('data-medicine-id', this.selected.value);
+                dosisInput.setAttribute('data-attached-id', this.selected.value);
+                this.dynamicDataContainer.appendChild(dosisInput);
 
 
             /*    // Lama penggunaan (hari)
@@ -636,7 +692,7 @@
                     <tr data-medicine-id="${this.selected.value}" data-attached-id="${this.selected.value}">
                         <td>
                             ${this.selected.text} - ${this.selected.quantity} ${this.selected.unitName}
-                            — ${this.selected.perhari}x sehari
+                            — <span class="medicine-dose">${this.selected.dosis} ${this.selected.perhari}x sehari</span>
                         </td>
                         <td>
                             <a href="#" 
@@ -713,6 +769,7 @@
         const inputQuantityElement = document.getElementById("inputQuantityElement");
         const inputHariElement = document.getElementById("inputHariElement");
         const inputPerhariElement = document.getElementById("inputPerhariElement");
+        const inputDosisElement = document.getElementById("inputDosisElement");
 
         //asli
         //const medicineAttachManager = new MedicineAttachManager(submitMedicineButton, medicineTable, selectMedicineElement,
@@ -725,8 +782,9 @@
             'medicine_ids', 
             inputQuantityElement, 
             stockElement,
-            inputHariElement, // Dosis
-            inputPerhariElement // Dosis
+             inputHariElement, // Lama penggunaan (saat ini tidak digunakan)
+            inputPerhariElement, // Frekuensi per hari
+            inputDosisElement // Dosis (string)
         );
         //ubah disini untuk tambah dosis
 
