@@ -220,7 +220,37 @@
                     </div>
 
                     <!-- Baris 2 -->
-                    <div class="form-group row">
+                    <div class="form-group row" style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <label class="col-xs-3" style="margin-bottom: 0; line-height: 40px;">
+                            Dosis
+                        </label>
+
+                        <div class="col-xs-2" style="padding-right: 5px;">
+                            <input
+                                type="number" name="perhari" value="3" min="1" max="5"
+                                id="inputPerhariElement" class="form-control" placeholder="Frekuensi"
+                            >
+                        </div>
+
+                        <div class="col-xs-1" 
+                            style="text-align: center; font-weight: bold; font-size: 20px; padding: 0;">
+                            x
+                        </div>
+                        
+                        <div class="col-xs-3" style="padding-left: 5px; padding-right: 5px;">
+                            <input
+                                type="text" name="dosis"
+                                value="1 tablet" id="inputDosisElement"
+                                class="form-control" placeholder="Dosis"
+                            >
+                        </div>
+
+                        <div class="col-xs-2" style="font-weight: bold; font-size: 16px; line-height: 40px; padding-left: 10px;">
+                            Sehari
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group row">
                         <label class="col-xs-3">Dosis</label>
                         <div class="col-xs-9">
                             <input type="text" name="dosis" value="1 tablet" id="inputDosisElement" class="form-control" 
@@ -239,7 +269,7 @@
                         </div>
                         <div class="col-xs-2" style="line-height: 34px; font-weight: bold;">
                             Sehari
-                        </div>
+                        </div> -->
                     <!-- </div>
                         <div class="col-xs-3">
                             <input type="number" name="hari" value="1" min="1"  id="inputHariElement" class="form-control">
