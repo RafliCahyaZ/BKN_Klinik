@@ -240,11 +240,11 @@
                         <div class="col-xs-2" style="line-height: 34px; font-weight: bold;">
                             Sehari
                         </div>
-                    </div>
-                        <!--  <div class="col-xs-3">
+                    <!-- </div>
+                        <div class="col-xs-3">
                             <input type="number" name="hari" value="1" min="1"  id="inputHariElement" class="form-control">
-                        </div> -->
-                    </div>
+                        </div>
+                    </div> -->
                     <div class="form-group row">
                         <div class="col-xs-3"></div> <!-- Empty spacer matching label width -->
                         <div class="col-xs-9">
@@ -467,7 +467,7 @@
                 inputQuantity,
                 stockElement,
                 inputHariElement,
-                inputPerhariElement
+                inputPerhariElement,
                 inputDosisElement
             ) {
                 super(submitButton, tableElement, selectElement, inputName)
@@ -693,13 +693,13 @@
                         <td>
                             ${this.selected.text} - ${this.selected.quantity} ${this.selected.unitName}
                             — <span class="medicine-dose">${this.selected.dosis} ${this.selected.perhari}x sehari</span>
-                        </td>
-                        <td>
-                            <a href="#" 
-                            class="btn btn-sm btn-danger attach-remove-btn" 
-                            title="Hapus Obat">
-                                <i class="glyphicon glyphicon-trash"></i>
-                            </a>
+                            <td>
+                                <a href="#" 
+                                class="btn btn-sm btn-danger attach-remove-btn" 
+                                title="Hapus Obat">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            </td>
                         </td>
                     </tr>
                 `;
@@ -782,7 +782,7 @@
             'medicine_ids', 
             inputQuantityElement, 
             stockElement,
-             inputHariElement, // Lama penggunaan (saat ini tidak digunakan)
+            inputHariElement, // Lama penggunaan (saat ini tidak digunakan)
             inputPerhariElement, // Frekuensi per hari
             inputDosisElement // Dosis (string)
         );

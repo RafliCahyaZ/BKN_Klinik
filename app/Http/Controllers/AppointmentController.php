@@ -129,6 +129,7 @@ class AppointmentController extends Controller
     // Aslinya public function createAction($id, Request $request)
     public function createAction($id, Request $request)
     {
+        //dd($request);
         try {
             $registration = $this->registrationRepository->getById($id);
 
@@ -170,7 +171,7 @@ class AppointmentController extends Controller
                 //$treatments = [];
             }
 
-            // dd($request['medicine_ids']);
+            dd($request['medicine_ids']);
             if (!is_null($request['medicine_ids'])) { //ketika ada obat yang dipilih
                 $aggregatedmedicineIds = $this->aggregateMedicineIds($request['medicine_ids']);
 
