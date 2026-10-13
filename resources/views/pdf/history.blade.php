@@ -16,7 +16,7 @@
         <div class="header">
             <h2>HISTORY REKAM MEDIS</h2>
 
-            <!-- Patient Information -->
+                <!-- Patient Information -->
             <div class="patient-info">
                 <table class="info-table">
                     <tr>
@@ -54,7 +54,7 @@
             </div>
         </div>
 
-        <!-- Complaint Section -->
+                <!-- Complaint Section -->
         <div class="section">
             <h3>Keluhan</h3>
             <table class="data-table">
@@ -66,7 +66,7 @@
             </table>
         </div>
 
-        <!-- Diagnoses Section -->
+                <!-- Diagnoses Section -->
         <div class="section">
             <h3>Daftar Diagnosa</h3>
             <table class="data-table">
@@ -91,16 +91,16 @@
             </table>
         </div>
 
-        <!-- Medicine History Section -->
+                <!-- Medicine History Section -->
         <div class="section">
             <h3>Riwayat Obat</h3>
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th width="60%">Nama Obat</th>
-
-                        <th width="20%">Jumlah</th>
-                        <th width="20%">Satuan</th>
+                        <th width="45%">Nama Obat</th>
+                        <th width="15%">Jumlah</th>
+                        <th width="15%">Satuan</th>
+                        <th width="25%">Dosis</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -110,17 +110,27 @@
 
                         <td class="text-center">{{ $trans->quantity }}</td>
                         <td class="text-center">{{ $trans->medicine->unit->name ?? '-' }}</td>
+                        <td class="text-center">
+                            @php
+                                $doseDisplay = trim(
+                                    ($trans->dose ?? '-') .
+                                    (!empty($trans->frequency) 
+                                        ? ' ' . $trans->frequency . 'x sehari': '')                            
+                                );
+                            @endphp
+                            {{ $doseDisplay !== '-' ? $doseDisplay : '-' }}
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="3" class="no-data">Tidak ada data obat</td>
+                        <td colspan="4" class="no-data">Tidak ada data obat</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-         <!-- Treatment History Section -->
+                <!-- Treatment History Section -->
         <div class="section">
             <h3>Tindakan</h3>
             <table class="data-table">
@@ -138,7 +148,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="3" class="no-data">Tidak ada data obat</td>
+                        <td colspan="3" class="no-data">Tidak ada data tindakan</td>
                     </tr>
                     @endforelse
                 </tbody>

@@ -240,7 +240,7 @@
                         <div class="col-xs-3" style="padding-left: 5px; padding-right: 5px;">
                             <input
                                 type="text" name="dosis"
-                                value="1 tablet" id="inputDosisElement"
+                                value="1 tablet / oles tipis" id="inputDosisElement"
                                 class="form-control" placeholder="Dosis"
                             >
                         </div>

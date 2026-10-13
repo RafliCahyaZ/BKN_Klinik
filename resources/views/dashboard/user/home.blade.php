@@ -45,14 +45,14 @@
                                 @endif
                             </td>
                             <td style="text-align:center">
-
-                                @if (!$user->isActive)
+                                @if (!($user->isActive && $user->role === \App\Type\UserRole::ADMIN && auth()->user()->role === \App\Type\UserRole::ADMIN->value))
                                     <form style="display: inline-block;" action="{{ route('user.activate', $user->id) }}"
-                                        method="POST" onsubmit="return confirm('Yakin ingin mengaktifkan akun ini?')">
+                                        method="POST" onsubmit="return confirm('Yakin ingin {{ $user->isActive ? 'menonaktifkan' : 'mengaktifkan' }} akun ini?')">
                                         @csrf
                                         @method('PATCH')
-                                        <button class="btn btn-info btn-sm">
-                                            <i class="fa fa-unlock-alt"></i>
+                                        <button type="submit" class="btn {{ $user->isActive ? 'btn-danger' : 'btn-success' }} btn-sm" aria-label="{{ $user->isActive ? 'Nonaktifkan akun' : 'Aktifkan akun' }}"
+                                            title="{{ $user->isActive ? 'Nonaktifkan akun' : 'Aktifkan akun' }}">
+                                            <i class="fa {{ $user->isActive ? 'fa-unlock-alt' : 'fa-lock' }}"></i>
                                         </button>
                                     </form>
                                 @endif
